@@ -16,7 +16,7 @@ error:
 
 clean:
 	latexmk -c
-	rm -rf _minted-*
+	rm -rf _minted-* p2
 	rm -f *.synctex\(busy\)
 
 cleanall:
@@ -27,3 +27,7 @@ cleanall:
 
 view:
 	1>/dev/null 2>/dev/null xdg-open $(PROJECT_NAME).pdf &
+
+# Problems
+prob2: prob2.c
+	gcc -g -Wall -Wextra -Wpedantic -std=c11 -fopenmp -o prob2 prob2.c
