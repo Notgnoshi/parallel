@@ -16,7 +16,7 @@ error:
 
 clean:
 	latexmk -c
-	rm -rf _minted-* p2
+	rm -rf _minted-* prob2 prob3
 	rm -f *.synctex\(busy\)
 
 cleanall:
@@ -31,3 +31,6 @@ view:
 # Problems
 prob2: prob2.c
 	gcc -g -Wall -Wextra -Wpedantic -std=c11 -fopenmp -o prob2 prob2.c
+
+prob3: prob3.c
+	gcc -g -Wall -Wextra -Wpedantic -std=c11 -fopenmp -o prob3 prob3.c -lm

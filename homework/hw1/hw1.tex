@@ -8,6 +8,62 @@
 \begin{document}
 \maketitle
 
+\section*{The Fibonacci Bug}
+    It's really hard to parallelize when the sequence definition is a recurrence relation. There is a strong dependence of the $n$th term on the $(n-1)$th and $(n-2)$th terms. This doesn't parallelize because there is an inherent order requirement, essentially forcing a sequential execution.
+
+    Now, there \textit{is} a way to make the code parallel.
+
+   \begin{quote}
+       Given a homogeneous linear recurrence relation with constant coefficients (a discrete case of a differential equation)
+
+       \[ a_0 x(n) + a_1 x(n - 1) + a_2 x(n - 2) + \cdots + a_m x(n - m) = 0 \]
+
+       We assume a solution of the form $x(n) = C\lambda^n$ and substitute:
+
+       \[ a_0 C\lambda^n + a_1 C \lambda^{n - 1} + \cdots + a_m C \lambda^{n - m} = 0 \]
+       \[ a_0 \lambda^n + a_1 \lambda^{n - 1} + \cdots + a_m \lambda^{n - m} = 0 \]
+       \[ \lambda^{n - m} \underbrace{( a_0 \lambda^m + a_1 \lambda^{m - 1} + \cdots + a_m \lambda^0 )}_{\text{Characteristic equation with roots as solutions}} = 0 \]
+
+       In the case of no repeated roots, we have
+
+       \[ x(n) = c_1 \lambda_1^n + c_2 \lambda_2^n + \cdots + c_m \lambda_m^n \]
+
+       where each $\lambda_i$ is an eigenvalue, and each $c_i$ is found from the initial conditions. We say that the dominant eigenvalue is the eigenvalue with the greatest absolute value.
+
+       \[ \lambda_d = \max_i\{ \vert \lambda_i \vert \} \]
+   \end{quote}
+
+   Now returning to the Fibonacci sequence, a second order recurrence relation (requiring two initial conditions to solve)
+
+   \[ x(n) - x(n - 1) - x(n - 2) = 0 \]
+   \[ x(n) = C\lambda^n \rightsquigarrow C\lambda^n - C \lambda^{n - 1} - C\lambda^{n - 2} = 0 \]
+
+   Factoring out $C\lambda^{n - 2}$ gives us the characteristic equation
+
+   \[ \lambda^2 - \lambda - 1 = 0 \]
+
+   which has roots
+
+   \[ \lambda = \frac{1 \pm \sqrt{1 - 4(-1)(1)}}{2} = \frac{1 \pm \sqrt{5}}{2} \]
+
+   where $\frac{1 + \sqrt{5}}{2}$, a.k.a., the golden ratio $\phi$, is the dominant eigenvalue. So then the recurrence relation has the solution
+
+   \[ x(n) = c_1 {\left(\frac{1 + \sqrt{5}}{2}\right)}^n + c_2 {\left(\frac{1 - \sqrt{5}}{2}\right)}^n \]
+
+   where we solve for $c_1$ and $c_2$ using the initial conditions $x(0) = 1$ and $x(1) = 1$.
+
+   \[ x(0) = 1 = c_1 + c_2 \]
+   \[ x(1) = 1 = c_1 \left( \frac{1 + \sqrt{5}}{2} \right) + c_2 \left( \frac{1 - \sqrt{5}}{2} \right) \]
+
+   which gives $c_1 = \frac{1}{\sqrt{5}}$ and $c_2 = - \frac{1}{\sqrt{5}}$.
+
+   So all together then, the closed form solution of the homogeneous Fibonacci linear recurrence relation is
+
+   \[x(n) = \frac{1}{\sqrt{5}} \left( {\left( \frac{1 + \sqrt{5}}{2} \right)}^n - {\left( \frac{1 - \sqrt{5}}{2} \right)}^n \right)\]
+
+   Note that this closed form has no history dependence, so it \textit{will} parallelize quite nicely, ignoring the increased number of floating point operations required to compute each $x(n)$ value.
+
+
 \section{}
     \begin{quote}
         Recall that OpenMP creates private variables for reduction variables, and these private variables are initialized to the identity element for the reduction operator. For example, if the operator is addition, the private variables are initialized to 0, while if the operator is multiplication, the private variables are initialized to 1.
@@ -148,6 +204,59 @@
             \end{minted}
         \end{enumerate}
     \end{quote}
+
+    \begin{enumerate}
+        \item \begin{minted}{c}
+            #pragma omp parallel for num_threads( 8 )
+            for(i = 0; i < (int) sqrt(x); i++)
+            {
+                a[i] = 2.3 * i;
+                if(i < 10)
+                    b[i] = a[i];
+            }
+        \end{minted}
+
+        \item Cannot use OpenMP to parallelize because the loop is not fixed in size.
+        \begin{minted}{text}
+            prob3.c: In function ‘main’:
+            prob3.c:50:23: error: invalid controlling predicate
+                 for(size_t i = 0; i < 9 && !flag; i++)
+                                   ^
+        \end{minted}
+
+        \item \begin{minted}{c}
+            #pragma omp parallel for num_threads( 8 )
+            for(i = 0; i < n; i++)
+            {
+                a[i] = foo(i);
+            }
+        \end{minted}
+
+        \item \begin{minted}{c}
+            #pragma omp parallel for num_threads( 8 )
+            for(i = 0; i < n; i++)
+            {
+                a[i] = foo(i);
+                if(a[i] > b[i])
+                    a[i] = b[i];
+            }
+        \end{minted}
+
+        \item Cannot use OpenMP to parallelize because the loop is not fixed in size.
+
+        \item \begin{minted}{c}
+            dotp = 0;
+            #pragma omp parallel for num_threads( 8 ) reduce(+: dotp)
+            for(i = 0; i < n; i++)
+            {
+                dotp += a[i] * b[i];
+            }
+        \end{minted}
+
+        \item Cannot parallelize because you cannot easily guarantee \mintinline{c}{a[i - k]} will be properly computed \textit{before} \mintinline{c}{a[i]}, as in the Fibonacci sequence assigned over the weekend. Since \mintinline{c}{k} is fixed, there might be a way to force the loop division over the threads to play nicely, but this would be too much work for too little reward, and would have the added benefit of confusing the hell out of anyone who tried to understand your code.
+
+        \item Cannot parallelize because you cannot easily guarantee \mintinline{c}{a[i - k]} will be properly computed \textit{before} \mintinline{c}{a[i]}, as in the Fibonacci sequence assigned over the weekend. Since \mintinline{c}{k} is fixed, there might be a way to force the loop division over the threads to play nicely, but this would be too much work for too little reward, and would have the added benefit of confusing the hell out of anyone who tried to understand your code.
+    \end{enumerate}
 
 \section{}
     \begin{quote}
