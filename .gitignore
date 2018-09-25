@@ -1,4 +1,10 @@
 .vscode
+# Documentation
+**/docs/html
+# Build directory
+**/build
+# Astyle backups
+*.orig
 
 # Prerequisites
 *.d
