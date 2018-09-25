@@ -33,10 +33,10 @@ CFLAGS = -I$(INC_DIR) -O3 -Wall -Wpedantic -Wextra -Werror -Wconversion -std=c11
 
 -include $(DEP)
 
+all: circuit prime
+
 circuit: $(BUILD_DIR)/$(CIRCUIT_TARGET)
 prime: $(BUILD_DIR)/$(PRIME_TARGET)
-
-all: circuit prime
 
 debug: CFLAGS += -g -O0
 debug: all
