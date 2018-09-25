@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <stdio.h>
 
 /**
  * @brief Get individual bits from a number
@@ -13,18 +14,22 @@
 #define EXTRACT_BIT( n, i ) ( ( n & ( 0x1 << i ) ) ? 0x1 : 0x0 )
 
 /**
- * @brief
+ * @brief Checks the given input against the first circuit for satisfiability.
  *
- * @param pid
- * @param z
+ * @param pid The process ID of the calling thread.
+ * @param z The input to check.
+ *
+ * @returns true if the circuit is satisfied. False otherwise.
  */
 bool circuit_one( const uint32_t pid, const uint16_t z );
 
 /**
- * @brief
+ * @brief Checks the given input against the second circuit for satisfiability.
  *
- * @param pid
- * @param z
+ * @param pid The process ID of the calling thread.
+ * @param z The input to check.
+ *
+ * @returns true if the circuit is satisfied. False otherwise.
  */
 bool circuit_two( const uint32_t pid, const uint16_t z );
 
