@@ -1,5 +1,13 @@
+/**
+ * @brief Usual header file for satisfiability functions.
+ *
+ * @file satisfiability.h
+ * @author Austin Gill
+ * @date 2018-09-24
+ */
 #pragma once
 
+#include <limits.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -39,4 +47,19 @@ bool circuit_two( const uint32_t pid, const uint16_t z );
  * @param bits An (at least) 16 element boolean array, previously allocated.
  * @param z The number to extract.
  */
-static inline void extract_bits( bool* bits, const uint16_t z );
+static inline void extract_bits( bool* bits, const uint16_t z )
+{
+    for( size_t i = 0; i < 16; ++i )
+    {
+        bits[i] = EXTRACT_BIT( z, i );
+    }
+}
+
+/**
+ * @brief Brute force check the satisfiability of the given circuit.
+ *
+ * @todo Need lots of documentation, because this is the heavy lifter.
+ *
+ * @param circuit_fp A function pointer to the circuit to check.
+ */
+void check_circuit( bool ( *circuit_fp )( const uint32_t, const uint16_t ) );
