@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdint.h>
 
 /**
@@ -17,7 +18,7 @@
  * @param pid
  * @param z
  */
-bool circuit_one( uint32_t pid, uint16_t z );
+bool circuit_one( const uint32_t pid, const uint16_t z );
 
 /**
  * @brief
@@ -25,4 +26,12 @@ bool circuit_one( uint32_t pid, uint16_t z );
  * @param pid
  * @param z
  */
-bool circuit_two( uint32_t pid, uint16_t z );
+bool circuit_two( const uint32_t pid, const uint16_t z );
+
+/**
+ * @brief Extract the bits of a uint16_t into the given boolean array.
+ *
+ * @param bits An (at least) 16 element boolean array, previously allocated.
+ * @param z The number to extract.
+ */
+static inline void extract_bits( bool* bits, const uint16_t z );
