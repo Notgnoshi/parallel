@@ -13,6 +13,8 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#include <omp.h>
+
 /**
  * @brief Get individual bits from a number
  *
@@ -24,22 +26,22 @@
 /**
  * @brief Checks the given input against the first circuit for satisfiability.
  *
- * @param pid The process ID of the calling thread.
+ * @param tid The thread ID of the calling thread.
  * @param z The input to check.
  *
  * @returns true if the circuit is satisfied. False otherwise.
  */
-bool circuit_one( const uint32_t pid, const uint16_t z );
+bool circuit_one( const int32_t tid, const uint16_t z );
 
 /**
  * @brief Checks the given input against the second circuit for satisfiability.
  *
- * @param pid The process ID of the calling thread.
+ * @param tid The thread ID of the calling thread.
  * @param z The input to check.
  *
  * @returns true if the circuit is satisfied. False otherwise.
  */
-bool circuit_two( const uint32_t pid, const uint16_t z );
+bool circuit_two( const int32_t tid, const uint16_t z );
 
 /**
  * @brief Extract the bits of a uint16_t into the given boolean array.
@@ -62,4 +64,4 @@ static inline void extract_bits( bool* bits, const uint16_t z )
  *
  * @param circuit_fp A function pointer to the circuit to check.
  */
-void check_circuit( bool ( *circuit_fp )( const uint32_t, const uint16_t ) );
+void check_circuit( bool ( *circuit_fp )( const int32_t, const uint16_t ) );
