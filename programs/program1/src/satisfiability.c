@@ -38,9 +38,14 @@ bool circuit_two( const int32_t tid, const uint16_t z )
 
 void check_circuit( bool ( *circuit_fp )( const int32_t, const uint16_t ) )
 {
-    //! @todo Add timing code with `ifdef`s.
     //! @todo Use `ifdef`s for schedule.
     //! @todo Copy/paste code to do static/dynamic.
+
+    #ifdef TIMING
+    // Get the wall time in seconds.
+    double begin = omp_get_wtime();
+    #endif // TIMING
+
     size_t sum = 0;
     #pragma omp parallel for num_threads( omp_get_num_procs() )
     for( uint16_t input = 0; input < USHRT_MAX; ++input )
@@ -50,9 +55,18 @@ void check_circuit( bool ( *circuit_fp )( const int32_t, const uint16_t ) )
             ++sum;
         }
     }
+    #ifdef TIMING
+    double end = omp_get_wtime();
+    #endif // TIMING
 
     printf( "\n" );
     printf( "=======================================\n" );
-    printf( "%zu inputs satisfied the given circuit.\n", sum );
+    printf( "%zu inputs satisfied the given circuit", sum );
+    // Avoid timing I/O code!
+    #ifdef TIMING
+    printf( " in %4f seconds.\n", end - begin );
+    #else
+    printf( ".\n" );
+    #endif // TIMING
     printf( "=======================================\n" );
 }

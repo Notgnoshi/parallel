@@ -27,7 +27,7 @@ DEP := $(CIRCUIT_OBJ:%.o=%.d) $(PRIME_OBJ:%.o=%.d)
 CXX := gcc
 LINK := gcc
 LINKFLAGS = -lm -fopenmp
-CFLAGS = -I$(INC_DIR) -O3 -Wall -fopenmp -Wpedantic -Wextra -Werror -Wconversion -std=c11
+CFLAGS = -I$(INC_DIR) -O3 -Wall -fopenmp -Wpedantic -Wextra -Werror -Wconversion -std=c11 -DTIMING
 
 .PHONY: clean format docs viewdocs
 
