@@ -55,8 +55,11 @@ int32_t get_circuit( int32_t argc, char const** argv )
  * Gets the circuit to check for satisfiability from the commandline arguments
  * and brute force checks every possible input against the circuit.
  *
- * Base on compile-time `-D` defines, we will also time the satisfiability checks
+ * Based on compile-time `-D` defines, we will time the satisfiability checks
  * to compare runtimes.
+ *
+ * Based on compile-time `-D` defines, we will also compare static and dynamic
+ * scheduling methods.
  *
  * @param argc The usual number of commandline arguments.
  * @param argv The usual commandline arguments.
