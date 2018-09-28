@@ -40,10 +40,9 @@ void check_circuit( bool ( *circuit_fp )( const int32_t, const uint16_t ) )
 {
     //! @todo Add timing code with `ifdef`s.
     //! @todo Use `ifdef`s for schedule.
-    //! @todo Add parallelization code
-    //! @todo What does static/dynamic schedule mean?
     //! @todo Copy/paste code to do static/dynamic.
     size_t sum = 0;
+    #pragma omp parallel for num_threads( omp_get_num_procs() )
     for( uint16_t input = 0; input < USHRT_MAX; ++input )
     {
         if( circuit_fp( omp_get_thread_num(), input ) )
