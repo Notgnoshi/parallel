@@ -38,35 +38,83 @@ bool circuit_two( const int32_t tid, const uint16_t z )
 
 void check_circuit( bool ( *circuit_fp )( const int32_t, const uint16_t ) )
 {
-    //! @todo Use `ifdef`s for schedule.
-    //! @todo Copy/paste code to do static/dynamic.
-
-    #ifdef TIMING
-    // Get the wall time in seconds.
-    double begin = omp_get_wtime();
-    #endif // TIMING
-
-    size_t sum = 0;
-    #pragma omp parallel for num_threads( omp_get_num_procs() )
-    for( uint16_t input = 0; input < USHRT_MAX; ++input )
-    {
-        if( circuit_fp( omp_get_thread_num(), input ) )
+    // I'd normally care a whole lot that there's tons of duplicated code here,
+    // and I'd normally spend a good amount of time trying to come up with an elegant
+    // solution, but I'm drunk, pissed off, and still in shock from my topology exam.
+    // So this mess is what you get.
+    #ifdef SCHEDULE_COMPARISON
+        double begin = omp_get_wtime();
+        size_t sum = 0;
+        #pragma omp parallel for num_threads( omp_get_num_procs() )
+        for( int32_t input = 0; input < USHRT_MAX; ++input )
         {
-            ++sum;
+            if( circuit_fp( omp_get_thread_num(), (uint16_t) input ) )
+            {
+                ++sum;
+            }
         }
-    }
-    #ifdef TIMING
-    double end = omp_get_wtime();
-    #endif // TIMING
+        double end = omp_get_wtime();
 
-    printf( "\n" );
-    printf( "=======================================\n" );
-    printf( "%zu inputs satisfied the given circuit", sum );
-    // Avoid timing I/O code!
-    #ifdef TIMING
-    printf( " in %4f seconds.\n", end - begin );
+        printf( "\n" );
+        printf( "=============================================================================\n" );
+        printf( "found %zu inputs satisfying the circuit in %4f seconds with default schedule.\n",
+                sum, end - begin );
+        printf( "=============================================================================\n" );
+        printf( "\n" );
+
+        sum = 0;
+        begin = omp_get_wtime();
+        //! @note When using a `static` schedule, with chunk size of 1, the iteration variable must
+        //! be signed. Or else you'll spend hours wondering why the simplest for loop you've ever
+        //! written doesn't work... C.f. https://msdn.microsoft.com/en-us/library/b5b5b6eb.aspx
+        #pragma omp parallel for num_threads( omp_get_num_procs() ) schedule( static, 1 )
+        for( int32_t input = 0; input < USHRT_MAX; ++input )
+        {
+            if( circuit_fp( omp_get_thread_num(), (uint16_t) input ) )
+            {
+                ++sum;
+            }
+        }
+        end = omp_get_wtime();
+
+        printf( "\n" );
+        printf( "=============================================================================\n" );
+        printf( "found %zu inputs satisfying the circuit in %4f seconds with static schedule.\n",
+                sum, end - begin );
+        printf( "=============================================================================\n" );
+        printf( "\n" );
+
+        sum = 0;
+        begin = omp_get_wtime();
+        #pragma omp parallel for num_threads( omp_get_num_procs() ) schedule( dynamic, 1 )
+        for( int32_t input = 0; input < USHRT_MAX; ++input )
+        {
+            if( circuit_fp( omp_get_thread_num(), (uint16_t) input ) )
+            {
+                ++sum;
+            }
+        }
+        end = omp_get_wtime();
+
+        printf( "\n" );
+        printf( "=============================================================================\n" );
+        printf( "found %zu inputs satisfying the circuit in %4f seconds with dynamic schedule.\n",
+                sum, end - begin );
+        printf( "=============================================================================\n" );
     #else
-    printf( ".\n" );
-    #endif // TIMING
-    printf( "=======================================\n" );
+        size_t sum = 0;
+        #pragma omp parallel for num_threads( omp_get_num_procs() )
+        for( int32_t input = 0; input < USHRT_MAX; ++input )
+        {
+            if( circuit_fp( omp_get_thread_num(), (uint16_t) input ) )
+            {
+                ++sum;
+            }
+        }
+
+        printf( "\n" );
+        printf( "=======================================\n" );
+        printf( "%zu inputs satisfied the given circuit.\n", sum );
+        printf( "=======================================\n" );
+    #endif // SCHEDULE_COMPARISON
 }
