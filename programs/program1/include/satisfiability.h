@@ -60,8 +60,24 @@ static inline void extract_bits( bool* bits, const uint16_t z )
 /**
  * @brief Brute force check the satisfiability of the given circuit.
  *
- * @todo Need lots of documentation, because this is the heavy lifter.
+ * Because there is no dependency from one input to the circuit and another,
+ * this function is an excellent candidate for parallelization.
+ *
+ * This function will split the inputs over @f$p@f$ threads checking the satisfiability
+ * of the given circuit in parallel, where @f$p@f$ is the number of processors
+ * on the system.
+ *
+ * @note If compiled with `-DSCHEDULE_COMPARISON`, this function will time and
+ * compare the default schedule with static and dynamic schedules with a chunk
+ * size of 1. \n
+ * The provided Makefile uses `-DSCHEDULE_COMPARISON` by default.
  *
  * @param circuit_fp A function pointer to the circuit to check.
+ *        The function prototype should be
+ *        @code
+ *             bool circuit( const int32_t tid, const uint16_t z )
+ *        @endcode
+ *        where `tid` is the thread ID of the calling thread and `z` is the input
+ *        to test for satisfaction.
  */
 void check_circuit( bool ( *circuit_fp )( const int32_t, const uint16_t ) );
