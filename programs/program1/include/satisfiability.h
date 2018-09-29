@@ -72,6 +72,20 @@ static inline void extract_bits( bool* bits, const uint16_t z )
  * size of 1. \n
  * The provided Makefile uses `-DSCHEDULE_COMPARISON` by default.
  *
+ * @bug When using a static schedule, with a chunk size of 1, and an `uint16_t`
+ * index variable, my parallel for loop does not terminate. It works as expected
+ * with the default chunk size, or when run sequentially.
+ * \n
+ * After much DuckDuckGo-ing, I found that earlier versions of OpenMP (specifically
+ * version 2.0) required the index variable to be a signed integral type. This
+ * requirement was dropped in version 3.0. After checking my OpenMP version with
+ * `echo |cpp -fopenmp -dM |grep -i open` I verified I'm using version 4.5.
+ * \n
+ * This led me to attempt using a `int32_t` index variable, which worked as expected.
+ * Interestingly, using `uint32_t` also works.
+ * \n
+ * See https://stackoverflow.com/a/2822064
+ *
  * @param circuit_fp A function pointer to the circuit to check.
  *        The function prototype should be
  *        @code

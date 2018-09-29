@@ -38,17 +38,13 @@ bool circuit_two( const int32_t tid, const uint16_t z )
 
 void check_circuit( bool ( *circuit_fp )( const int32_t, const uint16_t ) )
 {
-    // I'd normally care a whole lot that there's tons of duplicated code here,
-    // and I'd normally spend a good amount of time trying to come up with an elegant
-    // solution, but I'm drunk, pissed off, and still in shock from my topology exam.
-    // So this mess is what you get.
     #ifdef SCHEDULE_COMPARISON
         double begin = omp_get_wtime();
         size_t sum = 0;
         #pragma omp parallel for num_threads( omp_get_num_procs() )
-        for( int32_t input = 0; input < USHRT_MAX; ++input )
+        for( uint16_t input = 0; input < USHRT_MAX; ++input )
         {
-            if( circuit_fp( omp_get_thread_num(), (uint16_t) input ) )
+            if( circuit_fp( omp_get_thread_num(), input ) )
             {
                 ++sum;
             }
@@ -64,11 +60,8 @@ void check_circuit( bool ( *circuit_fp )( const int32_t, const uint16_t ) )
 
         sum = 0;
         begin = omp_get_wtime();
-        //! @note When using a `static` schedule, with chunk size of 1, the iteration variable must
-        //! be signed. Or else you'll spend hours wondering why the simplest for loop you've ever
-        //! written doesn't work... C.f. https://msdn.microsoft.com/en-us/library/b5b5b6eb.aspx
         #pragma omp parallel for num_threads( omp_get_num_procs() ) schedule( static, 1 )
-        for( int32_t input = 0; input < USHRT_MAX; ++input )
+        for( uint32_t input = 0; input < USHRT_MAX; ++input )
         {
             if( circuit_fp( omp_get_thread_num(), (uint16_t) input ) )
             {
@@ -87,9 +80,9 @@ void check_circuit( bool ( *circuit_fp )( const int32_t, const uint16_t ) )
         sum = 0;
         begin = omp_get_wtime();
         #pragma omp parallel for num_threads( omp_get_num_procs() ) schedule( dynamic, 1 )
-        for( int32_t input = 0; input < USHRT_MAX; ++input )
+        for( uint16_t input = 0; input < USHRT_MAX; ++input )
         {
-            if( circuit_fp( omp_get_thread_num(), (uint16_t) input ) )
+            if( circuit_fp( omp_get_thread_num(), input ) )
             {
                 ++sum;
             }
@@ -104,9 +97,9 @@ void check_circuit( bool ( *circuit_fp )( const int32_t, const uint16_t ) )
     #else
         size_t sum = 0;
         #pragma omp parallel for num_threads( omp_get_num_procs() )
-        for( int32_t input = 0; input < USHRT_MAX; ++input )
+        for( uint16_t input = 0; input < USHRT_MAX; ++input )
         {
-            if( circuit_fp( omp_get_thread_num(), (uint16_t) input ) )
+            if( circuit_fp( omp_get_thread_num(), input ) )
             {
                 ++sum;
             }
