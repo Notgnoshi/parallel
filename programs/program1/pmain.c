@@ -1,9 +1,7 @@
 /**
- * @brief The main entry point and commandline argument handling portion of the program.
- *
  * @file pmain.c
- * @author Austin Gill
- * @date 2018-09-24
+ * @author Austin Gill (atgill@protonmail.com)
+ * @brief The main entry point and commandline argument handling portion of the program.
  */
 #include <stdint.h>
 #include <stdio.h>

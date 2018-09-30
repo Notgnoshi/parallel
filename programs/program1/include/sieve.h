@@ -1,9 +1,7 @@
 /**
- * @brief Usual header file for prime sieve functions.
- *
  * @file sieve.h
- * @author your name
- * @date 2018-09-29
+ * @author Austin Gill (atgill@protonmail.com)
+ * @brief Usual header file for prime sieve functions.
  */
 #pragma once
 

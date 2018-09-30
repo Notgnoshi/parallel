@@ -1,9 +1,7 @@
 /**
- * @brief Implementation of the Sieve of Eratosthenes.
- *
  * @file sieve.c
- * @author Austin Gill
- * @date 2018-09-29
+ * @author Austin Gill (atgill@protonmail.com)
+ * @brief Implementation of the Sieve of Eratosthenes.
  */
 #include "sieve.h"
 

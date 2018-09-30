@@ -1,9 +1,7 @@
 /**
- * @brief Usual header file for satisfiability functions.
- *
  * @file satisfiability.h
- * @author Austin Gill
- * @date 2018-09-24
+ * @author Austin Gill (atgill@protonmail.com)
+ * @brief Usual header file for satisfiability functions.
  */
 #pragma once
 
