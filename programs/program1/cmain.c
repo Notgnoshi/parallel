@@ -2,8 +2,6 @@
  * @file cmain.c
  * @author Austin Gill (atgill@protonmail.com)
  * @brief The main entry point and commandline argument handling portion of the program.
- *
- * @todo Produce PDF documentation.
  */
 #include "satisfiability.h"
 #include <stdint.h>
