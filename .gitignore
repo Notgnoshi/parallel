@@ -1,6 +1,7 @@
 .vscode
 # Documentation
 **/docs/html
+**/docs/latex
 # Build directory
 **/build
 # Astyle backups
