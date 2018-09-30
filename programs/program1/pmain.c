@@ -60,10 +60,11 @@ int main( int argc, char const** argv )
     bool* sieve = allocate( limit + 1 );
 
     // Run the prime sieve
-    prime_sieve( sieve, limit + 1 );
+    double elapsed = prime_sieve( sieve, limit + 1 );
 
     // Print the primes
-    print_primes( sieve, limit + 1 );
+    // print_primes( sieve, limit + 1 );
+    printf( "Elapsed time: %f ms\n", elapsed );
 
     free( sieve );
     return 0;

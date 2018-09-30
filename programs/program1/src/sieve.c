@@ -14,15 +14,18 @@ bool* allocate( size_t length )
         fprintf( stderr, "Failed to allocate %zu bytes\n", length * sizeof( bool ) );
         exit( 1 );
     }
+    // Initialize the sieve with every number marked as prime.
     memset( a, true, length );
 
     return a;
 }
 
-void prime_sieve( bool* sieve, size_t length )
+double prime_sieve( bool* sieve, size_t length )
 {
-    // Only go up to the sqrt( length ).
-    for( size_t i = 2; i < sqrt( ( double ) length ) + 1.5; ++i )
+    double begin = omp_get_wtime();
+    // Use a dynamic schedule because some iterations will take longer than others.
+    #pragma omp parallel for num_threads( omp_get_num_procs() ) schedule( dynamic )
+    for( size_t i = 2; i < ( size_t ) sqrt( ( double ) length ); ++i )
     {
         if( sieve[i] )
         {
@@ -33,6 +36,9 @@ void prime_sieve( bool* sieve, size_t length )
             }
         }
     }
+    double end = omp_get_wtime();
+    // Convert seconds to milliseconds
+    return ( end - begin ) * 1000;
 }
 
 void print_primes( const bool* sieve, size_t length )
