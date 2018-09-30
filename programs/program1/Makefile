@@ -57,7 +57,11 @@ clean:
 	rm -rf $(GARBAGE) $(BUILD_DIR)/* $(DOC_DIR)/html/
 
 format:
-	astyle --options=astyle.config --recursive "*.c" "*.h"
+	# @todo https://medicineyeh.wordpress.com/2017/07/13/clang-format-with-pragma/
+	find $(SRC_DIR) $(INC_DIR) -name "*.c" -o -name "*.h" | xargs clang-format -style=file -i
+
+lint:
+	clang-tidy $(shell find $(SRC_DIR) $(INC_DIR) -name "*.c" -o -name "*.h") -- $(CFLAGS)
 
 docs:
 	doxygen $(DOC_DIR)/doxyfile
