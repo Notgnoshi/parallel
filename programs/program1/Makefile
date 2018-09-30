@@ -54,7 +54,7 @@ $(BUILD_DIR)/%.o: %.c
 	$(CXX) $(CFLAGS) -MMD -c $< -o $@
 
 clean:
-	rm -rf $(GARBAGE) $(BUILD_DIR)/* $(DOC_DIR)/html/
+	rm -rf $(BUILD_DIR)/*
 
 format:
 	# @todo https://medicineyeh.wordpress.com/2017/07/13/clang-format-with-pragma/
@@ -67,4 +67,4 @@ docs:
 	doxygen $(DOC_DIR)/doxyfile
 
 viewdocs: docs
-	xdg-open $(DOC_DIR)/html/index.html
+	xdg-open $(BUILD_DIR)/html/index.html

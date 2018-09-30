@@ -16,17 +16,16 @@ make
 make docs
 # Open the HTML docs in your browser
 make viewdocs
-cd docs/latex
+cd build/latex
 # Make this PDF
 make
+# Open PDF in default viewer
 xdg-open refman.pdf
 cd ../../
 # Build artifacts placed in ./build/
-cd build
-# Run programs
-./circuit 1
-./circuit 2
-./prime 10
+build/circuit 1
+build/circuit 2
+build/prime 10
 ```
 
 ---
