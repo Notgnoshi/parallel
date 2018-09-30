@@ -7,19 +7,18 @@
 
 bool circuit_one( const int32_t tid, const uint16_t z )
 {
-    bool bits[16] = { 0 };
+    bool bits[16] = {0};
     extract_bits( bits, z );
 
-    // For whatever reason, astyle indents the line continuation too far...
-    if( ( bits[0]  ||  bits[1]  ) && ( !bits[1]  || !bits[3]  ) && ( bits[2]  ||  bits[3]  ) &&
-            ( !bits[3]  || !bits[4]  ) && (  bits[4]  || !bits[5]  ) && ( bits[5]  || !bits[6]  ) &&
-            (  bits[5]  ||  bits[6]  ) && (  bits[6]  || !bits[15] ) && ( bits[7]  || !bits[8]  ) &&
-            ( !bits[7]  || !bits[13] ) && (  bits[8]  ||  bits[9]  ) && ( bits[8]  || !bits[9]  ) &&
-            ( !bits[9]  || !bits[10] ) && (  bits[9]  ||  bits[11] ) && ( bits[10] ||  bits[11] ) &&
-            (  bits[12] ||  bits[13] ) && (  bits[13] || !bits[14] ) && ( bits[14] ||  bits[15] ) )
+    if( ( bits[0] || bits[1] ) && ( !bits[1] || !bits[3] ) && ( bits[2] || bits[3] ) &&
+        ( !bits[3] || !bits[4] ) && ( bits[4] || !bits[5] ) && ( bits[5] || !bits[6] ) &&
+        ( bits[5] || bits[6] ) && ( bits[6] || !bits[15] ) && ( bits[7] || !bits[8] ) &&
+        ( !bits[7] || !bits[13] ) && ( bits[8] || bits[9] ) && ( bits[8] || !bits[9] ) &&
+        ( !bits[9] || !bits[10] ) && ( bits[9] || bits[11] ) && ( bits[10] || bits[11] ) &&
+        ( bits[12] || bits[13] ) && ( bits[13] || !bits[14] ) && ( bits[14] || bits[15] ) )
     {
         printf( "%d) %d%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d\n", tid,
-                bits[0], bits[1], bits[2],  bits[3],  bits[4],  bits[5],  bits[6],  bits[7],
+                bits[0], bits[1], bits[2], bits[3], bits[4], bits[5], bits[6], bits[7],
                 bits[8], bits[9], bits[10], bits[11], bits[12], bits[13], bits[14], bits[15] );
         fflush( stdout );
         return true;
@@ -39,7 +38,7 @@ void check_circuit( bool ( *circuit_fp )( const int32_t, const uint16_t ) )
 #ifdef SCHEDULE_COMPARISON
     double begin = omp_get_wtime();
     size_t sum = 0;
-    #pragma omp parallel for num_threads( omp_get_num_procs() )
+#pragma omp parallel for num_threads( omp_get_num_procs() )
     for( uint16_t input = 0; input < USHRT_MAX; ++input )
     {
         if( circuit_fp( omp_get_thread_num(), input ) )
@@ -58,10 +57,10 @@ void check_circuit( bool ( *circuit_fp )( const int32_t, const uint16_t ) )
 
     sum = 0;
     begin = omp_get_wtime();
-    #pragma omp parallel for num_threads( omp_get_num_procs() ) schedule( static, 1 )
+#pragma omp parallel for num_threads( omp_get_num_procs() ) schedule( static, 1 )
     for( uint32_t input = 0; input < USHRT_MAX; ++input )
     {
-        if( circuit_fp( omp_get_thread_num(), ( uint16_t ) input ) )
+        if( circuit_fp( omp_get_thread_num(), (uint16_t)input ) )
         {
             ++sum;
         }
@@ -77,7 +76,7 @@ void check_circuit( bool ( *circuit_fp )( const int32_t, const uint16_t ) )
 
     sum = 0;
     begin = omp_get_wtime();
-    #pragma omp parallel for num_threads( omp_get_num_procs() ) schedule( dynamic, 1 )
+#pragma omp parallel for num_threads( omp_get_num_procs() ) schedule( dynamic, 1 )
     for( uint16_t input = 0; input < USHRT_MAX; ++input )
     {
         if( circuit_fp( omp_get_thread_num(), input ) )
@@ -94,7 +93,7 @@ void check_circuit( bool ( *circuit_fp )( const int32_t, const uint16_t ) )
     printf( "=============================================================================\n" );
 #else
     size_t sum = 0;
-    #pragma omp parallel for num_threads( omp_get_num_procs() )
+#pragma omp parallel for num_threads( omp_get_num_procs() )
     for( uint16_t input = 0; input < USHRT_MAX; ++input )
     {
         if( circuit_fp( omp_get_thread_num(), input ) )

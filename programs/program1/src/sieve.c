@@ -23,9 +23,9 @@ bool* allocate( size_t length )
 double prime_sieve( bool* sieve, size_t length )
 {
     double begin = omp_get_wtime();
-    // Use a dynamic schedule because some iterations will take longer than others.
-    #pragma omp parallel for num_threads( omp_get_num_procs() ) schedule( dynamic )
-    for( size_t i = 2; i < ( size_t ) sqrt( ( double ) length ); ++i )
+// Use a dynamic schedule because some iterations will take longer than others.
+#pragma omp parallel for num_threads( omp_get_num_procs() ) schedule( dynamic )
+    for( size_t i = 2; i < (size_t)sqrt( (double)length ); ++i )
     {
         if( sieve[i] )
         {

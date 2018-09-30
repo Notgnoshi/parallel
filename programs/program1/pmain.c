@@ -3,11 +3,10 @@
  * @author Austin Gill (atgill@protonmail.com)
  * @brief The main entry point and commandline argument handling portion of the program.
  */
+#include "sieve.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-#include "sieve.h"
 
 /**
  * @brief Print the program's usage statement.
@@ -44,10 +43,8 @@ size_t parse_args( int argc, char const** argv )
 /**
  * @brief The main entry point for the prime sieve program.
  *
- * Uses the Sieve of Eratosthenes to generate the first @f$n@f$ prime numbers.
- *
- * Base on compile-time `-D` defines, we will also time the prime sieve to
- * compare runtimes.
+ * Uses the Sieve of Eratosthenes to generate all prime numbers less than a
+ * given limit.
  *
  * @param argc The usual number of commandline arguments.
  * @param argv The usual commandline arguments.

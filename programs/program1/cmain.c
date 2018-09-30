@@ -5,11 +5,10 @@
  *
  * @todo Produce PDF documentation.
  */
+#include "satisfiability.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-#include "satisfiability.h"
 
 /**
  * @brief Prints the program usage statement.

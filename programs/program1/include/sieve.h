@@ -5,15 +5,14 @@
  */
 #pragma once
 
+#include <math.h>
+#include <omp.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
-
-#include <omp.h>
 
 /**
  * @brief Allocate and initialize a boolean array for use in a prime sieve.
@@ -23,6 +22,7 @@
  * If the given length cannot be allocated, print an error and exit the program.
  *
  * @param length The length of the array to allocate and initialize.
+ * @returns a pointer to the allocated and initialized array.
  */
 bool* allocate( size_t length );
 
@@ -44,7 +44,8 @@ bool* allocate( size_t length );
  *
  * @todo I suspect that with large sieves I'm running into cache problems. Find
  *       a way to cut the sieve into blocks that fit into the cache.
- * @todo I'm not getting as much of a speedup as I'd hope for. I think it's probably something to do with cache misses.
+ * @todo I'm not getting as much of a speedup as I'd hope for. I think it's
+ *       probably something to do with cache misses.
  *
  * @param[out] sieve A boolean array indicating wether or not each index is prime
  *             or not. Initialized to `true`.
@@ -56,7 +57,12 @@ double prime_sieve( bool* sieve, size_t length );
 /**
  * @brief Print the prime numbers from the given sieve.
  *
- * @param sieve
- * @param length
+ * Prints primes 10 per line.
+ *
+ * @todo Rather than print prime-by-prime, print in large chunks to reduce the
+ *       amount of time it takes to print large numbers of primes to the screen.
+ *
+ * @param sieve The sieve of numbers to print.
+ * @param length The length of the prime sieve.
  */
 void print_primes( const bool* sieve, size_t length );

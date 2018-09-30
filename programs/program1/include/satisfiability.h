@@ -6,12 +6,11 @@
 #pragma once
 
 #include <limits.h>
+#include <omp.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
-
-#include <omp.h>
 
 /**
  * @brief Get individual bits from a number
