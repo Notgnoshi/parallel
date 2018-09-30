@@ -59,6 +59,10 @@ schedules will be timed and compared. The static and dynamic schedules use a chu
 size of 1 in the comparison, while the default schedule splits the work evenly among
 the workers in contiguous chunks.
 
+Note that the second digital circuit was randomly generated in product-of-sums form
+by the Python script found in `src/random_circuit.py`, and then copy-pasted into
+the source code with the help of `clang-format` to make it less gross.
+
 The provided makefile defines `SCHEDULE_COMPARISON` by default.
 
 Compile by running `make circuit`. All build artifacts will be placed in `./build/`.
