@@ -38,76 +38,76 @@ bool circuit_two( const int32_t tid, const uint16_t z )
 
 void check_circuit( bool ( *circuit_fp )( const int32_t, const uint16_t ) )
 {
-    #ifdef SCHEDULE_COMPARISON
-        double begin = omp_get_wtime();
-        size_t sum = 0;
-        #pragma omp parallel for num_threads( omp_get_num_procs() )
-        for( uint16_t input = 0; input < USHRT_MAX; ++input )
+#ifdef SCHEDULE_COMPARISON
+    double begin = omp_get_wtime();
+    size_t sum = 0;
+    #pragma omp parallel for num_threads( omp_get_num_procs() )
+    for( uint16_t input = 0; input < USHRT_MAX; ++input )
+    {
+        if( circuit_fp( omp_get_thread_num(), input ) )
         {
-            if( circuit_fp( omp_get_thread_num(), input ) )
-            {
-                ++sum;
-            }
+            ++sum;
         }
-        double end = omp_get_wtime();
+    }
+    double end = omp_get_wtime();
 
-        printf( "\n" );
-        printf( "=============================================================================\n" );
-        printf( "found %zu inputs satisfying the circuit in %4f seconds with default schedule.\n",
-                sum, end - begin );
-        printf( "=============================================================================\n" );
-        printf( "\n" );
+    printf( "\n" );
+    printf( "=============================================================================\n" );
+    printf( "found %zu inputs satisfying the circuit in %4f seconds with default schedule.\n",
+            sum, end - begin );
+    printf( "=============================================================================\n" );
+    printf( "\n" );
 
-        sum = 0;
-        begin = omp_get_wtime();
-        #pragma omp parallel for num_threads( omp_get_num_procs() ) schedule( static, 1 )
-        for( uint32_t input = 0; input < USHRT_MAX; ++input )
+    sum = 0;
+    begin = omp_get_wtime();
+    #pragma omp parallel for num_threads( omp_get_num_procs() ) schedule( static, 1 )
+    for( uint32_t input = 0; input < USHRT_MAX; ++input )
+    {
+        if( circuit_fp( omp_get_thread_num(), ( uint16_t ) input ) )
         {
-            if( circuit_fp( omp_get_thread_num(), (uint16_t) input ) )
-            {
-                ++sum;
-            }
+            ++sum;
         }
-        end = omp_get_wtime();
+    }
+    end = omp_get_wtime();
 
-        printf( "\n" );
-        printf( "=============================================================================\n" );
-        printf( "found %zu inputs satisfying the circuit in %4f seconds with static schedule.\n",
-                sum, end - begin );
-        printf( "=============================================================================\n" );
-        printf( "\n" );
+    printf( "\n" );
+    printf( "=============================================================================\n" );
+    printf( "found %zu inputs satisfying the circuit in %4f seconds with static schedule.\n",
+            sum, end - begin );
+    printf( "=============================================================================\n" );
+    printf( "\n" );
 
-        sum = 0;
-        begin = omp_get_wtime();
-        #pragma omp parallel for num_threads( omp_get_num_procs() ) schedule( dynamic, 1 )
-        for( uint16_t input = 0; input < USHRT_MAX; ++input )
+    sum = 0;
+    begin = omp_get_wtime();
+    #pragma omp parallel for num_threads( omp_get_num_procs() ) schedule( dynamic, 1 )
+    for( uint16_t input = 0; input < USHRT_MAX; ++input )
+    {
+        if( circuit_fp( omp_get_thread_num(), input ) )
         {
-            if( circuit_fp( omp_get_thread_num(), input ) )
-            {
-                ++sum;
-            }
+            ++sum;
         }
-        end = omp_get_wtime();
+    }
+    end = omp_get_wtime();
 
-        printf( "\n" );
-        printf( "=============================================================================\n" );
-        printf( "found %zu inputs satisfying the circuit in %4f seconds with dynamic schedule.\n",
-                sum, end - begin );
-        printf( "=============================================================================\n" );
-    #else
-        size_t sum = 0;
-        #pragma omp parallel for num_threads( omp_get_num_procs() )
-        for( uint16_t input = 0; input < USHRT_MAX; ++input )
+    printf( "\n" );
+    printf( "=============================================================================\n" );
+    printf( "found %zu inputs satisfying the circuit in %4f seconds with dynamic schedule.\n",
+            sum, end - begin );
+    printf( "=============================================================================\n" );
+#else
+    size_t sum = 0;
+    #pragma omp parallel for num_threads( omp_get_num_procs() )
+    for( uint16_t input = 0; input < USHRT_MAX; ++input )
+    {
+        if( circuit_fp( omp_get_thread_num(), input ) )
         {
-            if( circuit_fp( omp_get_thread_num(), input ) )
-            {
-                ++sum;
-            }
+            ++sum;
         }
+    }
 
-        printf( "\n" );
-        printf( "=======================================\n" );
-        printf( "%zu inputs satisfied the given circuit.\n", sum );
-        printf( "=======================================\n" );
-    #endif // SCHEDULE_COMPARISON
+    printf( "\n" );
+    printf( "=======================================\n" );
+    printf( "%zu inputs satisfied the given circuit.\n", sum );
+    printf( "=======================================\n" );
+#endif // SCHEDULE_COMPARISON
 }
