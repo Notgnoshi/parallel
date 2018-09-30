@@ -18,7 +18,7 @@
  * @param n The number to extract bits from
  * @param i The index of the bit to extract, taken from the LSB (index 0)
  */
-#define EXTRACT_BIT( n, i ) ( ( n & ( 0x1 << i ) ) ? 0x1 : 0x0 )
+#define EXTRACT_BIT( n, i ) ( ( ( n ) & ( 0x1 << ( i ) ) ) ? 0x1 : 0x0 )
 
 /**
  * @brief Checks the given input against the first circuit for satisfiability.
@@ -28,7 +28,7 @@
  *
  * @returns true if the circuit is satisfied. False otherwise.
  */
-bool circuit_one( const int32_t tid, const uint16_t z );
+bool circuit_one( int32_t tid, uint16_t z );
 
 /**
  * @brief Checks the given input against the second circuit for satisfiability.
@@ -38,7 +38,7 @@ bool circuit_one( const int32_t tid, const uint16_t z );
  *
  * @returns true if the circuit is satisfied. False otherwise.
  */
-bool circuit_two( const int32_t tid, const uint16_t z );
+bool circuit_two( int32_t tid, uint16_t z );
 
 /**
  * @brief Extract the bits of a uint16_t into the given boolean array.
@@ -46,7 +46,7 @@ bool circuit_two( const int32_t tid, const uint16_t z );
  * @param bits An (at least) 16 element boolean array, previously allocated.
  * @param z The number to extract.
  */
-static inline void extract_bits( bool* bits, const uint16_t z )
+static inline void extract_bits( bool* bits, uint16_t z )
 {
     for( size_t i = 0; i < 16; ++i )
     {
@@ -69,7 +69,7 @@ static inline void extract_bits( bool* bits, const uint16_t z )
  * size of 1. \n
  * The provided Makefile uses `-DSCHEDULE_COMPARISON` by default.
  *
- * @bug When using a static schedule, with a chunk size of 1, and an `uint16_t`
+ * @note When using a static schedule, with a chunk size of 1, and an `uint16_t`
  * index variable, my parallel for loop does not terminate. It works as expected
  * with the default chunk size, or when run sequentially.
  * \n
@@ -86,9 +86,9 @@ static inline void extract_bits( bool* bits, const uint16_t z )
  * @param circuit_fp A function pointer to the circuit to check.
  *        The function prototype should be
  *        @code
- *             bool circuit( const int32_t tid, const uint16_t z )
+ *             bool circuit(  int32_t tid,  uint16_t z )
  *        @endcode
  *        where `tid` is the thread ID of the calling thread and `z` is the input
  *        to test for satisfaction.
  */
-void check_circuit( bool ( *circuit_fp )( const int32_t, const uint16_t ) );
+void check_circuit( bool ( *circuit_fp )( int32_t, uint16_t ) );
