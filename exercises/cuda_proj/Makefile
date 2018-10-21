@@ -34,9 +34,9 @@ NVXX := nvcc
 CXX := g++
 LINK := g++
 
-LINKFLAGS = -lm -L/home/student/7314636/.local/lib -lcppunit -L/usr/local/cuda/lib64 -lcuda -lcudart
+LINKFLAGS = -lm -lcppunit -lcuda -lcudart
 NVXXFLAGS = -I$(INC_DIR) -std=c++11
-CXXFLAGS = -I$(INC_DIR) -I/home/student/7314636/.local/include -O3 -Wall -Wpedantic -Wextra -Werror -Wconversion -std=c++11 -x c++
+CXXFLAGS = -I$(INC_DIR) -O3 -Wall -Wpedantic -Wextra -Werror -Wconversion -std=c++11 -x c++
 
 .PHONY: clean format docs viewdocs runtests
 
@@ -53,7 +53,7 @@ testsuite: $(BUILD_DIR)/$(TEST_TARGET)
 
 # TODO: A benchmark target that runs the testsuite or specific benchmarks with nvprof
 runtests: testsuite
-	LD_LIBRARY_PATH=~/.local/lib ./$(BUILD_DIR)/$(TEST_TARGET)
+	./$(BUILD_DIR)/$(TEST_TARGET)
 
 # Avoid using $(OBJ) because it also contains main.o
 $(BUILD_DIR)/$(TEST_TARGET): $(__OBJ) $(CU_OBJ) $(TEST_OBJ)
