@@ -34,7 +34,7 @@ NVXX := nvcc
 CXX := g++
 LINK := g++
 
-LINKFLAGS = -lm -lcppunit -lcuda -lcudart
+LINKFLAGS = -lm -lcuda -lcudart
 NVXXFLAGS = -I$(INC_DIR) -std=c++11
 CXXFLAGS = -I$(INC_DIR) -O3 -Wall -Wpedantic -Wextra -Werror -Wconversion -std=c++11 -x c++
 
@@ -55,6 +55,9 @@ testsuite: $(BUILD_DIR)/$(TEST_TARGET)
 runtests: testsuite
 	./$(BUILD_DIR)/$(TEST_TARGET)
 
+# Avoid adding -lcppunit to the linker flags unless necessary. This way Dr. Karlsson can build the
+# main executable without needing cppunit installed.
+$(BUILD_DIR)/$(TEST_TARGET): LINKFLAGS += -lcppunit
 # Avoid using $(OBJ) because it also contains main.o
 $(BUILD_DIR)/$(TEST_TARGET): $(__OBJ) $(CU_OBJ) $(TEST_OBJ)
 	mkdir -p $(@D)
