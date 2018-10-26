@@ -1,0 +1,9 @@
+---
+Checks: 'clang-diagnostic-*,clang-analyzer-*,modernize-*,readability-*,bugprone-*,cppcoreguidelines-*,misc-*,performance-*,-clang-diagnostic-pragma-once-outside-header,-clang-diagnostic-sign-conversion,-readability-named-parameter,-readability-redundant-smartptr-get,-cppcoreguidelines-pro-type-const-cast,-cppcoreguidelines-pro-type-reinterpret-cast,-cppcoreguidelines-owning-memory,-misc-definitions-in-headers,-clang-analyzer-deadcode.DeadStores'
+WarningsAsErrors: ''
+HeaderFilterRegex: ''
+AnalyzeTemporaryDtors: false
+FormatStyle:     file
+User:            nots
+CheckOptions:
+...
