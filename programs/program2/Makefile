@@ -49,6 +49,7 @@ all: $(BUILD_DIR)/$(TARGET)
 debug: CXXFLAGS += -g -O0
 debug: all
 
+testsuite: CXXFLAGS += -g -O0
 testsuite: $(BUILD_DIR)/$(TEST_TARGET)
 
 # TODO: A benchmark target that runs the testsuite or specific benchmarks with nvprof
