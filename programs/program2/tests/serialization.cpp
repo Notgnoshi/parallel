@@ -8,11 +8,11 @@ void SerializationTest::SimpleSmall()
         {4, 5, 6},
         {7, 8, 9},
     };
-    auto matrix = std::make_shared<Matrix_t>( 3, 3 );
-    matrix->data = v;
+    Matrix_t matrix( 3, 3 );
+    matrix.data = v;
 
     double i = 1;
-    for( auto const& row : matrix->data )
+    for( auto const& row : matrix.data )
     {
         for( auto const& elem : row )
         {
@@ -21,12 +21,12 @@ void SerializationTest::SimpleSmall()
         }
     }
 
-    Serialize( matrix, "/tmp/SimpleSmall.mat" );
+    matrix.Serialize( "/tmp/SimpleSmall.mat" );
 
-    std::shared_ptr<Matrix_t> deser = Deserialize( "/tmp/SimpleSmall.mat" );
+    Matrix_t deser( "/tmp/SimpleSmall.mat" );
 
     i = 1;
-    for( auto const& row : deser->data )
+    for( auto const& row : deser.data )
     {
         for( auto const& elem : row )
         {
@@ -35,6 +35,6 @@ void SerializationTest::SimpleSmall()
         }
     }
 
-    CPPUNIT_ASSERT( deser->data == v );
-    CPPUNIT_ASSERT( *matrix == *deser );
+    CPPUNIT_ASSERT( deser.data == v );
+    CPPUNIT_ASSERT( matrix == deser );
 }

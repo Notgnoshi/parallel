@@ -3,37 +3,47 @@
 #include <cstdint>
 #include <fstream>
 
-std::shared_ptr<Matrix_t> Deserialize( const std::string& filename )
+Matrix_t::Matrix_t( size_t rows, size_t cols ) :
+    rows( rows ),
+    cols( cols ),
+    data( rows, std::vector<double>( cols, 0 ) )
+{
+}
+
+Matrix_t::Matrix_t( const std::string& filename )
 {
     std::ifstream file( filename, std::ios::binary );
 
-    size_t rows = 0;
-    size_t cols = 0;
+    //! @todo Check the size of the file.
 
-    file.read( reinterpret_cast<char*>( &rows ), sizeof( size_t ) );
-    file.read( reinterpret_cast<char*>( &cols ), sizeof( size_t ) );
+    file.read( reinterpret_cast<char*>( &this->rows ), sizeof( size_t ) );
+    file.read( reinterpret_cast<char*>( &this->cols ), sizeof( size_t ) );
 
-    auto matrix = std::make_shared<Matrix_t>( rows, cols );
+    this->data.resize( this->rows );
 
-    for( auto& row : matrix->data )
+    for( auto& row : this->data )
     {
+        row.resize( this->cols );
         file.read( reinterpret_cast<char*>( row.data() ), sizeof( double ) * row.size() );
     }
-
-    return matrix;
 }
 
-void Serialize( const std::shared_ptr<Matrix_t>& matrix, const std::string& filename )
+void Matrix_t::Serialize( const std::string& filename )
 {
     std::ofstream file( filename, std::ofstream::binary | std::ofstream::trunc );
 
-    file.write( reinterpret_cast<const char*>( &matrix->rows ), sizeof( size_t ) );
-    file.write( reinterpret_cast<const char*>( &matrix->cols ), sizeof( size_t ) );
+    file.write( reinterpret_cast<const char*>( &this->rows ), sizeof( size_t ) );
+    file.write( reinterpret_cast<const char*>( &this->cols ), sizeof( size_t ) );
 
-    for( auto const& row : matrix->data )
+    for( auto const& row : this->data )
     {
         file.write( reinterpret_cast<const char*>( row.data() ), sizeof( double ) * row.size() );
     }
 
     file.close();
+}
+
+bool Matrix_t::operator==( const Matrix_t& other ) const
+{
+    return this->rows == other.rows && this->cols == other.cols && this->data == other.data;
 }
