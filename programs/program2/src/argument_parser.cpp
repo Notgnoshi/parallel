@@ -120,6 +120,7 @@ void ArgumentParser::Usage()
     std::cout << std::endl
               << std::endl;
 
+    //! @todo Add a --time option to time the computations.
     std::cout << "optional arguments:" << std::endl;
     std::cout << std::left << std::setw( 15 ) << " -h, --help"
               << "Show this help message and exit" << std::endl;
