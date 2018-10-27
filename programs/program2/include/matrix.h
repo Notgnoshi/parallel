@@ -6,7 +6,6 @@
 /**
  * @brief A struct wrapper for a matrix to make de/serialization easier.
  */
-#pragma pack( 1 )
 struct Matrix_t
 {
     size_t rows;

@@ -16,23 +16,15 @@ Matrix_t Deserialize( std::string filename )
 
 void Serialize( Matrix_t matrix, std::string filename )
 {
-    std::ofstream file( "/tmp/SimpleSmall.mat", std::ofstream::out | std::ofstream::binary | std::ofstream::trunc );
+    std::ofstream file( filename, std::ofstream::binary | std::ofstream::trunc );
+
+    file.write( reinterpret_cast<const char*>( &matrix.rows ), sizeof( size_t ) );
+    file.write( reinterpret_cast<const char*>( &matrix.cols ), sizeof( size_t ) );
+
+    for( auto const& row : matrix.matrix )
+    {
+        file.write( reinterpret_cast<const char*>( row.data() ), sizeof( double ) * row.size() );
+    }
 
     file.close();
-
-    (void)matrix;
-    (void)filename;
-
-    // file << matrix.rows;
-    // file << matrix.cols;
-
-    // for( auto const& row : matrix.matrix )
-    // {
-    //     for( auto const& elem : row )
-    //     {
-    //         file << elem;
-    //     }
-    // }
-
-    // file.close();
 }

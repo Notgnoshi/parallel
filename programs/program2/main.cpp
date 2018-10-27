@@ -10,9 +10,5 @@
  */
 int main()
 {
-    std::ofstream file( "/tmp/SimpleSmall.mat", std::ofstream::out | std::ofstream::binary | std::ofstream::trunc );
-
-    file.close();
-
     return 0;
 }
