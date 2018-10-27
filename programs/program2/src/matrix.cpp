@@ -12,6 +12,9 @@ Matrix_t::Matrix_t( size_t rows, size_t cols ) :
 
 Matrix_t::Matrix_t( const std::string& filename )
 {
+    this->rows = 0;
+    this->cols = 0;
+
     std::ifstream file( filename, std::ios::binary );
 
     //! @todo Check the size of the file.
