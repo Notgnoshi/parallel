@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -8,16 +9,17 @@
  */
 struct Matrix_t
 {
+    //! @brief The number of rows in the matrix.
     size_t rows;
+    //! @brief The number of columns in the matrix.
     size_t cols;
 
-    std::vector<std::vector<double>> matrix;
+    //! @brief The matrix data, stored in row-major representation.
+    //! @todo Experiment with column-major.
+    std::vector<std::vector<double>> data;
 
     /**
      * @brief Construct an empty Matrix_t object of the given size.
-     *
-     * @note This is a row-major representation.
-     * @todo Experiment with column-major.
      *
      * @param rows
      * @param cols
@@ -25,29 +27,19 @@ struct Matrix_t
     Matrix_t( size_t rows, size_t cols ) :
         rows( rows ),
         cols( cols ),
-        matrix( rows, std::vector<double>( cols, 0 ) )
+        data( rows, std::vector<double>( cols, 0 ) )
     {
     }
 
+    /**
+     * @brief Determine if two matrices are equal.
+     *
+     * @param other The other matrix to compare against.
+     * @returns true if the matrices are equal, and false otherwise.
+     */
     bool operator==( const Matrix_t& other ) const
     {
-        if( this->rows != other.rows || this->cols != other.cols )
-        {
-            return false;
-        }
-
-        size_t r = 0;
-        for( auto const& row : this->matrix )
-        {
-            if( row != other.matrix[r] )
-            {
-                return false;
-            }
-
-            r++;
-        }
-
-        return true;
+        return this->rows == other.rows && this->cols == other.cols && this->data == other.data;
     }
 };
 
@@ -57,9 +49,9 @@ struct Matrix_t
  * @note Assumes the file has no additional cruft.
  *
  * @param filename The file to read the matrix from.
- * @returns The deserialized matrix.
+ * @returns A shared pointer to the deserialized matrix.
  */
-Matrix_t Deserialize( std::string filename );
+std::shared_ptr<Matrix_t> Deserialize( const std::string& filename );
 
 /**
  * @brief Serializes a matrix to the given filename.
@@ -69,10 +61,10 @@ Matrix_t Deserialize( std::string filename );
  * @details The matrix will be saved to a file as follows.
  * * The first 8 bytes (size_t) indicate the number of rows.
  * * The second 8 bytes (size_t) indicate the number of columns in each row.
- * * The next rows * cols * 8 bytes of the file is the matrix data saved in
+ * * The next rows * cols * 8 (double) bytes of the file is the matrix data saved in
  *   row major format.
  *
- * @param matrix   The matrix to serialize.
+ * @param matrix   A shared pointer to the matrix to serialize.
  * @param filename The filename to save the matrix as.
  */
-void Serialize( Matrix_t matrix, std::string filename );
+void Serialize( const std::shared_ptr<Matrix_t>& matrix, const std::string& filename );

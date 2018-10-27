@@ -10,6 +10,7 @@ class SerializationTest : public TestFixture
     CPPUNIT_TEST_SUITE_END();
 
 public:
+    //! @brief Verify that serialization and deserialization works.
     void SimpleSmall();
 };
 
