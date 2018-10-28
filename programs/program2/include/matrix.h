@@ -9,13 +9,14 @@
 struct Matrix_t
 {
     //! @brief The number of rows in the matrix.
-    size_t rows;
+    size_t rows = 0;
     //! @brief The number of columns in the matrix.
-    size_t cols;
+    size_t cols = 0;
+    //! @brief The total number of elements.
+    size_t elements = 0;
 
     //! @brief The matrix data, stored in row-major representation.
-    //! @todo Experiment with column-major.
-    std::vector<std::vector<double>> data;
+    double* data = nullptr;
 
     /**
      * @brief Construct a zeroed Matrix_t object of the given size.
@@ -31,6 +32,11 @@ struct Matrix_t
      * @param filename The file to deserialize the matrix from.
      */
     Matrix_t( const std::string& filename );
+
+    /**
+     * @brief Destroy the Matrix_t object.
+     */
+    ~Matrix_t();
 
     /**
      * @brief Serialize a Matrix_t to a file.
@@ -54,4 +60,24 @@ struct Matrix_t
      * @returns true if the matrices are equal, and false otherwise.
      */
     bool operator==( const Matrix_t& other ) const;
+
+    /**
+     * @brief Provide a 2D interface to the 1D internal array.
+     *
+     * @param row
+     * @param col
+     * @returns The element stored at the [row][col] position.
+     */
+    double& operator()( size_t row, size_t col );
+
+    /**
+     * @brief Allocate and zero a contiguous 2D array.
+     *
+     * @details Actually allocate a 1D array of size rows*cols.
+     *
+     * @param rows The number of rows in the array.
+     * @param cols The number of columns in the array.
+     * @returns A single pointer to the allocated and zeroed array, or nullptr on failure.
+     */
+    static double* Allocate2D( size_t rows, size_t cols );
 };

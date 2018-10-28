@@ -2,33 +2,69 @@
 #include <cstddef>
 #include <cstdint>
 #include <fstream>
+#include <iostream>
 
 Matrix_t::Matrix_t( size_t rows, size_t cols ) :
     rows( rows ),
     cols( cols ),
-    data( rows, std::vector<double>( cols, 0 ) )
+    elements( rows * cols )
 {
+    this->data = Allocate2D( rows, cols );
+
+    if( this->data == nullptr )
+    {
+        this->rows = 0;
+        this->cols = 0;
+        this->elements = 0;
+    }
+}
+
+Matrix_t::~Matrix_t()
+{
+    if( this->data != nullptr )
+    {
+        delete[] this->data;
+    }
 }
 
 Matrix_t::Matrix_t( const std::string& filename )
 {
-    this->rows = 0;
-    this->cols = 0;
-
     std::ifstream file( filename, std::ios::binary );
 
-    //! @todo Check the size of the file.
+    file.seekg( 0, std::ifstream::end );
+    size_t size = file.tellg();
+    file.seekg( 0, std::ifstream::beg );
+
+    // Make sure there's enough of the file to read in the dimensions.
+    if( size < 2 * sizeof( size_t ) )
+    {
+        return;
+    }
 
     file.read( reinterpret_cast<char*>( &this->rows ), sizeof( size_t ) );
     file.read( reinterpret_cast<char*>( &this->cols ), sizeof( size_t ) );
+    this->elements = this->rows * this->cols;
 
-    this->data.resize( this->rows );
-
-    for( auto& row : this->data )
+    // Make sure there's enough of the file to read in the dimensions and the data.
+    if( size != 2 * sizeof( size_t ) + this->elements * sizeof( double ) )
     {
-        row.resize( this->cols );
-        file.read( reinterpret_cast<char*>( row.data() ), sizeof( double ) * row.size() );
+        this->rows = 0;
+        this->cols = 0;
+        this->elements = 0;
+        return;
     }
+
+    this->data = Allocate2D( this->rows, this->cols );
+    // Make sure we can allocate enough memory.
+    if( this->data == nullptr )
+    {
+        this->rows = 0;
+        this->cols = 0;
+        this->elements = 0;
+        return;
+    }
+
+    file.read( reinterpret_cast<char*>( this->data ), sizeof( double ) * this->elements );
 }
 
 void Matrix_t::Serialize( const std::string& filename )
@@ -37,16 +73,47 @@ void Matrix_t::Serialize( const std::string& filename )
 
     file.write( reinterpret_cast<const char*>( &this->rows ), sizeof( size_t ) );
     file.write( reinterpret_cast<const char*>( &this->cols ), sizeof( size_t ) );
-
-    for( auto const& row : this->data )
-    {
-        file.write( reinterpret_cast<const char*>( row.data() ), sizeof( double ) * row.size() );
-    }
+    file.write( reinterpret_cast<const char*>( this->data ), sizeof( double ) * this->elements );
 
     file.close();
 }
 
 bool Matrix_t::operator==( const Matrix_t& other ) const
 {
-    return this->rows == other.rows && this->cols == other.cols && this->data == other.data;
+    // Dimensions need to match to be equal.
+    if( this->rows != other.rows || this->cols != other.cols || this->elements != other.elements )
+    {
+        return false;
+    }
+
+    // Data needs to match to be equal too.
+    for( size_t i = 0; i < this->rows * this->cols; ++i )
+    {
+        if( this->data[i] != other.data[i] )
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+double& Matrix_t::operator()( size_t row, size_t col )
+{
+    return this->data[row * this->cols + col];
+}
+
+double* Matrix_t::Allocate2D( size_t rows, size_t cols )
+{
+    double* data = new double[rows * cols];
+
+    if( data != nullptr )
+    {
+        for( size_t i = 0; i < rows * cols; ++i )
+        {
+            data[i] = 0.0;
+        }
+    }
+
+    return data;
 }

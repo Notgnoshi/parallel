@@ -3,38 +3,47 @@
 
 void SerializationTest::SimpleSmall()
 {
-    std::vector<std::vector<double>> v = {
-        {1, 2, 3},
-        {4, 5, 6},
-        {7, 8, 9},
-    };
+    // Create a small test matrix.
     Matrix_t matrix( 3, 3 );
-    matrix.data = v;
-
-    double i = 1;
-    for( auto const& row : matrix.data )
+    for( size_t i = 0; i < matrix.elements; ++i )
     {
-        for( auto const& elem : row )
+        matrix.data[i] = static_cast<double>( i );
+    }
+
+    // Verify that the test matrix has been created as expected.
+    double v = 0;
+    for( size_t i = 0; i < matrix.rows; ++i )
+    {
+        for( size_t j = 0; j < matrix.cols; ++j )
         {
-            CPPUNIT_ASSERT( elem == i );
-            i++;
+            CPPUNIT_ASSERT( matrix( i, j ) == v );
+            ++v;
         }
     }
 
+    // Serialize the matrix to a file.
     matrix.Serialize( "/tmp/SimpleSmall.mat" );
 
+    // Deserialize the file into a new matrix.
     Matrix_t deser( "/tmp/SimpleSmall.mat" );
 
-    i = 1;
-    for( auto const& row : deser.data )
+    // Verify that the new matrix has the right values in its data array.
+    for( size_t i = 0; i < deser.elements; ++i )
     {
-        for( auto const& elem : row )
+        CPPUNIT_ASSERT( deser.data[i] == static_cast<double>( i ) );
+    }
+
+    // Verify that the new matrix has the right values in the right places.
+    v = 0;
+    for( size_t i = 0; i < deser.rows; ++i )
+    {
+        for( size_t j = 0; j < deser.cols; ++j )
         {
-            CPPUNIT_ASSERT( elem == i );
-            i++;
+            CPPUNIT_ASSERT( deser( i, j ) == v );
+            ++v;
         }
     }
 
-    CPPUNIT_ASSERT( deser.data == v );
+    // Verify that the matrices are equal.
     CPPUNIT_ASSERT( matrix == deser );
 }
