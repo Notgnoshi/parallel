@@ -7,5 +7,5 @@ bool MultiplicationValidator( const Matrix_t& left, const Matrix_t& right )
 
 bool AdditionValidator( const Matrix_t& left, const Matrix_t& right )
 {
-    return left.rows != right.rows || left.cols != right.cols;
+    return left.rows == right.rows && left.cols == right.cols;
 }

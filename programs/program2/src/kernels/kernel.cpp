@@ -1,6 +1,8 @@
 #include "kernels/kernel.h"
 #include "kernels/cpu_add.h"
 #include "kernels/cpu_mult.h"
+#include "validator.h"
+#include <iostream>
 
 Kernel::Kernel( ArgumentParser::Operation_e op, ArgumentParser::Kernel_e kernel ) :
     operation( op ),
@@ -10,8 +12,23 @@ Kernel::Kernel( ArgumentParser::Operation_e op, ArgumentParser::Kernel_e kernel 
 
 Matrix_t Kernel::Operation( const Matrix_t& lhs, const Matrix_t& rhs )
 {
-    //! @todo Validate the matrices!!
-    return GetKernelWrapper()( lhs, rhs );
+    if( this->operation == ArgumentParser::OPERATION_VECTOR_MULTIPLICATION )
+    {
+        if( MultiplicationValidator( lhs, rhs ) )
+        {
+            return GetKernelWrapper()( lhs, rhs );
+        }
+    }
+    else if( this->operation == ArgumentParser::OPERATION_ADDITION )
+    {
+        if( AdditionValidator( lhs, rhs ) )
+        {
+            return GetKernelWrapper()( lhs, rhs );
+        }
+    }
+
+    std::cerr << "Invalid matrix dimensions" << std::endl;
+    return Matrix_t( 0, 0 );
 }
 
 std::function<Matrix_t( const Matrix_t&, const Matrix_t& )> Kernel::GetKernelWrapper()
