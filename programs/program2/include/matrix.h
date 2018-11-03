@@ -68,6 +68,15 @@ struct Matrix_t
      * @param col
      * @returns The element stored at the [row][col] position.
      */
+    double& operator()( size_t row, size_t col ) const;
+
+    /**
+     * @brief Provide a 2D interface to the 1D internal array.
+     *
+     * @param row
+     * @param col
+     * @returns The element stored at the [row][col] position.
+     */
     double& operator()( size_t row, size_t col );
 
     /**

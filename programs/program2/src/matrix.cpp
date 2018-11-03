@@ -95,6 +95,11 @@ bool Matrix_t::operator==( const Matrix_t& other ) const
     return true;
 }
 
+double& Matrix_t::operator()( size_t row, size_t col ) const
+{
+    return this->data[row * this->cols + col];
+}
+
 double& Matrix_t::operator()( size_t row, size_t col )
 {
     return this->data[row * this->cols + col];

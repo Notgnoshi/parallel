@@ -25,7 +25,7 @@ void SerializationTest::SimpleSmall()
     matrix.Serialize( "/tmp/SimpleSmall.mat" );
 
     // Deserialize the file into a new matrix.
-    Matrix_t deser( "/tmp/SimpleSmall.mat" );
+    const Matrix_t deser( "/tmp/SimpleSmall.mat" );
 
     // Verify that the new matrix has the right values in its data array.
     for( size_t i = 0; i < deser.elements; ++i )
@@ -61,7 +61,7 @@ void SerializationTest::SimplePack()
 
     //! @note This path is relative to the directory the executable is ran from,
     //! not the executable itself.
-    Matrix_t fxf( "./matrices/4x4_ones.mat" );
+    const Matrix_t fxf( "./matrices/4x4_ones.mat" );
 
     CPPUNIT_ASSERT( matrix == fxf );
 }
@@ -74,7 +74,7 @@ void SerializationTest::SerializationOrder()
         matrix.data[i] = static_cast<double>( i + 1 );
     }
 
-    Matrix_t expected( "./matrices/4x4_seq.mat" );
+    const Matrix_t expected( "./matrices/4x4_seq.mat" );
 
     CPPUNIT_ASSERT( matrix == expected );
 
@@ -91,7 +91,7 @@ void SerializationTest::SerializationOrder()
 
     matrix.Serialize( "/tmp/SerializationOrder_seq.mat" );
 
-    Matrix_t expected2( "/tmp/SerializationOrder_seq.mat" );
+    const Matrix_t expected2( "/tmp/SerializationOrder_seq.mat" );
 
     CPPUNIT_ASSERT( expected == expected2 );
     CPPUNIT_ASSERT( matrix == expected2 );
