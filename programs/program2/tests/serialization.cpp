@@ -47,3 +47,21 @@ void SerializationTest::SimpleSmall()
     // Verify that the matrices are equal.
     CPPUNIT_ASSERT( matrix == deser );
 }
+
+void SerializationTest::SimplePack()
+{
+    Matrix_t matrix( 4, 4 );
+    for( size_t i = 0; i < matrix.elements; ++i )
+    {
+        matrix.data[i] = 1;
+    }
+
+    // Serialize the matrix somewhere safe to examine the hexdump if necessary.
+    matrix.Serialize( "/tmp/SimplePack.4x4_ones.mat" );
+
+    //! @note This path is relative to the directory the executable is ran from,
+    //! not the executable itself.
+    Matrix_t fxf( "./matrices/4x4_ones.bin" );
+
+    CPPUNIT_ASSERT( matrix == fxf );
+}
