@@ -1,8 +1,7 @@
-#include "argument_parser.h"
+#include "args.h"
 #include "kernels/kernel.h"
-#include <cstddef>
-#include <cstdint>
-#include <cstdlib>
+#include "kernels/kernel_factory.h"
+#include "matrix.h"
 
 /**
  * @brief Main entry point for the application.
@@ -14,12 +13,13 @@ int main( int argc, const char** argv )
     ArgumentParser parser( argc, argv );
     ArgumentParser::Args_t args = parser.ParseArgs();
 
-    Kernel kernel( args.operation, args.kernel );
+    KernelFactory factory( args.operation, args.kernel );
+    auto kernel = factory.GetKernel();
 
     Matrix_t lhs( args.left_input );
     Matrix_t rhs( args.right_input );
 
-    std::shared_ptr<Matrix_t> res = kernel.Operation( lhs, rhs );
+    std::shared_ptr<Matrix_t> res = kernel->Operation( lhs, rhs );
 
     if( args.output )
     {

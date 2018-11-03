@@ -1,39 +1,31 @@
 #pragma once
 
-#include "argument_parser.h"
-#include "matrix.h"
-#include <functional>
 #include <memory>
 
+struct Matrix_t;
+
+/**
+ * @brief An abstract base kernel to define the Kernel interface.
+ */
 class Kernel
 {
 public:
     /**
-     * @brief Construct a new Kernel object to perform the specified operation
-     * with the given kernel.
-     *
-     * @param op     The operation to perform.
-     * @param kernel The kernel to use for the operation.
+     * @brief Default-construct a new Kernel object.
      */
-    Kernel( ArgumentParser::Operation_e op, ArgumentParser::Kernel_e kernel );
+    Kernel() = default;
 
     /**
-     * @brief Perform the desired operation on the given operands.
+     * @brief Perform the Kernel's operation on the given operands.
      *
-     * @param lhs The left operand.
-     * @param rhs The right operation.
-     * @returns The operation result.
-     */
-    std::shared_ptr<Matrix_t> Operation( const Matrix_t& lhs, const Matrix_t& rhs );
-
-private:
-    ArgumentParser::Operation_e operation;
-    ArgumentParser::Kernel_e kernel;
-
-    /**
-     * @brief Get the Kernel Wrapper object to perform the given kernel.
+     * @note If the given dimensions are invalid, the result will not be computed,
+     * and an empty Matrix_t of size (0, 0) will be returned.
      *
-     * @returns The kernel wrapper.
+     * @todo Validate the operand sizes in the implementations.
+     *
+     * @param lhs The left Matrix_t operand.
+     * @param rhs The right Matrix_t operand.
+     * @returns A shared pointer to the Matrix_t operation result.
      */
-    std::function<std::shared_ptr<Matrix_t>( const Matrix_t&, const Matrix_t& )> GetKernelWrapper();
+    virtual std::shared_ptr<Matrix_t> Operation( const Matrix_t& lhs, const Matrix_t& rhs ) = 0;
 };

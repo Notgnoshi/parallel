@@ -1,6 +1,6 @@
 #pragma once
 
-#include "matrix.h"
+struct Matrix_t;
 
 /**
  * @brief Determine if the two matrices can be right-multiplied.

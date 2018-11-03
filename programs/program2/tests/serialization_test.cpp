@@ -1,4 +1,4 @@
-#include "serialization.h"
+#include "serialization_test.h"
 #include "matrix.h"
 
 void SerializationTest::SimpleSmall()

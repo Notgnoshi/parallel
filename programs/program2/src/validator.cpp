@@ -1,4 +1,5 @@
 #include "validator.h"
+#include "matrix.h"
 
 bool MultiplicationValidator( const Matrix_t& left, const Matrix_t& right )
 {

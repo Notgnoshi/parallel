@@ -1,6 +1,7 @@
 #include "kernels/cpu_add.h"
+#include "matrix.h"
 
-void CpuAddKernel( const Matrix_t& lhs, const Matrix_t& rhs, Matrix_t& result )
+void CpuAdditionKernel::Kernel( const Matrix_t& lhs, const Matrix_t& rhs, Matrix_t& result )
 {
     for( size_t r = 0; r < lhs.rows; ++r )
     {
@@ -14,12 +15,11 @@ void CpuAddKernel( const Matrix_t& lhs, const Matrix_t& rhs, Matrix_t& result )
     }
 }
 
-//! @todo Use inheritance to define what a "Wrapper" is.
-std::shared_ptr<Matrix_t> CpuAddWrapper( const Matrix_t& lhs, const Matrix_t& rhs )
+std::shared_ptr<Matrix_t> CpuAdditionKernel::Operation( const Matrix_t& lhs, const Matrix_t& rhs )
 {
     auto result = std::make_shared<Matrix_t>( lhs.rows, lhs.cols );
 
-    CpuAddKernel( lhs, rhs, *result );
+    this->Kernel( lhs, rhs, *result );
 
     return result;
 }

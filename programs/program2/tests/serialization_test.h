@@ -1,6 +1,5 @@
 #pragma once
 
-#include "matrix.h"
 #include "testsuite.h"
 
 class SerializationTest : public TestFixture

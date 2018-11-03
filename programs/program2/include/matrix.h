@@ -1,7 +1,7 @@
 #pragma once
 
+#include <cstddef>
 #include <string>
-#include <vector>
 
 /**
  * @brief A struct wrapper for a matrix to make de/serialization easier.

@@ -3,26 +3,26 @@
 #include <string>
 #include <vector>
 
+//! @brief The different operations this program is capable of.
+enum Operation_e
+{
+    OPERATION_VECTOR_MULTIPLICATION, //!< Multiply left matrix by right vector.
+    OPERATION_ADDITION,              //!< Add left matrix to right matrix.
+};
+
+//! @brief The CUDA kernels to pick from when performing the chosen operation.
+enum Kernel_e
+{
+    KERNEL_DEFAULT = 0, //!< Use the default kernel for the chosen operation.
+    KERNEL_CPU = 1,     //!< Do not use a CUDA kernel; perform all computation on the CPU
+};
+
 /**
  * @brief Parses commandline arguments for this program.
  */
 class ArgumentParser
 {
 public:
-    //! @brief The different operations this program is capable of.
-    enum Operation_e
-    {
-        OPERATION_VECTOR_MULTIPLICATION, //!< Multiply left matrix by right vector.
-        OPERATION_ADDITION,              //!< Add left matrix to right matrix.
-    };
-
-    //! @brief The CUDA kernels to pick from when performing the chosen operation.
-    enum Kernel_e
-    {
-        KERNEL_DEFAULT = 0, //!< Use the default kernel for the chosen operation.
-        KERNEL_CPU = 1,     //!< Do not use a CUDA kernel; perform all computation on the CPU
-    };
-
     //! @brief A nice wrapper for the possible commandline arguments.
     struct Args_t
     {
