@@ -101,7 +101,7 @@ ArgumentParser::Args_t ArgumentParser::ParseArgs()
 void ArgumentParser::Usage()
 {
     std::cout << "Usage: " << this->argv[0] << " ";
-    std::cout << "[--help] [--output] [--kernel]"
+    std::cout << "[--help] [--output <file>] [--kernel]"
               << " ";
     std::cout << "<operation> <input1> <input2>";
     std::cout << std::endl

@@ -1,4 +1,5 @@
 #include "argument_parser.h"
+#include "kernels/kernel.h"
 #include <cstddef>
 #include <cstdint>
 #include <cstdlib>
@@ -13,7 +14,21 @@ int main( int argc, const char** argv )
     ArgumentParser parser( argc, argv );
     ArgumentParser::Args_t args = parser.ParseArgs();
 
-    (void)args;
+    Kernel kernel( args.operation, args.kernel );
+
+    Matrix_t lhs( args.left_input );
+    Matrix_t rhs( args.right_input );
+
+    Matrix_t res = kernel.Operation( lhs, rhs );
+
+    if( args.output )
+    {
+        res.Serialize( args.output_file );
+    }
+    else
+    {
+        //! @todo Print the results.
+    }
 
     return 0;
 }
