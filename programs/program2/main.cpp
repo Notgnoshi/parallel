@@ -19,15 +19,15 @@ int main( int argc, const char** argv )
     Matrix_t lhs( args.left_input );
     Matrix_t rhs( args.right_input );
 
-    Matrix_t res = kernel.Operation( lhs, rhs );
+    std::shared_ptr<Matrix_t> res = kernel.Operation( lhs, rhs );
 
     if( args.output )
     {
-        res.Serialize( args.output_file );
+        res->Serialize( args.output_file );
     }
     else
     {
-        res.Print();
+        res->Print();
     }
 
     return 0;

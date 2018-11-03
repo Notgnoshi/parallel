@@ -36,7 +36,7 @@ void CpuMultKernelTest::MatVectMult()
 
     CPPUNIT_ASSERT( result == r );
 
-    Matrix_t result2 = CpuMultWrapper( m, v );
+    const std::shared_ptr<Matrix_t> result2 = CpuMultWrapper( m, v );
 
-    CPPUNIT_ASSERT( result2 == r );
+    CPPUNIT_ASSERT( *result2 == r );
 }

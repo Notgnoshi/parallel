@@ -1,6 +1,7 @@
 #pragma once
 
 #include "matrix.h"
+#include <memory>
 
 /**
  * @brief Multiply the given matrix by the given vector on the CPU.
@@ -22,7 +23,7 @@ void CpuMultKernel( const Matrix_t& matrix, const Matrix_t& vector, Matrix_t& re
  * @param vector A c-by-1 column vector
  * @returns An r-by-1 column vector.
  */
-Matrix_t CpuMultWrapper( const Matrix_t& matrix, const Matrix_t& vector );
+std::shared_ptr<Matrix_t> CpuMultWrapper( const Matrix_t& matrix, const Matrix_t& vector );
 
 /**
  * @brief A naive implementation of the vector dot product.

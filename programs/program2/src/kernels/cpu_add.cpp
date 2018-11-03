@@ -15,12 +15,11 @@ void CpuAddKernel( const Matrix_t& lhs, const Matrix_t& rhs, Matrix_t& result )
 }
 
 //! @todo Use inheritance to define what a "Wrapper" is.
-Matrix_t CpuAddWrapper( const Matrix_t& lhs, const Matrix_t& rhs )
+std::shared_ptr<Matrix_t> CpuAddWrapper( const Matrix_t& lhs, const Matrix_t& rhs )
 {
-    //! @todo return a shared_ptr to avoid expensive copies.
-    Matrix_t result( lhs.rows, lhs.cols );
+    auto result = std::make_shared<Matrix_t>( lhs.rows, lhs.cols );
 
-    CpuAddKernel( lhs, rhs, result );
+    CpuAddKernel( lhs, rhs, *result );
 
     return result;
 }

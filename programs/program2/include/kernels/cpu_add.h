@@ -1,6 +1,7 @@
 #pragma once
 
 #include "matrix.h"
+#include <memory>
 
 /**
  * @brief Add the two matrices on the CPU.
@@ -22,4 +23,4 @@ void CpuAddKernel( const Matrix_t& lhs, const Matrix_t& rhs, Matrix_t& result );
  * @param rhs The right operand.
  * @returns The addition result.
  */
-Matrix_t CpuAddWrapper( const Matrix_t& lhs, const Matrix_t& rhs );
+std::shared_ptr<Matrix_t> CpuAddWrapper( const Matrix_t& lhs, const Matrix_t& rhs );

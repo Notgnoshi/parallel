@@ -9,11 +9,11 @@ void CpuMultKernel( const Matrix_t& matrix, const Matrix_t& vector, Matrix_t& re
     }
 }
 
-Matrix_t CpuMultWrapper( const Matrix_t& matrix, const Matrix_t& vector )
+std::shared_ptr<Matrix_t> CpuMultWrapper( const Matrix_t& matrix, const Matrix_t& vector )
 {
-    Matrix_t result( matrix.rows, vector.cols );
+    auto result = std::make_shared<Matrix_t>( matrix.rows, vector.cols );
 
-    CpuMultKernel( matrix, vector, result );
+    CpuMultKernel( matrix, vector, *result );
 
     return result;
 }

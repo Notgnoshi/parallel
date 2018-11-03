@@ -10,7 +10,7 @@ Kernel::Kernel( ArgumentParser::Operation_e op, ArgumentParser::Kernel_e kernel 
 {
 }
 
-Matrix_t Kernel::Operation( const Matrix_t& lhs, const Matrix_t& rhs )
+std::shared_ptr<Matrix_t> Kernel::Operation( const Matrix_t& lhs, const Matrix_t& rhs )
 {
     if( this->operation == ArgumentParser::OPERATION_VECTOR_MULTIPLICATION )
     {
@@ -28,10 +28,10 @@ Matrix_t Kernel::Operation( const Matrix_t& lhs, const Matrix_t& rhs )
     }
 
     std::cerr << "Invalid matrix dimensions" << std::endl;
-    return Matrix_t( 0, 0 );
+    return std::make_shared<Matrix_t>( 0, 0 );
 }
 
-std::function<Matrix_t( const Matrix_t&, const Matrix_t& )> Kernel::GetKernelWrapper()
+std::function<std::shared_ptr<Matrix_t>( const Matrix_t&, const Matrix_t& )> Kernel::GetKernelWrapper()
 {
     //! @todo Implement the rest of the kernels.
     if( this->operation == ArgumentParser::OPERATION_VECTOR_MULTIPLICATION )

@@ -3,6 +3,7 @@
 #include "argument_parser.h"
 #include "matrix.h"
 #include <functional>
+#include <memory>
 
 class Kernel
 {
@@ -23,7 +24,7 @@ public:
      * @param rhs The right operation.
      * @returns The operation result.
      */
-    Matrix_t Operation( const Matrix_t& lhs, const Matrix_t& rhs );
+    std::shared_ptr<Matrix_t> Operation( const Matrix_t& lhs, const Matrix_t& rhs );
 
 private:
     ArgumentParser::Operation_e operation;
@@ -34,5 +35,5 @@ private:
      *
      * @returns The kernel wrapper.
      */
-    std::function<Matrix_t( const Matrix_t&, const Matrix_t& )> GetKernelWrapper();
+    std::function<std::shared_ptr<Matrix_t>( const Matrix_t&, const Matrix_t& )> GetKernelWrapper();
 };

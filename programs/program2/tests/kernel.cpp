@@ -12,9 +12,9 @@ void KernelTest::DefaultMultOperation()
 
     const Matrix_t expected( "./matrices/4x1_fours.mat" );
 
-    Matrix_t result = kernel.Operation( lhs, rhs );
+    const std::shared_ptr<Matrix_t> result = kernel.Operation( lhs, rhs );
 
-    CPPUNIT_ASSERT( result == expected );
+    CPPUNIT_ASSERT( *result == expected );
 }
 
 void KernelTest::DefaultAddOperation()
@@ -26,7 +26,7 @@ void KernelTest::DefaultAddOperation()
 
     const Matrix_t expected( "./matrices/3x4_threes.mat" );
 
-    Matrix_t result = kernel.Operation( lhs, rhs );
+    const std::shared_ptr<Matrix_t> result = kernel.Operation( lhs, rhs );
 
-    CPPUNIT_ASSERT( result == expected );
+    CPPUNIT_ASSERT( *result == expected );
 }
