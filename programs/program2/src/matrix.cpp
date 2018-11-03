@@ -21,10 +21,7 @@ Matrix_t::Matrix_t( size_t rows, size_t cols ) :
 
 Matrix_t::~Matrix_t()
 {
-    if( this->data != nullptr )
-    {
         delete[] this->data;
-    }
 }
 
 Matrix_t::Matrix_t( const std::string& filename )
@@ -105,7 +102,7 @@ double& Matrix_t::operator()( size_t row, size_t col )
 
 double* Matrix_t::Allocate2D( size_t rows, size_t cols )
 {
-    double* data = new double[rows * cols];
+    auto data = new double[rows * cols];
 
     if( data != nullptr )
     {
