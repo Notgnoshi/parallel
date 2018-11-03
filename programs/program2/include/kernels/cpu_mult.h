@@ -23,3 +23,15 @@ void CpuMultKernel( const Matrix_t& matrix, const Matrix_t& vector, Matrix_t& re
  * @returns An r-by-1 column vector.
  */
 Matrix_t CpuMultWrapper( const Matrix_t& matrix, const Matrix_t& vector );
+
+/**
+ * @brief A naive implementation of the vector dot product.
+ *
+ * @note The dimensions must match, or you'll get some funny results.
+ *
+ * @param row The left hand vector. Stored contiguously.
+ * @param col The right hand vector. Stored contiguously.
+ * @param n   The length of the two vector.
+ * @returns The vector dot product.
+ */
+double Dot( const double* row, const double* col, size_t n );
