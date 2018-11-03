@@ -65,3 +65,34 @@ void SerializationTest::SimplePack()
 
     CPPUNIT_ASSERT( matrix == fxf );
 }
+
+void SerializationTest::SerializationOrder()
+{
+    Matrix_t matrix( 4, 4 );
+    for( size_t i = 0; i < matrix.elements; ++i )
+    {
+        matrix.data[i] = static_cast<double>( i + 1 );
+    }
+
+    Matrix_t expected( "./matrices/4x4_seq.mat" );
+
+    CPPUNIT_ASSERT( matrix == expected );
+
+    CPPUNIT_ASSERT( expected( 0, 0 ) == 1 );
+    CPPUNIT_ASSERT( expected( 3, 3 ) == 16 );
+
+    for( size_t r = 0; r < matrix.rows; ++r )
+    {
+        for( size_t c = 0; c < matrix.cols; ++c )
+        {
+            CPPUNIT_ASSERT( matrix( r, c ) == expected( r, c ) );
+        }
+    }
+
+    matrix.Serialize( "/tmp/SerializationOrder_seq.mat" );
+
+    Matrix_t expected2( "/tmp/SerializationOrder_seq.mat" );
+
+    CPPUNIT_ASSERT( expected == expected2 );
+    CPPUNIT_ASSERT( matrix == expected2 );
+}
