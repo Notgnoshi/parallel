@@ -26,9 +26,9 @@ void CpuMultKernelTest::MatrixDotProduct()
 
 void CpuMultKernelTest::MatVectMult()
 {
-    const Matrix_t m( "./matrices/4x4_ones.bin" );
-    const Matrix_t v( "./matrices/4x1_ones.bin" );
-    const Matrix_t r( "./matrices/4x1_fours.bin" );
+    const Matrix_t m( "./matrices/4x4_ones.mat" );
+    const Matrix_t v( "./matrices/4x1_ones.mat" );
+    const Matrix_t r( "./matrices/4x1_fours.mat" );
 
     Matrix_t result( 4, 1 );
 

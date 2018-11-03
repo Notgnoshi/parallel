@@ -61,7 +61,7 @@ void SerializationTest::SimplePack()
 
     //! @note This path is relative to the directory the executable is ran from,
     //! not the executable itself.
-    Matrix_t fxf( "./matrices/4x4_ones.bin" );
+    Matrix_t fxf( "./matrices/4x4_ones.mat" );
 
     CPPUNIT_ASSERT( matrix == fxf );
 }
