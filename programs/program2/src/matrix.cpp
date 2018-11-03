@@ -21,7 +21,7 @@ Matrix_t::Matrix_t( size_t rows, size_t cols ) :
 
 Matrix_t::~Matrix_t()
 {
-        delete[] this->data;
+    delete[] this->data;
 }
 
 Matrix_t::Matrix_t( const std::string& filename )
