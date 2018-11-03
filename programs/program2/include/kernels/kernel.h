@@ -26,12 +26,13 @@ public:
     Matrix_t Operation( const Matrix_t& lhs, const Matrix_t& rhs );
 
 private:
-    std::function<Matrix_t( const Matrix_t&, const Matrix_t& )> KernelWrapper;
+    ArgumentParser::Operation_e operation;
+    ArgumentParser::Kernel_e kernel;
 
     /**
      * @brief Get the Kernel Wrapper object to perform the given kernel.
      *
      * @returns The kernel wrapper.
      */
-    std::function<Matrix_t( const Matrix_t&, const Matrix_t& )> GetKernelWrapper( ArgumentParser::Operation_e, ArgumentParser::Kernel_e );
+    std::function<Matrix_t( const Matrix_t&, const Matrix_t& )> GetKernelWrapper();
 };

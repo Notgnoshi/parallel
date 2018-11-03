@@ -28,6 +28,5 @@ void KernelTest::DefaultAddOperation()
 
     Matrix_t result = kernel.Operation( lhs, rhs );
 
-    //! @todo Implement the addition kernel.
-    // CPPUNIT_ASSERT( result == expected );
+    CPPUNIT_ASSERT( result == expected );
 }
