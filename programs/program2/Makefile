@@ -90,7 +90,7 @@ lint:
 	clang-tidy $(shell find $(INC_DIR) $(SRC_DIR) -name "*.cpp" -o -name "*.h") main.cpp -- $(CXXFLAGS)
 
 docs:
-	doxygen $(DOC_DIR)/doxyfile
+	doxygen .doxyfile
 
 viewdocs: docs
 	xdg-open $(BUILD_DIR)/html/index.html
