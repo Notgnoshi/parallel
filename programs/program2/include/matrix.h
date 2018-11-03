@@ -54,6 +54,11 @@ struct Matrix_t
     void Serialize( const std::string& filename );
 
     /**
+     * @brief Pretty-print the matrix.
+     */
+    void Print() const;
+
+    /**
      * @brief Determine if two matrices are equal.
      *
      * @param other The other matrix to compare against.

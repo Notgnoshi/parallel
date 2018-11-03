@@ -27,7 +27,7 @@ int main( int argc, const char** argv )
     }
     else
     {
-        //! @todo Print the results.
+        res.Print();
     }
 
     return 0;

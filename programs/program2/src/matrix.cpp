@@ -2,6 +2,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 
 Matrix_t::Matrix_t( size_t rows, size_t cols ) :
@@ -73,6 +74,19 @@ void Matrix_t::Serialize( const std::string& filename )
     file.write( reinterpret_cast<const char*>( this->data ), sizeof( double ) * this->elements );
 
     file.close();
+}
+
+void Matrix_t::Print() const
+{
+    std::cout << std::fixed << std::setprecision( 3 );
+    for( size_t r = 0; r < this->rows; ++r )
+    {
+        for( size_t c = 0; c < this->cols; ++c )
+        {
+            std::cout << std::setw( 8 ) << this->operator()( r, c );
+        }
+        std::cout << std::endl;
+    }
 }
 
 bool Matrix_t::operator==( const Matrix_t& other ) const
