@@ -1,5 +1,7 @@
 #include "kernels/cpu_mult.h"
 #include "matrix.h"
+#include "validator.h"
+#include <iostream>
 
 void CpuMultiplicationKernel::Kernel( const Matrix_t& matrix, const Matrix_t& vector, Matrix_t& result )
 {
@@ -12,6 +14,14 @@ void CpuMultiplicationKernel::Kernel( const Matrix_t& matrix, const Matrix_t& ve
 
 std::shared_ptr<Matrix_t> CpuMultiplicationKernel::Operation( const Matrix_t& matrix, const Matrix_t& vector )
 {
+    if( !MultiplicationValidator( matrix, vector ) )
+    {
+        std::cerr << "Dimensions (" << matrix.rows << ", " << matrix.cols << ")"
+                  << " * (" << vector.rows << ", " << vector.cols << ")"
+                  << " incompatible for multiplication." << std::endl;
+        return std::make_shared<Matrix_t>( 0, 0 );
+    }
+
     auto result = std::make_shared<Matrix_t>( matrix.rows, vector.cols );
 
     this->Kernel( matrix, vector, *result );

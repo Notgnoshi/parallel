@@ -1,5 +1,7 @@
 #include "kernels/cpu_add.h"
 #include "matrix.h"
+#include "validator.h"
+#include <iostream>
 
 void CpuAdditionKernel::Kernel( const Matrix_t& lhs, const Matrix_t& rhs, Matrix_t& result )
 {
@@ -17,6 +19,14 @@ void CpuAdditionKernel::Kernel( const Matrix_t& lhs, const Matrix_t& rhs, Matrix
 
 std::shared_ptr<Matrix_t> CpuAdditionKernel::Operation( const Matrix_t& lhs, const Matrix_t& rhs )
 {
+    if( !AdditionValidator( lhs, rhs ) )
+    {
+        std::cerr << "Dimensions (" << lhs.rows << ", " << lhs.cols << ")"
+                  << " + (" << rhs.rows << ", " << rhs.cols << ")"
+                  << " incompatible for addition." << std::endl;
+        return std::make_shared<Matrix_t>( 0, 0 );
+    }
+
     auto result = std::make_shared<Matrix_t>( lhs.rows, lhs.cols );
 
     this->Kernel( lhs, rhs, *result );
