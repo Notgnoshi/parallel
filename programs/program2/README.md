@@ -5,7 +5,10 @@ A CUDA-accelerated program to compute matrix-vector multiplication and matrix-ma
 ## Compilation
 
 * `make` will build the `./build/prog2` executable.
-* `make runtests` will build and run the `./build/testsuite` executable.
+* `make runtests` will build and run the `./build/testsuite` executable. Note
+   some of the unit tests rely on file paths that are relative to the source tree,
+   so do not run the unit tests with `./testsuite`; be sure to use the `make runtests`
+   target in the program root directory.
 * `make viewdocs` will build and open this documentation.
 * `make profile` will build and profile the program against some fixed input with `nvprof`.
 
@@ -14,7 +17,7 @@ A CUDA-accelerated program to compute matrix-vector multiplication and matrix-ma
 The program is used as follows
 
 ```text
-Usage: build/prog2 [--help] [--output] [--kernel] <operation> <input1> <input2>
+Usage: build/prog2 [--help] [--output <file>] [--kernel] <operation> <input1> <input2>
 
 CUDA accelerated matrix operations.
 
@@ -34,10 +37,6 @@ optional arguments:
 
 Example matrix and vector files will be provided.
 
-@todo Implement the kernels on the CPU first
-@todo Implement several kernels for each and give the option of choosing which one to use
-@todo save results to a file?
 @todo Make a `profile` target that profiles with `nvprof  --unified-memory-profiling off`
-@todo Unit tests!
 
 ## Notes
