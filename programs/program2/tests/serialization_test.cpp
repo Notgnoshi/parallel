@@ -61,7 +61,11 @@ void SerializationTest::SimplePack()
 
     //! @note This path is relative to the directory the executable is ran from,
     //! not the executable itself.
-    const Matrix_t fxf( "./matrices/4x4_ones.mat" );
+    //! @todo Find a way to use a path relative to the source file so it's not
+    //! dependent on where the executable is ran from. Possibly make a setUp
+    //! test fixture function that copies the files to `/tmp/prog2/fixtures/` or
+    //! similar.
+    const Matrix_t fxf( "./tests/matrices/4x4_ones.mat" );
 
     CPPUNIT_ASSERT( matrix == fxf );
 }
@@ -74,7 +78,7 @@ void SerializationTest::SerializationOrder()
         matrix.data[i] = static_cast<double>( i + 1 );
     }
 
-    const Matrix_t expected( "./matrices/4x4_seq.mat" );
+    const Matrix_t expected( "./tests/matrices/4x4_seq.mat" );
 
     CPPUNIT_ASSERT( matrix == expected );
 

@@ -48,14 +48,14 @@ included a Python script `pack.py` to convert human-readable text matrix files
 into the binary format my program expects. For example,
 
 ```bash
-$ cat matrices/4x4_seq.txt
+$ cat tests/matrices/4x4_seq.txt
 1  2  3  4
 5  6  7  8
 9  10 11 12
 13 14 15 16
-$ ./pack.py matrices/4x4_seq.txt matrices/4x4_seq.mat
+$ ./pack.py tests/matrices/4x4_seq.txt tests/matrices/4x4_seq.mat
 Input file dimensions:  4 x 4
-$ hexdump matrices/4x4_seq.mat
+$ hexdump tests/matrices/4x4_seq.mat
 0000000 0004 0000 0000 0000 0004 0000 0000 0000
 0000010 0000 0000 0000 3ff0 0000 0000 0000 4000
 0000020 0000 0000 0000 4008 0000 0000 0000 4010
