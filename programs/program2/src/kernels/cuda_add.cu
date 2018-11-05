@@ -14,6 +14,9 @@
  * do RAII and deletes the data pointer. So the solution is to not pass structs
  * to the kernel, but instead their data pointers.
  *
+ * @todo Reimplement using shared memory like the example given in
+ * https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#shared-memory
+ *
  * @param lhs The left operand.
  * @param rhs The right operand.
  * @param[out] result The matrix operation result.
@@ -58,6 +61,8 @@ std::shared_ptr<Matrix_t> CudaAdditionKernel::Operation( const Matrix_t& lhs, co
     cudaMemcpy( device_rhs, rhs.data, rhs.elements * sizeof( double ), cudaMemcpyHostToDevice );
 
     dim3 threads( 16, 16 );
+    //! @todo This breaks if the matrix size is not evenly divisible by the block size.
+    //! @todo See https://stackoverflow.com/a/31660574/3704977
     dim3 blocks( result->rows / threads.x, result->cols / threads.y );
 
     // You *really* don't want to pass a struct to a CUDA kernel when the struct
