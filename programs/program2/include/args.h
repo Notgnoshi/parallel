@@ -15,6 +15,7 @@ enum Kernel_e
 {
     KERNEL_DEFAULT = 0, //!< Use the default kernel for the chosen operation.
     KERNEL_CPU = 1,     //!< Do not use a CUDA kernel; perform all computation on the CPU
+    KERNEL_CUDA = 2,    //!< Implement using a CUDA kernel.
 };
 
 /**
