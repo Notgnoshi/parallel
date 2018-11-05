@@ -1,5 +1,6 @@
 #include "matrix.h"
 #include <cstddef>
+#include <cstring>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -62,6 +63,22 @@ Matrix_t::Matrix_t( const std::string& filename )
     }
 
     file.read( reinterpret_cast<char*>( this->data ), sizeof( double ) * this->elements );
+}
+
+Matrix_t::Matrix_t( const Matrix_t& other ) :
+    rows( other.rows ),
+    cols( other.cols ),
+    elements( other.elements )
+{
+    this->data = Allocate2D( rows, cols );
+    if( this->data == nullptr )
+    {
+        this->rows = 0;
+        this->cols = 0;
+        this->elements = 0;
+    }
+
+    memcpy( this->data, other.data, this->elements * sizeof( double ) );
 }
 
 void Matrix_t::Serialize( const std::string& filename )

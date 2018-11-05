@@ -33,6 +33,9 @@ struct Matrix_t
      */
     Matrix_t( const std::string& filename );
 
+    Matrix_t() = default;
+
+    Matrix_t( const Matrix_t& other );
     /**
      * @brief Destroy the Matrix_t object.
      */
