@@ -17,6 +17,73 @@
  * @todo Reimplement using shared memory like the example given in
  * https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#shared-memory
  *
+ * @details This kernel breaks the matrices into sub matrices of dimension @f$16
+ * \times 16@f$ (the size of a block). But then what happens when the matrix is
+ * not evenly divisible by the block size? For example, consider the @f$3 \times 3@f$
+ * matrix below with a block size of @f$2 \times 2@f$
+ * @dot
+ * graph {
+ *     splines=line;
+ *     rankdir=LR;
+ *     a -- { b d };
+ *     b -- { e c };
+ *     c -- f;
+ *     d -- { e g };
+ *     e -- { f h };
+ *     g -- h;
+ *     f -- i;
+ *     h -- i;
+ *     { rank=same; a, d, g };
+ *     { rank=same; b, e, h };
+ *     { rank=same; c, f, i };
+ *  }
+ * @enddot
+ * Then we get partial blocks as shown.
+ * @dot
+ * graph {
+ *     splines=line;
+ *     //rankdir=LR;
+ *     subgraph cluster1 {
+ *        label="Full Block";
+ *        a; b; d; e;
+ *     }
+ *     subgraph cluster2 {
+ *        label="Partial Block";
+ *        c; f;
+ *     }
+ *     subgraph cluster3 {
+ *        label="Partial Block";
+ *        g; h;
+ *     }
+ *     subgraph cluster4 {
+ *        label="Partial Block";
+ *        i;
+ *     }
+ *     a -- { b d };
+ *     b -- { e c };
+ *     c -- f;
+ *     d -- { e g };
+ *     e -- { f h };
+ *     g -- h;
+ *     f -- i;
+ *     h -- i;
+ *  }
+ * @enddot
+ * Note that I was unable to get Graphviz to draw the "Partial Block" subgraphs
+ * while still keeping the nice rectangular shape of the matrix. If I were really
+ * motivated, I'd draw the matrix with TikZ in LaTeX and include an SVG image, but
+ * that's too much to ask for...
+ *
+ * There is probably a solution to prevent using an entire block to add the element
+ * @f$i@f$ in the example above, but I am choosing to implement the addition simply
+ * in order to get it to work, and then move on. For large matrices, this will not
+ * be as much of a downside, because the matrix will (hopefully) be larger than
+ * @f$16 \times 16@f$, so the impact of the additional blocks relative to the
+ * cost of the whole will hopefully be less important.
+ *
+ * @see CudaAdditionKernelTest::MismatchedLarger and CudaAdditionKernelTest::MismatchedSmaller
+ * for test cases testing matrices not evenly divisible by the block size.
+ *
  * @param lhs The left operand.
  * @param rhs The right operand.
  * @param[out] result The matrix operation result.
