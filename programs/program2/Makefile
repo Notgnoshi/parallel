@@ -93,4 +93,4 @@ docs:
 	doxygen .doxyfile
 
 viewdocs: docs
-	xdg-open $(BUILD_DIR)/html/index.html
+	firefox $(BUILD_DIR)/html/index.html &
