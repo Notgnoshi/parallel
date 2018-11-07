@@ -77,8 +77,10 @@ Matrix_t::Matrix_t( const Matrix_t& other ) :
         this->cols = 0;
         this->elements = 0;
     }
-
-    memcpy( this->data, other.data, this->elements * sizeof( double ) );
+    else
+    {
+        memcpy( this->data, other.data, this->elements * sizeof( double ) );
+    }
 }
 
 void Matrix_t::Serialize( const std::string& filename )

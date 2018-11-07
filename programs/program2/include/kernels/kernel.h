@@ -14,6 +14,7 @@ public:
      * @brief Default-construct a new Kernel object.
      */
     Kernel() = default;
+    virtual ~Kernel() = default;
 
     /**
      * @brief Perform the Kernel's operation on the given operands.

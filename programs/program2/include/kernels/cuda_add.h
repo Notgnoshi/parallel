@@ -23,5 +23,5 @@ public:
      * @param rhs The right operand.
      * @returns a shared pointer to the result matrix.
      */
-    std::shared_ptr<Matrix_t> Operation( const Matrix_t& lhs, const Matrix_t& rhs );
+    std::shared_ptr<Matrix_t> Operation( const Matrix_t& lhs, const Matrix_t& rhs ) override;
 };

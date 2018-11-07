@@ -21,7 +21,7 @@ public:
      * @param vector A c-by-1 column vector
      * @returns An r-by-1 column vector.
      */
-    std::shared_ptr<Matrix_t> Operation( const Matrix_t& matrix, const Matrix_t& vector );
+    std::shared_ptr<Matrix_t> Operation( const Matrix_t& matrix, const Matrix_t& vector ) override;
 
 private:
     /**

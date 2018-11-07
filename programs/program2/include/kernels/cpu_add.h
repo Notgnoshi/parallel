@@ -21,7 +21,7 @@ public:
      * @param rhs The right operand.
      * @returns A shared pointer to the operation result.
      */
-    std::shared_ptr<Matrix_t> Operation( const Matrix_t& lhs, const Matrix_t& rhs );
+    std::shared_ptr<Matrix_t> Operation( const Matrix_t& lhs, const Matrix_t& rhs ) override;
 
 private:
     /**
