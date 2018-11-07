@@ -4,6 +4,11 @@
 #include <iostream>
 
 /**
+ * @brief Define 2D blocks that are @f$16\times16@f$ threads each.
+ */
+static const dim3 BLOCK_SIZE( 16, 16, 1 );
+
+/**
  * @brief The matrix addition CUDA kernel.
  *
  * @note Due to CUDA limitations, this cannot be a private method in the CudaAdditionKernel
@@ -127,14 +132,15 @@ std::shared_ptr<Matrix_t> CudaAdditionKernel::Operation( const Matrix_t& lhs, co
     cudaMemcpy( device_lhs, lhs.data, lhs.elements * sizeof( double ), cudaMemcpyHostToDevice );
     cudaMemcpy( device_rhs, rhs.data, rhs.elements * sizeof( double ), cudaMemcpyHostToDevice );
 
-    dim3 threads( 16, 16 );
-    //! @todo This breaks if the matrix size is not evenly divisible by the block size.
-    //! @todo See https://stackoverflow.com/a/31660574/3704977
-    dim3 blocks( result->rows / threads.x, result->cols / threads.y );
+    // Make sure we have enough blocks for matrices not evenly divisible by the block size.
+    dim3 grid_size(
+        ( BLOCK_SIZE.x + result->rows - 1 ) / BLOCK_SIZE.x,
+        ( BLOCK_SIZE.y + result->cols - 1 ) / BLOCK_SIZE.y,
+        1 );
 
     // You *really* don't want to pass a struct to a CUDA kernel when the struct
     // has a copy constructor and a destructor. -____________-
-    AdditionKernel<<<blocks, threads>>>( device_lhs, device_rhs, device_result, result->rows, result->cols );
+    AdditionKernel<<<grid_size, BLOCK_SIZE>>>( device_lhs, device_rhs, device_result, result->rows, result->cols );
     cudaDeviceSynchronize();
 
     // Copy the result from the device to the host.
