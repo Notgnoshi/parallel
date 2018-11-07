@@ -69,3 +69,5 @@ $ hexdump tests/matrices/4x4_seq.mat
 ```
 
 For details, see the `Matrix_t` struct documentation and implementation.
+
+@todo Do Karpe-Flatt metric stuff.
