@@ -110,9 +110,9 @@ std::shared_ptr<Matrix_t> CudaAdditionKernel::Operation( const Matrix_t& lhs, co
 {
     if( !AdditionValidator( lhs, rhs ) )
     {
-        std::cerr << "Dimensions (" << lhs.rows << ", " << lhs.cols << ")"
-                  << " + (" << rhs.rows << ", " << rhs.cols << ")"
-                  << " incompatible for addition." << std::endl;
+        // std::cerr << "Dimensions (" << lhs.rows << ", " << lhs.cols << ")"
+        //           << " + (" << rhs.rows << ", " << rhs.cols << ")"
+        //           << " incompatible for addition." << std::endl;
         return std::make_shared<Matrix_t>( 0, 0 );
     }
 

@@ -36,9 +36,9 @@ std::shared_ptr<Matrix_t> CudaMultiplicationKernel::Operation( const Matrix_t& l
 {
     if( !MultiplicationValidator( lhs, rhs ) )
     {
-        std::cerr << "Dimensions (" << lhs.rows << ", " << lhs.cols << ")"
-                  << " * (" << rhs.rows << ", " << rhs.cols << ")"
-                  << " incompatible for multiplication." << std::endl;
+        // std::cerr << "Dimensions (" << lhs.rows << ", " << lhs.cols << ")"
+        //           << " * (" << rhs.rows << ", " << rhs.cols << ")"
+        //           << " incompatible for multiplication." << std::endl;
         return std::make_shared<Matrix_t>( 0, 0 );
     }
 

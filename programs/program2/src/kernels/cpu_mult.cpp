@@ -16,9 +16,9 @@ std::shared_ptr<Matrix_t> CpuMultiplicationKernel::Operation( const Matrix_t& ma
 {
     if( !MultiplicationValidator( matrix, vector ) )
     {
-        std::cerr << "Dimensions (" << matrix.rows << ", " << matrix.cols << ")"
-                  << " * (" << vector.rows << ", " << vector.cols << ")"
-                  << " incompatible for multiplication." << std::endl;
+        // std::cerr << "Dimensions (" << matrix.rows << ", " << matrix.cols << ")"
+        //           << " * (" << vector.rows << ", " << vector.cols << ")"
+        //           << " incompatible for multiplication." << std::endl;
         return std::make_shared<Matrix_t>( 0, 0 );
     }
 

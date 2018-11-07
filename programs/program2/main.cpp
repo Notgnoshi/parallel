@@ -2,6 +2,7 @@
 #include "kernels/kernel.h"
 #include "kernels/kernel_factory.h"
 #include "matrix.h"
+#include <iostream>
 
 /**
  * @brief Main entry point for the application.
@@ -20,6 +21,11 @@ int main( int argc, const char** argv )
     Matrix_t rhs( args.right_input );
 
     std::shared_ptr<Matrix_t> res = kernel->Operation( lhs, rhs );
+
+    if( *res == Matrix_t( 0, 0 ) )
+    {
+        std::cerr << "Operation received invalid dimensions." << std::endl;
+    }
 
     if( args.output )
     {
