@@ -14,6 +14,10 @@ public:
      * @brief Default-construct a new Kernel object.
      */
     Kernel() = default;
+
+    /**
+     * @brief Default-destroy the Kernel object.
+     */
     virtual ~Kernel() = default;
 
     /**
