@@ -27,9 +27,9 @@ void CudaAdditionKernelTest::SimpleAddition()
 
 void CudaAdditionKernelTest::LargeAddition()
 {
-    Matrix_t lhs( 16*10, 16*10 );
-    Matrix_t rhs( 16*10, 16*10 );
-    Matrix_t expected( 16*10, 16*10 );
+    Matrix_t lhs( 16 * 10, 16 * 10 );
+    Matrix_t rhs( 16 * 10, 16 * 10 );
+    Matrix_t expected( 16 * 10, 16 * 10 );
 
     for( size_t i = 0; i < lhs.elements; ++i )
     {

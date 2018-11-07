@@ -20,7 +20,6 @@ public:
     void MismatchedLarger();
     //! @brief Test addition with matrix sizes smaller than the block size.
     void MismatchedSmaller();
-
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( CudaAdditionKernelTest );
