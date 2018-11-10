@@ -43,7 +43,7 @@ void CudaMultiplicationKernelTest::SimpleSquare()
     auto kernel = KernelFactory( OPERATION_VECTOR_MULTIPLICATION, KERNEL_CUDA ).GetKernel();
     auto result = kernel->Operation( lhs, rhs );
 
-    result->Print();
+    // result->Print();
 
     CPPUNIT_ASSERT( *result == expected );
 }
@@ -64,7 +64,7 @@ void CudaMultiplicationKernelTest::MismatchedSmaller()
     auto kernel = KernelFactory( OPERATION_VECTOR_MULTIPLICATION, KERNEL_CUDA ).GetKernel();
     auto result = kernel->Operation( lhs, rhs );
 
-    result->Print();
+    // result->Print();
 
     CPPUNIT_ASSERT( *result == expected );
 }
@@ -85,7 +85,7 @@ void CudaMultiplicationKernelTest::MismatchedBigger()
     auto kernel = KernelFactory( OPERATION_VECTOR_MULTIPLICATION, KERNEL_CUDA ).GetKernel();
     auto result = kernel->Operation( lhs, rhs );
 
-    result->Print();
+    // result->Print();
 
     CPPUNIT_ASSERT( *result == expected );
 }
