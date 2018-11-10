@@ -97,8 +97,8 @@ static const dim3 BLOCK_SIZE( 16, 16, 1 );
  */
 __global__ static void AdditionKernel( const double* lhs, const double* rhs, double* result, size_t rows, size_t cols )
 {
-    size_t row = blockIdx.x * blockDim.x + threadIdx.x;
-    size_t col = blockIdx.y * blockDim.y + threadIdx.y;
+    size_t col = blockIdx.x * blockDim.x + threadIdx.x;
+    size_t row = blockIdx.y * blockDim.y + threadIdx.y;
 
     if( row < rows && col < cols )
     {
@@ -134,8 +134,8 @@ std::shared_ptr<Matrix_t> CudaAdditionKernel::Operation( const Matrix_t& lhs, co
 
     // Make sure we have enough blocks for matrices not evenly divisible by the block size.
     dim3 grid_size(
-        ( BLOCK_SIZE.x + result->rows - 1 ) / BLOCK_SIZE.x,
-        ( BLOCK_SIZE.y + result->cols - 1 ) / BLOCK_SIZE.y,
+        ( BLOCK_SIZE.x + result->cols - 1 ) / BLOCK_SIZE.x,
+        ( BLOCK_SIZE.y + result->rows - 1 ) / BLOCK_SIZE.y,
         1 );
 
     // You *really* don't want to pass a struct to a CUDA kernel when the struct
