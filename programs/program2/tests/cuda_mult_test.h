@@ -6,6 +6,7 @@ class CudaMultiplicationKernelTest : public TestFixture
 {
     CPPUNIT_TEST_SUITE( CudaMultiplicationKernelTest );
     CPPUNIT_TEST( SimpleSmall );
+    CPPUNIT_TEST( SimpleSquare );
     CPPUNIT_TEST( MismatchedSmaller );
     CPPUNIT_TEST( MismatchedBigger );
     CPPUNIT_TEST( SimpleLarge );
@@ -15,6 +16,8 @@ class CudaMultiplicationKernelTest : public TestFixture
 public:
     //! @brief Verify that multiplication works on simple small square matrices.
     void SimpleSmall();
+    //! @brief Verify multiplication works on simple square matrices.
+    void SimpleSquare();
     //! @brief Test with a matrix smaller than the block size.
     void MismatchedSmaller();
     //! @brief Test with a matrix bigger than, but not evenly divisible by, the block size.
