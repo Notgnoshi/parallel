@@ -129,9 +129,11 @@ void ArgumentParser::Usage()
     std::cout << std::left << std::setw( 15 ) << " -k, --kernel"
               << "The kernel to use for the given operation. Must be one of" << std::endl;
     std::cout << std::left << std::setw( 15 ) << " "
-              << "    0 - Use the default kernel for the given operation." << std::endl;
+              << "    0 - Use the default (CUDA) kernel for the given operation." << std::endl;
     std::cout << std::left << std::setw( 15 ) << " "
               << "    1 - Do not use a CUDA kernel. Perform the operation on the CPU." << std::endl;
+    std::cout << std::left << std::setw( 15 ) << " "
+              << "    2 - Use the CUDA kernel for the given operation." << std::endl;
 }
 
 bool ArgumentParser::FileExists( const std::string& filename )
