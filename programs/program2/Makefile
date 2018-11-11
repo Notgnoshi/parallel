@@ -35,7 +35,7 @@ CXX := g++
 LINK := g++
 
 LINKFLAGS = -lm -lcuda -lcudart
-NVXXFLAGS = -I$(INC_DIR) -std=c++11
+NVXXFLAGS = -I$(INC_DIR) -std=c++11 -gencode arch=compute_61,code=sm_61
 CXXFLAGS = -I$(INC_DIR) -O3 -Wall -Wpedantic -Wextra -Werror -Wconversion -std=c++11 -x c++
 
 .PHONY: clean format docs viewdocs runtests
@@ -50,6 +50,7 @@ debug: CXXFLAGS += -g -O0
 debug: all
 
 testsuite: CXXFLAGS += -g -O0
+testsuite: NVXXFLAGS += -g -G -O0
 testsuite: $(BUILD_DIR)/$(TEST_TARGET)
 
 # TODO: A benchmark target that runs the testsuite or specific benchmarks with nvprof
