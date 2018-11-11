@@ -5,26 +5,28 @@
 
 void CudaMultiplicationKernelTest::SimpleSmall()
 {
-    // Matrix_t lhs( 16, 16 );
-    // Matrix_t rhs( 16, 1 );
+    Matrix_t lhs( 16, 16 );
+    Matrix_t rhs( 16, 1 );
 
-    // for( size_t i = 0; i < lhs.elements; ++i )
-    // {
-    //     lhs.data[i] = static_cast<double>( i );
-    // }
+    for( size_t i = 0; i < lhs.elements; ++i )
+    {
+        lhs.data[i] = (double) i;
+    }
 
-    // for( size_t i = 0; i < rhs.elements; ++i )
-    // {
-    //     rhs.data[i] = static_cast<double>( i ) + 1.5;
-    // }
+    for( size_t i = 0; i < rhs.elements; ++i )
+    {
+        rhs.data[i] = (double) i + 1.5;
+    }
 
-    // auto cpu_kernel = KernelFactory( OPERATION_VECTOR_MULTIPLICATION, KERNEL_CPU ).GetKernel();
-    // auto expected = cpu_kernel->Operation( lhs, rhs );
+    auto cpu_kernel = KernelFactory( OPERATION_VECTOR_MULTIPLICATION, KERNEL_CPU ).GetKernel();
+    auto expected = cpu_kernel->Operation( lhs, rhs );
 
-    // auto kernel = KernelFactory( OPERATION_VECTOR_MULTIPLICATION, KERNEL_CUDA ).GetKernel();
-    // auto result = kernel->Operation( lhs, rhs );
+    auto kernel = KernelFactory( OPERATION_VECTOR_MULTIPLICATION, KERNEL_CUDA ).GetKernel();
+    auto result = kernel->Operation( lhs, rhs );
 
-    // CPPUNIT_ASSERT( *result == *expected );
+    // result->Print();
+
+    CPPUNIT_ASSERT( *result == *expected );
 }
 
 void CudaMultiplicationKernelTest::SimpleSquare()
@@ -92,48 +94,48 @@ void CudaMultiplicationKernelTest::MismatchedBigger()
 
 void CudaMultiplicationKernelTest::SimpleLarge()
 {
-    // Matrix_t lhs( 16 * 10, 16 * 10 );
-    // Matrix_t rhs( 16 * 10, 1 );
+    Matrix_t lhs( 16 * 10, 16 * 10 );
+    Matrix_t rhs( 16 * 10, 1 );
 
-    // for( size_t i = 0; i < lhs.elements; ++i )
-    // {
-    //     lhs.data[i] = static_cast<double>( i );
-    // }
+    for( size_t i = 0; i < lhs.elements; ++i )
+    {
+        lhs.data[i] = static_cast<double>( i );
+    }
 
-    // for( size_t i = 0; i < rhs.elements; ++i )
-    // {
-    //     rhs.data[i] = static_cast<double>( i ) + 1.5;
-    // }
+    for( size_t i = 0; i < rhs.elements; ++i )
+    {
+        rhs.data[i] = static_cast<double>( i ) + 1.5;
+    }
 
-    // auto cpu_kernel = KernelFactory( OPERATION_VECTOR_MULTIPLICATION, KERNEL_CPU ).GetKernel();
-    // auto expected = cpu_kernel->Operation( lhs, rhs );
+    auto cpu_kernel = KernelFactory( OPERATION_VECTOR_MULTIPLICATION, KERNEL_CPU ).GetKernel();
+    auto expected = cpu_kernel->Operation( lhs, rhs );
 
-    // auto kernel = KernelFactory( OPERATION_VECTOR_MULTIPLICATION, KERNEL_CUDA ).GetKernel();
-    // auto result = kernel->Operation( lhs, rhs );
+    auto kernel = KernelFactory( OPERATION_VECTOR_MULTIPLICATION, KERNEL_CUDA ).GetKernel();
+    auto result = kernel->Operation( lhs, rhs );
 
-    // CPPUNIT_ASSERT( *result == *expected );
+    CPPUNIT_ASSERT( *result == *expected );
 }
 
 void CudaMultiplicationKernelTest::LargeMismatched()
 {
-    // Matrix_t lhs( 89, 1237 );
-    // Matrix_t rhs( 1237, 1 );
+    Matrix_t lhs( 89, 1237 );
+    Matrix_t rhs( 1237, 1 );
 
-    // for( size_t i = 0; i < lhs.elements; ++i )
-    // {
-    //     lhs.data[i] = static_cast<double>( i );
-    // }
+    for( size_t i = 0; i < lhs.elements; ++i )
+    {
+        lhs.data[i] = static_cast<double>( i );
+    }
 
-    // for( size_t i = 0; i < rhs.elements; ++i )
-    // {
-    //     rhs.data[i] = static_cast<double>( i ) + 1.5;
-    // }
+    for( size_t i = 0; i < rhs.elements; ++i )
+    {
+        rhs.data[i] = static_cast<double>( i ) + 1.5;
+    }
 
-    // auto cpu_kernel = KernelFactory( OPERATION_VECTOR_MULTIPLICATION, KERNEL_CPU ).GetKernel();
-    // auto expected = cpu_kernel->Operation( lhs, rhs );
+    auto cpu_kernel = KernelFactory( OPERATION_VECTOR_MULTIPLICATION, KERNEL_CPU ).GetKernel();
+    auto expected = cpu_kernel->Operation( lhs, rhs );
 
-    // auto kernel = KernelFactory( OPERATION_VECTOR_MULTIPLICATION, KERNEL_CUDA ).GetKernel();
-    // auto result = kernel->Operation( lhs, rhs );
+    auto kernel = KernelFactory( OPERATION_VECTOR_MULTIPLICATION, KERNEL_CUDA ).GetKernel();
+    auto result = kernel->Operation( lhs, rhs );
 
-    // CPPUNIT_ASSERT( *result == *expected );
+    CPPUNIT_ASSERT( *result == *expected );
 }
