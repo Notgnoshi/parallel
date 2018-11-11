@@ -17,11 +17,10 @@ std::shared_ptr<Kernel> KernelFactory::GetKernel()
     case OPERATION_VECTOR_MULTIPLICATION:
         switch( this->kernel )
         {
-        //! @todo Move the default multiplication kernel to CUDA once it's implemented.
-        case KERNEL_DEFAULT:
         case KERNEL_CPU:
             return std::make_shared<CpuMultiplicationKernel>();
 
+        case KERNEL_DEFAULT:
         case KERNEL_CUDA:
             return std::make_shared<CudaMultiplicationKernel>();
         }
