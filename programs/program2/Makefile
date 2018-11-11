@@ -56,6 +56,7 @@ testsuite: NVXXFLAGS += -g -G -O0
 testsuite: $(BUILD_DIR)/$(TEST_TARGET)
 	# The de/serialization tests require this directory to exist.
 	mkdir -p $(BUILD_DIR)/tmp
+	find $(TEST_DIR)/matrices -name '*.txt' -type f -exec bash -c 'python3 pack.py "$$0" "$${0%.txt}.mat"' {} \;
 
 runtests: testsuite
 	./$(BUILD_DIR)/$(TEST_TARGET)

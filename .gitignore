@@ -3,6 +3,8 @@
 **/build
 # Astyle backups
 *.orig
+# Binary matrix files
+*.mat
 
 # Prerequisites
 *.d
