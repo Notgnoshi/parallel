@@ -179,13 +179,79 @@ Roughly, the `profile` target does the following
 2. Builds the `build/prog2` executable.
 3. Generates several test matrices of a large, fixed size (@f$n = 4000@f$) defined
    by the `_SIZE` variable in the makefile.
-4. For both the matrix addition and multiplication operations, with block sizes
-   @f$b \in \{1, 2, 4, 8, 16, 32\}@f$ it:
+4. For both the matrix addition, matrix vector multiplication, and matrix-matrix
+   multiplication operations, with block sizes @f$b \in \{1, 2, 4, 8, 16, 32\}@f$ it:
    1. edits the block size with `sed`.
    2. recompiles and links the modified translation unit.
    3. runs the executable with `nvprof`, but with the output piped to `grep` so
       that we only see the duration of the kernel call.
 5. Then the block sizes are reset to @f$16 \times 16@f$ for both kernels.
+
+I wasn't even sure if @f$1 \times 1@f$ or @f$2 \times 2@f$ blocks would even work
+for multiplication, so run
+
+```shell
+$ diff --report-identical-files --from-file build/tmp/addition_prof_result*
+Files build/tmp/addition_prof_result16.mat and build/tmp/addition_prof_result1.mat are identical
+Files build/tmp/addition_prof_result16.mat and build/tmp/addition_prof_result2.mat are identical
+Files build/tmp/addition_prof_result16.mat and build/tmp/addition_prof_result32.mat are identical
+Files build/tmp/addition_prof_result16.mat and build/tmp/addition_prof_result4.mat are identical
+Files build/tmp/addition_prof_result16.mat and build/tmp/addition_prof_result8.mat are identical
+$ diff --report-identical-files --from-file build/tmp/multiplication_prof_result*
+Files build/tmp/multiplication_prof_result16.mat and build/tmp/multiplication_prof_result1.mat are identical
+Files build/tmp/multiplication_prof_result16.mat and build/tmp/multiplication_prof_result2.mat are identical
+Files build/tmp/multiplication_prof_result16.mat and build/tmp/multiplication_prof_result32.mat are identical
+Files build/tmp/multiplication_prof_result16.mat and build/tmp/multiplication_prof_result4.mat are identical
+Files build/tmp/multiplication_prof_result16.mat and build/tmp/multiplication_prof_result8.mat are identical
+$ diff --report-identical-files --from-file build/tmp/extended_multiplication_prof_result*
+Files build/tmp/extended_multiplication_prof_result16.mat and build/tmp/extended_multiplication_prof_result1.mat are identical
+Files build/tmp/extended_multiplication_prof_result16.mat and build/tmp/extended_multiplication_prof_result2.mat are identical
+Files build/tmp/extended_multiplication_prof_result16.mat and build/tmp/extended_multiplication_prof_result32.mat are identical
+Files build/tmp/extended_multiplication_prof_result16.mat and build/tmp/extended_multiplication_prof_result4.mat are identical
+Files build/tmp/extended_multiplication_prof_result16.mat and build/tmp/extended_multiplication_prof_result8.mat are identical
+```
+
+to verify that each file is identical.
+
+On my machine (GTX 1080, with 8GB video ram)
+
+```text
+$ screenfetch
+                          ./+o+-       nots@abyss
+                  yyyyy- -yyyyyy+      OS: Ubuntu 18.04 bionic
+               ://+//////-yyyyyyo      Kernel: x86_64 Linux 4.15.0-38-generic
+           .++ .:/++++++/-.+sss/`      Uptime: 7d 4h 45m
+         .:++o:  /++++++++/:--:/-      Packages: 3162
+        o:+o+:++.`..```.-/oo+++++/     Shell: bash 4.4.19
+       .:+o:+o/.          `+sssoo+/    Resolution: 7680x2160
+  .++/+:+oo+o:`             /sssooo.   DE: GNOME
+ /+++//+:`oo+o               /::--:.   WM: GNOME Shell
+ \+/+o+++`o++o               ++////.   WM Theme: Adwaita
+  .++.o+++oo+:`             /dddhhh.   GTK Theme: NumixDark [GTK2/3]
+       .+.o+oo:.          `oddhhhh+    Icon Theme: Numix-Circle
+        \+.++o+o``-````.:ohdhhhhh+     Font: SFNS Display 12
+         `:o+++ `ohhhhhhhhyo++os:      CPU: Intel Core i7-6700K @ 8x 4.4GHz [27.8°C]
+           .o:`.syhhhhhhh/.oo++o`      GPU: GeForce GTX 1080
+               /osyyyyyyo++ooo+++/     RAM: 8098MiB / 15998MiB
+                   ````` +oo+++o\:
+                          `oo++.
+```
+
+the profile results are summarized
+
+|     |         1         |         2         |         4         |         8         |         16        |         32        |
+|:---:|:-----------------:|:-----------------:|:-----------------:|:-----------------:|:-----------------:|:-----------------:|
+| M+M | 25.42% (21.836ms) | 7.36% (5.1599ms)  | 2.54% (1.6991ms)  | 2.13% (1.4148ms)  | 2.09% (1.3776ms)  | 2.07% (1.3548ms)  |
+| M*V | 29.10% (9.2326ms) | 18.93% (5.2198ms) | 12.02% (3.0329ms) | 7.37% (1.8300ms)  | 12.17% (3.1426ms) | 21.84% (6.2511ms) |
+| M*M | 99.81% (35.0649s) | 99.26% (8.68235s) | 97.64% (2.68512s) | 91.90% (740.97ms) | 91.65% (719.67ms) | 91.84% (731.49ms) |
+
+where the table heading is the dimension of the square blocks, and the rows are
+the type of operation being performed.
+
+As expected, smaller block sizes perform worse, with the exception of matrix-vector
+multiplication, which performs best with @f$8 \times 8@f$ block sizes. This must
+be the point at which the benefit of shared memory and the cost of wasteful blocks
+meet.
 
 ## Matrix Multiplication
 

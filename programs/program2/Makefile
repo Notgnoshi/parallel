@@ -110,6 +110,22 @@ _addition:
 	@echo "Profiling M-M Addition:"
 	@echo "============================="
 
+	sed -i 's/BLOCK_SIZE( [0-9]\+, [0-9]\+, 1 )/BLOCK_SIZE( 1, 1, 1 )/' src/kernels/cuda_add.cu
+	@echo make
+	@make all --no-print-directory -s -- 2>&1 /dev/null
+	@echo "1x1 block size:"
+	@echo "============================="
+	nvprof $(BUILD_DIR)/$(TARGET) --kernel 2 MMA $(BUILD_DIR)/tmp/$(_SIZE)x$(_SIZE)_1.mat $(BUILD_DIR)/tmp/$(_SIZE)x$(_SIZE)_2.mat --output $(BUILD_DIR)/tmp/addition_prof_result1.mat 2>&1 >/dev/null | grep AdditionKernel
+	@echo "============================="
+
+	sed -i 's/BLOCK_SIZE( [0-9]\+, [0-9]\+, 1 )/BLOCK_SIZE( 2, 2, 1 )/' src/kernels/cuda_add.cu
+	@echo make
+	@make all --no-print-directory -s -- 2>&1 /dev/null
+	@echo "2x2 block size:"
+	@echo "============================="
+	nvprof $(BUILD_DIR)/$(TARGET) --kernel 2 MMA $(BUILD_DIR)/tmp/$(_SIZE)x$(_SIZE)_1.mat $(BUILD_DIR)/tmp/$(_SIZE)x$(_SIZE)_2.mat --output $(BUILD_DIR)/tmp/addition_prof_result2.mat 2>&1 >/dev/null | grep AdditionKernel
+	@echo "============================="
+
 	sed -i 's/BLOCK_SIZE( [0-9]\+, [0-9]\+, 1 )/BLOCK_SIZE( 4, 4, 1 )/' src/kernels/cuda_add.cu
 	@echo make
 	@make all --no-print-directory -s -- 2>&1 /dev/null
@@ -150,6 +166,24 @@ _addition:
 _multiplication:
 	@echo "============================="
 	@echo "Profiling M-V Multiplication:"
+	@echo "============================="
+
+	sed -i 's/BLOCK_XDIM [0-9]\+/BLOCK_XDIM 1/' src/kernels/cuda_mult.cu
+	sed -i 's/BLOCK_YDIM [0-9]\+/BLOCK_YDIM 1/' src/kernels/cuda_mult.cu
+	@echo make
+	@make all --no-print-directory -s -- 2>&1 /dev/null
+	@echo "1x1 block size:"
+	@echo "============================="
+	nvprof $(BUILD_DIR)/$(TARGET) --kernel 2 MVM $(BUILD_DIR)/tmp/$(_SIZE)x$(_SIZE)_1.mat $(BUILD_DIR)/tmp/$(_SIZE)x1_1.mat --output $(BUILD_DIR)/tmp/multiplication_prof_result1.mat 2>&1 >/dev/null | grep MultiplicationKernel
+	@echo "============================="
+
+	sed -i 's/BLOCK_XDIM [0-9]\+/BLOCK_XDIM 2/' src/kernels/cuda_mult.cu
+	sed -i 's/BLOCK_YDIM [0-9]\+/BLOCK_YDIM 2/' src/kernels/cuda_mult.cu
+	@echo make
+	@make all --no-print-directory -s -- 2>&1 /dev/null
+	@echo "2x2 block size:"
+	@echo "============================="
+	nvprof $(BUILD_DIR)/$(TARGET) --kernel 2 MVM $(BUILD_DIR)/tmp/$(_SIZE)x$(_SIZE)_1.mat $(BUILD_DIR)/tmp/$(_SIZE)x1_1.mat --output $(BUILD_DIR)/tmp/multiplication_prof_result2.mat 2>&1 >/dev/null | grep MultiplicationKernel
 	@echo "============================="
 
 	sed -i 's/BLOCK_XDIM [0-9]\+/BLOCK_XDIM 4/' src/kernels/cuda_mult.cu
@@ -194,9 +228,75 @@ _multiplication:
 	@echo
 	@echo
 
+_extended_multiplication:
+	@echo "============================="
+	@echo "Profiling M-M Multiplication:"
+	@echo "============================="
+
+	sed -i 's/BLOCK_XDIM [0-9]\+/BLOCK_XDIM 1/' src/kernels/cuda_mult.cu
+	sed -i 's/BLOCK_YDIM [0-9]\+/BLOCK_YDIM 1/' src/kernels/cuda_mult.cu
+	@echo make
+	@make all --no-print-directory -s -- 2>&1 /dev/null
+	@echo "1x1 block size:"
+	@echo "============================="
+	nvprof $(BUILD_DIR)/$(TARGET) --kernel 2 MVM $(BUILD_DIR)/tmp/$(_SIZE)x$(_SIZE)_1.mat $(BUILD_DIR)/tmp/$(_SIZE)x$(_SIZE)_2.mat --output $(BUILD_DIR)/tmp/extended_multiplication_prof_result1.mat 2>&1 >/dev/null | grep MultiplicationKernel
+	@echo "============================="
+
+	sed -i 's/BLOCK_XDIM [0-9]\+/BLOCK_XDIM 2/' src/kernels/cuda_mult.cu
+	sed -i 's/BLOCK_YDIM [0-9]\+/BLOCK_YDIM 2/' src/kernels/cuda_mult.cu
+	@echo make
+	@make all --no-print-directory -s -- 2>&1 /dev/null
+	@echo "2x2 block size:"
+	@echo "============================="
+	nvprof $(BUILD_DIR)/$(TARGET) --kernel 2 MVM $(BUILD_DIR)/tmp/$(_SIZE)x$(_SIZE)_1.mat $(BUILD_DIR)/tmp/$(_SIZE)x$(_SIZE)_2.mat --output $(BUILD_DIR)/tmp/extended_multiplication_prof_result2.mat 2>&1 >/dev/null | grep MultiplicationKernel
+	@echo "============================="
+
+	sed -i 's/BLOCK_XDIM [0-9]\+/BLOCK_XDIM 4/' src/kernels/cuda_mult.cu
+	sed -i 's/BLOCK_YDIM [0-9]\+/BLOCK_YDIM 4/' src/kernels/cuda_mult.cu
+	@echo make
+	@make all --no-print-directory -s -- 2>&1 /dev/null
+	@echo "4x4 block size:"
+	@echo "============================="
+	nvprof $(BUILD_DIR)/$(TARGET) --kernel 2 MVM $(BUILD_DIR)/tmp/$(_SIZE)x$(_SIZE)_1.mat $(BUILD_DIR)/tmp/$(_SIZE)x$(_SIZE)_2.mat --output $(BUILD_DIR)/tmp/extended_multiplication_prof_result4.mat 2>&1 >/dev/null | grep MultiplicationKernel
+	@echo "============================="
+
+	sed -i 's/BLOCK_XDIM [0-9]\+/BLOCK_XDIM 8/' src/kernels/cuda_mult.cu
+	sed -i 's/BLOCK_YDIM [0-9]\+/BLOCK_YDIM 8/' src/kernels/cuda_mult.cu
+	@echo make
+	@make all --no-print-directory -s -- 2>&1 /dev/null
+	@echo "8x8 block size:"
+	@echo "============================="
+	nvprof $(BUILD_DIR)/$(TARGET) --kernel 2 MVM $(BUILD_DIR)/tmp/$(_SIZE)x$(_SIZE)_1.mat $(BUILD_DIR)/tmp/$(_SIZE)x$(_SIZE)_2.mat --output $(BUILD_DIR)/tmp/extended_multiplication_prof_result8.mat 2>&1 >/dev/null | grep MultiplicationKernel
+	@echo "============================="
+
+	sed -i 's/BLOCK_XDIM [0-9]\+/BLOCK_XDIM 16/' src/kernels/cuda_mult.cu
+	sed -i 's/BLOCK_YDIM [0-9]\+/BLOCK_YDIM 16/' src/kernels/cuda_mult.cu
+	@echo make
+	@make all --no-print-directory -s -- 2>&1 /dev/null
+	@echo "16x16 block size:"
+	@echo "============================="
+	nvprof $(BUILD_DIR)/$(TARGET) --kernel 2 MVM $(BUILD_DIR)/tmp/$(_SIZE)x$(_SIZE)_1.mat $(BUILD_DIR)/tmp/$(_SIZE)x$(_SIZE)_2.mat --output $(BUILD_DIR)/tmp/extended_multiplication_prof_result16.mat 2>&1 >/dev/null | grep MultiplicationKernel
+	@echo "============================="
+
+	sed -i 's/BLOCK_XDIM [0-9]\+/BLOCK_XDIM 32/' src/kernels/cuda_mult.cu
+	sed -i 's/BLOCK_YDIM [0-9]\+/BLOCK_YDIM 32/' src/kernels/cuda_mult.cu
+	@echo make
+	@make all --no-print-directory -s -- 2>&1 /dev/null
+	@echo "32x32 block size:"
+	@echo "============================="
+	nvprof $(BUILD_DIR)/$(TARGET) --kernel 2 MVM $(BUILD_DIR)/tmp/$(_SIZE)x$(_SIZE)_1.mat $(BUILD_DIR)/tmp/$(_SIZE)x$(_SIZE)_2.mat --output $(BUILD_DIR)/tmp/extended_multiplication_prof_result32.mat 2>&1 >/dev/null | grep MultiplicationKernel
+	@echo "============================="
+
+	@echo "Reverting block size to 16x16"
+	sed -i 's/BLOCK_XDIM [0-9]\+/BLOCK_XDIM 16/' src/kernels/cuda_mult.cu
+	sed -i 's/BLOCK_YDIM [0-9]\+/BLOCK_YDIM 16/' src/kernels/cuda_mult.cu
+	@echo
+	@echo
+
 # Avoid running/recompiling with debug symbols on some of the translation units.
 profile: clean
 profile: all
 profile: _generate
 profile: _addition
 profile: _multiplication
+profile: _extended_multiplication
