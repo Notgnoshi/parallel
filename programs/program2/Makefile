@@ -54,6 +54,8 @@ debug: all
 testsuite: CXXFLAGS += -g -O0
 testsuite: NVXXFLAGS += -g -G -O0
 testsuite: $(BUILD_DIR)/$(TEST_TARGET)
+	# The de/serialization tests require this directory to exist.
+	mkdir -p $(BUILD_DIR)/tmp
 
 runtests: testsuite
 	./$(BUILD_DIR)/$(TEST_TARGET)
@@ -98,9 +100,10 @@ viewdocs: docs
 	firefox $(BUILD_DIR)/html/index.html &
 
 _generate:
-	python3 generate.py $(_SIZE) $(_SIZE) --output /tmp/$(_SIZE)x$(_SIZE)_1.mat
-	python3 generate.py $(_SIZE) $(_SIZE) --output /tmp/$(_SIZE)x$(_SIZE)_2.mat
-	python3 generate.py $(_SIZE) 1        --output /tmp/$(_SIZE)x1_1.mat
+	mkdir -p $(BUILD_DIR)/tmp
+	python3 generate.py $(_SIZE) $(_SIZE) --output $(BUILD_DIR)/tmp/$(_SIZE)x$(_SIZE)_1.mat
+	python3 generate.py $(_SIZE) $(_SIZE) --output $(BUILD_DIR)/tmp/$(_SIZE)x$(_SIZE)_2.mat
+	python3 generate.py $(_SIZE) 1        --output $(BUILD_DIR)/tmp/$(_SIZE)x1_1.mat
 
 _addition:
 	@echo "============================="
@@ -112,7 +115,7 @@ _addition:
 	@make all --no-print-directory -s -- 2>&1 /dev/null
 	@echo "4x4 block size:"
 	@echo "============================="
-	nvprof $(BUILD_DIR)/$(TARGET) --kernel 2 MMA /tmp/$(_SIZE)x$(_SIZE)_1.mat /tmp/$(_SIZE)x$(_SIZE)_2.mat --output /tmp/addition_prof_result.mat 2>&1 >/dev/null | grep AdditionKernel
+	nvprof $(BUILD_DIR)/$(TARGET) --kernel 2 MMA $(BUILD_DIR)/tmp/$(_SIZE)x$(_SIZE)_1.mat $(BUILD_DIR)/tmp/$(_SIZE)x$(_SIZE)_2.mat --output $(BUILD_DIR)/tmp/addition_prof_result4.mat 2>&1 >/dev/null | grep AdditionKernel
 	@echo "============================="
 
 	sed -i 's/BLOCK_SIZE( [0-9]\+, [0-9]\+, 1 )/BLOCK_SIZE( 8, 8, 1 )/' src/kernels/cuda_add.cu
@@ -120,7 +123,7 @@ _addition:
 	@make all --no-print-directory -s -- 2>&1 /dev/null
 	@echo "8x8 block size:"
 	@echo "============================="
-	nvprof $(BUILD_DIR)/$(TARGET) --kernel 2 MMA /tmp/$(_SIZE)x$(_SIZE)_1.mat /tmp/$(_SIZE)x$(_SIZE)_2.mat --output /tmp/addition_prof_result.mat 2>&1 >/dev/null | grep AdditionKernel
+	nvprof $(BUILD_DIR)/$(TARGET) --kernel 2 MMA $(BUILD_DIR)/tmp/$(_SIZE)x$(_SIZE)_1.mat $(BUILD_DIR)/tmp/$(_SIZE)x$(_SIZE)_2.mat --output $(BUILD_DIR)/tmp/addition_prof_result8.mat 2>&1 >/dev/null | grep AdditionKernel
 	@echo "============================="
 
 	sed -i 's/BLOCK_SIZE( [0-9]\+, [0-9]\+, 1 )/BLOCK_SIZE( 16, 16, 1 )/' src/kernels/cuda_add.cu
@@ -128,7 +131,7 @@ _addition:
 	@make all --no-print-directory -s -- 2>&1 /dev/null
 	@echo "16x16 block size:"
 	@echo "============================="
-	nvprof $(BUILD_DIR)/$(TARGET) --kernel 2 MMA /tmp/$(_SIZE)x$(_SIZE)_1.mat /tmp/$(_SIZE)x$(_SIZE)_2.mat --output /tmp/addition_prof_result.mat 2>&1 >/dev/null | grep AdditionKernel
+	nvprof $(BUILD_DIR)/$(TARGET) --kernel 2 MMA $(BUILD_DIR)/tmp/$(_SIZE)x$(_SIZE)_1.mat $(BUILD_DIR)/tmp/$(_SIZE)x$(_SIZE)_2.mat --output $(BUILD_DIR)/tmp/addition_prof_result16.mat 2>&1 >/dev/null | grep AdditionKernel
 	@echo "============================="
 
 	sed -i 's/BLOCK_SIZE( [0-9]\+, [0-9]\+, 1 )/BLOCK_SIZE( 32, 32, 1 )/' src/kernels/cuda_add.cu
@@ -136,7 +139,7 @@ _addition:
 	@make all --no-print-directory -s -- 2>&1 /dev/null
 	@echo "32x32 block size:"
 	@echo "============================="
-	nvprof $(BUILD_DIR)/$(TARGET) --kernel 2 MMA /tmp/$(_SIZE)x$(_SIZE)_1.mat /tmp/$(_SIZE)x$(_SIZE)_2.mat --output /tmp/addition_prof_result.mat 2>&1 >/dev/null | grep AdditionKernel
+	nvprof $(BUILD_DIR)/$(TARGET) --kernel 2 MMA $(BUILD_DIR)/tmp/$(_SIZE)x$(_SIZE)_1.mat $(BUILD_DIR)/tmp/$(_SIZE)x$(_SIZE)_2.mat --output $(BUILD_DIR)/tmp/addition_prof_result32.mat 2>&1 >/dev/null | grep AdditionKernel
 	@echo "============================="
 
 	@echo "Reverting block size to 16x16"
@@ -155,7 +158,7 @@ _multiplication:
 	@make all --no-print-directory -s -- 2>&1 /dev/null
 	@echo "4x4 block size:"
 	@echo "============================="
-	nvprof $(BUILD_DIR)/$(TARGET) --kernel 2 MVM /tmp/$(_SIZE)x$(_SIZE)_1.mat /tmp/$(_SIZE)x1_1.mat --output /tmp/multiplication_prof_result.mat 2>&1 >/dev/null | grep MultiplicationKernel
+	nvprof $(BUILD_DIR)/$(TARGET) --kernel 2 MVM $(BUILD_DIR)/tmp/$(_SIZE)x$(_SIZE)_1.mat $(BUILD_DIR)/tmp/$(_SIZE)x1_1.mat --output $(BUILD_DIR)/tmp/multiplication_prof_result4.mat 2>&1 >/dev/null | grep MultiplicationKernel
 	@echo "============================="
 
 	sed -i 's/BLOCK_XDIM [0-9]\+/BLOCK_XDIM 8/' src/kernels/cuda_mult.cu
@@ -164,7 +167,7 @@ _multiplication:
 	@make all --no-print-directory -s -- 2>&1 /dev/null
 	@echo "8x8 block size:"
 	@echo "============================="
-	nvprof $(BUILD_DIR)/$(TARGET) --kernel 2 MVM /tmp/$(_SIZE)x$(_SIZE)_1.mat /tmp/$(_SIZE)x1_1.mat --output /tmp/multiplication_prof_result.mat 2>&1 >/dev/null | grep MultiplicationKernel
+	nvprof $(BUILD_DIR)/$(TARGET) --kernel 2 MVM $(BUILD_DIR)/tmp/$(_SIZE)x$(_SIZE)_1.mat $(BUILD_DIR)/tmp/$(_SIZE)x1_1.mat --output $(BUILD_DIR)/tmp/multiplication_prof_result8.mat 2>&1 >/dev/null | grep MultiplicationKernel
 	@echo "============================="
 
 	sed -i 's/BLOCK_XDIM [0-9]\+/BLOCK_XDIM 16/' src/kernels/cuda_mult.cu
@@ -173,7 +176,7 @@ _multiplication:
 	@make all --no-print-directory -s -- 2>&1 /dev/null
 	@echo "16x16 block size:"
 	@echo "============================="
-	nvprof $(BUILD_DIR)/$(TARGET) --kernel 2 MVM /tmp/$(_SIZE)x$(_SIZE)_1.mat /tmp/$(_SIZE)x1_1.mat --output /tmp/multiplication_prof_result.mat 2>&1 >/dev/null | grep MultiplicationKernel
+	nvprof $(BUILD_DIR)/$(TARGET) --kernel 2 MVM $(BUILD_DIR)/tmp/$(_SIZE)x$(_SIZE)_1.mat $(BUILD_DIR)/tmp/$(_SIZE)x1_1.mat --output $(BUILD_DIR)/tmp/multiplication_prof_result16.mat 2>&1 >/dev/null | grep MultiplicationKernel
 	@echo "============================="
 
 	sed -i 's/BLOCK_XDIM [0-9]\+/BLOCK_XDIM 32/' src/kernels/cuda_mult.cu
@@ -182,7 +185,7 @@ _multiplication:
 	@make all --no-print-directory -s -- 2>&1 /dev/null
 	@echo "32x32 block size:"
 	@echo "============================="
-	nvprof $(BUILD_DIR)/$(TARGET) --kernel 2 MVM /tmp/$(_SIZE)x$(_SIZE)_1.mat /tmp/$(_SIZE)x1_1.mat --output /tmp/multiplication_prof_result.mat 2>&1 >/dev/null | grep MultiplicationKernel
+	nvprof $(BUILD_DIR)/$(TARGET) --kernel 2 MVM $(BUILD_DIR)/tmp/$(_SIZE)x$(_SIZE)_1.mat $(BUILD_DIR)/tmp/$(_SIZE)x1_1.mat --output $(BUILD_DIR)/tmp/multiplication_prof_result32.mat 2>&1 >/dev/null | grep MultiplicationKernel
 	@echo "============================="
 
 	@echo "Reverting block size to 16x16"
@@ -191,6 +194,8 @@ _multiplication:
 	@echo
 	@echo
 
+# Avoid running/recompiling with debug symbols on some of the translation units.
+profile: clean
 profile: all
 profile: _generate
 profile: _addition

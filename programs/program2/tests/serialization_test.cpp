@@ -22,10 +22,10 @@ void SerializationTest::SimpleSmall()
     }
 
     // Serialize the matrix to a file.
-    matrix.Serialize( "/tmp/SimpleSmall.mat" );
+    matrix.Serialize( "build/tmp/SimpleSmall.mat" );
 
     // Deserialize the file into a new matrix.
-    const Matrix_t deser( "/tmp/SimpleSmall.mat" );
+    const Matrix_t deser( "build/tmp/SimpleSmall.mat" );
 
     // Verify that the new matrix has the right values in its data array.
     for( size_t i = 0; i < deser.elements; ++i )
@@ -57,13 +57,13 @@ void SerializationTest::SimplePack()
     }
 
     // Serialize the matrix somewhere safe to examine the hexdump if necessary.
-    matrix.Serialize( "/tmp/SimplePack.4x4_ones.mat" );
+    matrix.Serialize( "build/tmp/SimplePack.4x4_ones.mat" );
 
     //! @note This path is relative to the directory the executable is ran from,
     //! not the executable itself.
     //! @todo Find a way to use a path relative to the source file so it's not
     //! dependent on where the executable is ran from. Possibly make a setUp
-    //! test fixture function that copies the files to `/tmp/prog2/fixtures/` or
+    //! test fixture function that copies the files to `build/tmp/fixtures/` or
     //! similar.
     const Matrix_t fxf( "./tests/matrices/4x4_ones.mat" );
 
@@ -93,9 +93,9 @@ void SerializationTest::SerializationOrder()
         }
     }
 
-    matrix.Serialize( "/tmp/SerializationOrder_seq.mat" );
+    matrix.Serialize( "build/tmp/SerializationOrder_seq.mat" );
 
-    const Matrix_t expected2( "/tmp/SerializationOrder_seq.mat" );
+    const Matrix_t expected2( "build/tmp/SerializationOrder_seq.mat" );
 
     CPPUNIT_ASSERT( expected == expected2 );
     CPPUNIT_ASSERT( matrix == expected2 );
