@@ -65,7 +65,7 @@ void SerializationTest::SimplePack()
     //! dependent on where the executable is ran from. Possibly make a setUp
     //! test fixture function that copies the files to `build/tmp/fixtures/` or
     //! similar.
-    const Matrix_t fxf( "./tests/matrices/4x4_ones.mat" );
+    const Matrix_t fxf( "build/tmp/4x4_ones.mat" );
 
     CPPUNIT_ASSERT( matrix == fxf );
 }
@@ -78,7 +78,7 @@ void SerializationTest::SerializationOrder()
         matrix.data[i] = static_cast<double>( i + 1 );
     }
 
-    const Matrix_t expected( "./tests/matrices/4x4_seq.mat" );
+    const Matrix_t expected( "build/tmp/4x4_seq.mat" );
 
     CPPUNIT_ASSERT( matrix == expected );
 

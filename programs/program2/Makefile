@@ -56,7 +56,10 @@ testsuite: NVXXFLAGS += -g -G -O0
 testsuite: $(BUILD_DIR)/$(TEST_TARGET)
 	# The de/serialization tests require this directory to exist.
 	mkdir -p $(BUILD_DIR)/tmp
+	# Convert each of the text matrices to the expected binary format.
 	find $(TEST_DIR)/matrices -name '*.txt' -type f -exec bash -c 'python3 pack.py "$$0" "$${0%.txt}.mat"' {} \;
+	# Move the binary matrix files to the build directory.
+	mv $(TEST_DIR)/matrices/*.mat $(BUILD_DIR)/tmp
 
 runtests: testsuite
 	./$(BUILD_DIR)/$(TEST_TARGET)
