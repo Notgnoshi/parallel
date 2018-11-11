@@ -3,13 +3,21 @@
 #include "validator.h"
 #include <iostream>
 
-//! @brief Use @f$16 \times 16@f$ blocks of threads.
-//! @details Use a `#define` so that it's accessable in both device and host code.
+/**
+ * @brief The @f$x@f$ dimension of the block size.
+ * @details Use a preprocessor definition so that it is accessible in both device and host code.
+ */
 #define BLOCK_XDIM 16
+/**
+ * @brief The @f$y@f$ dimension of the block size.
+ * @details Use a preprocessor definition so that it is accessible in both device and host code.
+ */
 #define BLOCK_YDIM 16
+/**
+ * @brief The @f$z@f$ dimension of the block size.
+ * @details Use a preprocessor definition so that it is accessible in both device and host code.
+ */
 #define BLOCK_ZDIM 1
-//! @todo Document.
-static const dim3 BLOCK_SIZE( BLOCK_XDIM, BLOCK_YDIM, BLOCK_ZDIM );
 
 /**
  * @brief A trivially easy-to-copy struct to hold the matrices on the device.
@@ -68,18 +76,20 @@ __device__ static void SetElement( DeviceMatrix_t matrix, size_t row, size_t col
 __device__ static DeviceMatrix_t GetSubMatrix( const DeviceMatrix_t matrix, size_t row, size_t col )
 {
     DeviceMatrix_t sub;
-    //! @todo for non-square blocks, these will flip depending on lhs or rhs.
+    //! @note For this implementation to work, the blocks must be square. Otherwise,
+    //! the left submatrix would have to have the transposed dimensions of the
+    //! right submatrix.
     sub.cols = BLOCK_XDIM;
     sub.rows = BLOCK_YDIM;
     sub.stride = matrix.stride;
-    //! @todo Figure out if it's (x, y) or (y, x) for non-square blocks.
+
     sub.data = &matrix.data[matrix.stride * BLOCK_YDIM * row + BLOCK_XDIM * col];
 
     return sub;
 }
 
 /**
- * @brief The multiplication kernel.
+ * @brief The multiplication kernel. This kernel implements full matrix-matrix multiplication.
  *
  * @note Due to CUDA limitations, this cannot be a private method in the CudaAdditionKernel
  * class. Further, note that it is not possible to pass by reference to a CUDA kernel.
@@ -93,11 +103,23 @@ __device__ static DeviceMatrix_t GetSubMatrix( const DeviceMatrix_t matrix, size
  * this kernel uses shared memory and submatrices to implement matrix multiplication.
  * The biggest difference between this implementation and that in the CUDA
  * documentation is that this will work for matrices that are not evenly divisible
- * by the block size.
+ * by the block size. I opted for this implementation for matrix-vector multiplication
+ * even though it's quite inefficient because I wanted to use shared memory to speed
+ * up the kernel, and I could not figure out a good non-square block layout.
  *
- * @see https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#shared-memory__matrix-multiplication-shared-memory for a good picture of what I'm doing.
+ * This implementation requires square blocks, because otherwise the left and right
+ * submatrices would have to have different dimensions, and making that work for
+ * non-singleton result submatrices is nontrivial.
  *
- * @todo Document.
+ * @see Figure 10 from https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html
+ * for a good picture of what I'm doing. The difference is that my blocks can overlap
+ * the matrix boundary.
+ * @see AdditionKernel for a discussion of how I cover a matrix with blocks when
+ * the matrix does not evenly divide by the block size.
+ *
+ * @param lhs The left matrix operand.
+ * @param rhs The right matrix operand.
+ * @param[out] result The matrix result.
  */
 __global__ static void MultiplicationKernel( const DeviceMatrix_t lhs, const DeviceMatrix_t rhs, DeviceMatrix_t result )
 {
@@ -110,6 +132,11 @@ __global__ static void MultiplicationKernel( const DeviceMatrix_t lhs, const Dev
     // Loop over the submatrices of lhs and rhs to compute sub.
     for( size_t i = 0; i < ( BLOCK_XDIM + lhs.cols - 1 ) / BLOCK_XDIM; ++i )
     {
+        // Annotate these submatrices as const even though it doesn't actually
+        // prevent you from modifying their data as an extra reminder that they
+        // can overlap the matrix, in which case so does their contained array.
+        // You *really* don't want to modify that data!
+
         // Fixed row and variable columm.
         const DeviceMatrix_t lhs_sub = GetSubMatrix( lhs, blockIdx.y, i );
         // Fixed column and variable row.
@@ -124,14 +151,23 @@ __global__ static void MultiplicationKernel( const DeviceMatrix_t lhs, const Dev
         //! can cover more than the matrix memory, this will access memory we do
         //! not own. This is bad, but I'd rather do that than add more branches.
         //! We don't modify the data, so it's not *that* bad... (it actually is).
+        //! I'd try to find something different to do if I wasn't so overworked
+        //! this semester :(
         left_block[threadIdx.y][threadIdx.x] = GetElement( lhs_sub, threadIdx.y, threadIdx.x );
         right_block[threadIdx.y][threadIdx.x] = GetElement( rhs_sub, threadIdx.y, threadIdx.x );
 
         // Finish loading the shared memory before proceeding.
         __syncthreads();
 
-        //! @note You have no idea how long it took, or how many pages of graph paper
-        //! I went through to get this formula.
+        //! @note In order to avoid branches (I hope) only go up to the
+        //! @f$b_y - ( ( (i + 1) \cdot b_y )\ \%\ columns )\ \%\ y@f$ column or row in
+        //! the left and right submatrices respectively, where @f$b_y@f$ is the
+        //! @f$y@f$ dimension of the block size, @f$i@f$ is the index of the
+        //! submatrix we are working on, and @f$columns@f$ is the number of columns
+        //! in the left matrix (also the number of rows in the right matrix).
+        //! This avoids walking off the edge of the matrix when it doesn't evenly
+        //! divide by the block size. You have no idea how long it took, or how
+        //! many pages of graph paper I went through to get this formula.
         const size_t lim = BLOCK_YDIM - ( ( ( i + 1 ) * BLOCK_YDIM ) % lhs.cols ) % BLOCK_YDIM;
         for( size_t j = 0; j < lim; ++j )
         {
@@ -190,11 +226,12 @@ std::shared_ptr<Matrix_t> CudaMultiplicationKernel::Operation( const Matrix_t& l
     cudaMemcpy( _lhs.data, lhs.data, lhs.elements * sizeof( double ), cudaMemcpyHostToDevice );
     cudaMemcpy( _rhs.data, rhs.data, rhs.elements * sizeof( double ), cudaMemcpyHostToDevice );
 
-    dim3 grid_size(
-        ( BLOCK_SIZE.x + result->cols - 1 ) / BLOCK_SIZE.x,
-        ( BLOCK_SIZE.y + result->rows - 1 ) / BLOCK_SIZE.y,
+    const dim3 block_size( BLOCK_XDIM, BLOCK_YDIM, BLOCK_ZDIM );
+    const dim3 grid_size(
+        ( block_size.x + result->cols - 1 ) / block_size.x,
+        ( block_size.y + result->rows - 1 ) / block_size.y,
         1 );
-    MultiplicationKernel<<<grid_size, BLOCK_SIZE>>>( _lhs, _rhs, _result );
+    MultiplicationKernel<<<grid_size, block_size>>>( _lhs, _rhs, _result );
 
     cudaDeviceSynchronize();
 
