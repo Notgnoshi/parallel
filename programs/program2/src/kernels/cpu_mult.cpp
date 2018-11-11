@@ -8,7 +8,7 @@ void CpuMultiplicationKernel::Kernel( const Matrix_t& matrix, const Matrix_t& ve
     for( size_t r = 0; r < matrix.rows; ++r )
     {
         // The data field is a contiguous 1D slice.
-        result.data[r] = DotProduct( matrix.data + r, vector.data, matrix.cols );
+        result.data[r] = DotProduct( matrix.data + r * matrix.cols, vector.data, matrix.cols );
     }
 }
 
