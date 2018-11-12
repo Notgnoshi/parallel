@@ -2,6 +2,7 @@
 #include "matrix.h"
 #include "validator.h"
 #include <iostream>
+#include <sys/time.h>
 
 /**
  * @brief Define 2D blocks that are @f$16\times16@f$ threads each.
@@ -106,8 +107,11 @@ __global__ static void AdditionKernel( const float* lhs, const float* rhs, float
     }
 }
 
-std::shared_ptr<Matrix_t> CudaAdditionKernel::Operation( const Matrix_t& lhs, const Matrix_t& rhs )
+std::shared_ptr<Matrix_t> CudaAdditionKernel::Operation( const Matrix_t& lhs, const Matrix_t& rhs, bool time )
 {
+    struct timeval begin, end;
+    double duration;
+
     if( !AdditionValidator( lhs, rhs ) )
     {
         // std::cerr << "Dimensions (" << lhs.rows << ", " << lhs.cols << ")"
@@ -138,10 +142,26 @@ std::shared_ptr<Matrix_t> CudaAdditionKernel::Operation( const Matrix_t& lhs, co
         ( BLOCK_SIZE.y + result->rows - 1 ) / BLOCK_SIZE.y,
         1 );
 
+    gettimeofday( &begin, nullptr );
+
     // You *really* don't want to pass a struct to a CUDA kernel when the struct
     // has a copy constructor and a destructor. -____________-
     AdditionKernel<<<grid_size, BLOCK_SIZE>>>( device_lhs, device_rhs, device_result, result->rows, result->cols );
     cudaDeviceSynchronize();
+
+    gettimeofday( &end, nullptr );
+    if( end.tv_usec < begin.tv_usec )
+    {
+        end.tv_usec += 1000000;
+        begin.tv_sec += 1;
+    }
+
+    duration = static_cast<double>( end.tv_sec - begin.tv_sec ) + static_cast<double>( end.tv_usec - begin.tv_usec ) / 1000.0;
+
+    if( time )
+    {
+        std::cerr << __PRETTY_FUNCTION__ << ": " << duration << " ms" << std::endl;
+    }
 
     // Copy the result from the device to the host.
     cudaMemcpy( result->data, device_result, result->elements * sizeof( float ), cudaMemcpyDeviceToHost );

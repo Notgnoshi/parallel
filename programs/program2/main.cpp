@@ -20,7 +20,7 @@ int main( int argc, const char** argv )
     Matrix_t lhs( args.left_input );
     Matrix_t rhs( args.right_input );
 
-    std::shared_ptr<Matrix_t> res = kernel->Operation( lhs, rhs );
+    std::shared_ptr<Matrix_t> res = kernel->Operation( lhs, rhs, args.time );
 
     if( *res == Matrix_t( 0, 0 ) )
     {

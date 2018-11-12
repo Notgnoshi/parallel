@@ -39,6 +39,8 @@ public:
         Operation_e operation = OPERATION_VECTOR_MULTIPLICATION;
         //! @brief The kernel to use for the operation.
         Kernel_e kernel = KERNEL_DEFAULT;
+        //! @brief Whether or not to time the kernel execution.
+        bool time = false;
     };
 
     /**

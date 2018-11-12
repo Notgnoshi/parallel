@@ -2,6 +2,7 @@
 #include "matrix.h"
 #include "validator.h"
 #include <iostream>
+#include <sys/time.h>
 
 void CpuAdditionKernel::Kernel( const Matrix_t& lhs, const Matrix_t& rhs, Matrix_t& result )
 {
@@ -17,8 +18,11 @@ void CpuAdditionKernel::Kernel( const Matrix_t& lhs, const Matrix_t& rhs, Matrix
     }
 }
 
-std::shared_ptr<Matrix_t> CpuAdditionKernel::Operation( const Matrix_t& lhs, const Matrix_t& rhs )
+std::shared_ptr<Matrix_t> CpuAdditionKernel::Operation( const Matrix_t& lhs, const Matrix_t& rhs, bool time )
 {
+    struct timeval begin, end;
+    double duration;
+
     if( !AdditionValidator( lhs, rhs ) )
     {
         // std::cerr << "Dimensions (" << lhs.rows << ", " << lhs.cols << ")"
@@ -29,7 +33,23 @@ std::shared_ptr<Matrix_t> CpuAdditionKernel::Operation( const Matrix_t& lhs, con
 
     auto result = std::make_shared<Matrix_t>( lhs.rows, lhs.cols );
 
+    gettimeofday( &begin, nullptr );
+
     this->Kernel( lhs, rhs, *result );
+
+    gettimeofday( &end, nullptr );
+    if( end.tv_usec < begin.tv_usec )
+    {
+        end.tv_usec += 1000000;
+        begin.tv_sec += 1;
+    }
+
+    duration = static_cast<double>( end.tv_sec - begin.tv_sec ) + static_cast<double>( end.tv_usec - begin.tv_usec ) / 1000.0;
+
+    if( time )
+    {
+        std::cerr << __PRETTY_FUNCTION__ << ": " << duration << " ms" << std::endl;
+    }
 
     return result;
 }

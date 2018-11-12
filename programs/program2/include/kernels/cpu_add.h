@@ -17,11 +17,15 @@ public:
      * @note If the operand dimensions are mismatched, and empty Matrix_t will
      * be returned.
      *
+     * @details If the `time` parameter is `true`, the Kernel will time the operation
+     * and print the result to stderr in the format `__FUNCTION(): <time> ms`.
+     *
      * @param lhs The left operand.
      * @param rhs The right operand.
+     * @param time Whether or not to time the matrix operation. Defaults to false.
      * @returns A shared pointer to the operation result.
      */
-    std::shared_ptr<Matrix_t> Operation( const Matrix_t& lhs, const Matrix_t& rhs ) override;
+    std::shared_ptr<Matrix_t> Operation( const Matrix_t& lhs, const Matrix_t& rhs, bool time = false ) override;
 
 private:
     /**

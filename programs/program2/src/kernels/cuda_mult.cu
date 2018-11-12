@@ -2,6 +2,7 @@
 #include "matrix.h"
 #include "validator.h"
 #include <iostream>
+#include <sys/time.h>
 
 /**
  * @brief The @f$x@f$ dimension of the block size.
@@ -191,8 +192,11 @@ __global__ static void MultiplicationKernel( const DeviceMatrix_t lhs, const Dev
     }
 }
 
-std::shared_ptr<Matrix_t> CudaMultiplicationKernel::Operation( const Matrix_t& lhs, const Matrix_t& rhs )
+std::shared_ptr<Matrix_t> CudaMultiplicationKernel::Operation( const Matrix_t& lhs, const Matrix_t& rhs, bool time )
 {
+    struct timeval begin, end;
+    double duration;
+
     if( !MultiplicationValidator( lhs, rhs ) )
     {
         // std::cerr << "Dimensions (" << lhs.rows << ", " << lhs.cols << ")"
@@ -231,9 +235,25 @@ std::shared_ptr<Matrix_t> CudaMultiplicationKernel::Operation( const Matrix_t& l
         ( block_size.x + result->cols - 1 ) / block_size.x,
         ( block_size.y + result->rows - 1 ) / block_size.y,
         1 );
-    MultiplicationKernel<<<grid_size, block_size>>>( _lhs, _rhs, _result );
 
+    gettimeofday( &begin, nullptr );
+
+    MultiplicationKernel<<<grid_size, block_size>>>( _lhs, _rhs, _result );
     cudaDeviceSynchronize();
+
+    gettimeofday( &end, nullptr );
+    if( end.tv_usec < begin.tv_usec )
+    {
+        end.tv_usec += 1000000;
+        begin.tv_sec += 1;
+    }
+
+    duration = static_cast<double>( end.tv_sec - begin.tv_sec ) + static_cast<double>( end.tv_usec - begin.tv_usec ) / 1000.0;
+
+    if( time )
+    {
+        std::cerr << __PRETTY_FUNCTION__ << ": " << duration << " ms" << std::endl;
+    }
 
     // Copy the result from the device to the host.
     cudaMemcpy( result->data, _result.data, result->elements * sizeof( float ), cudaMemcpyDeviceToHost );

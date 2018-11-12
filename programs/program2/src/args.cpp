@@ -46,6 +46,10 @@ ArgumentParser::Args_t ArgumentParser::ParseArgs()
                 exit( 1 );
             }
         }
+        else if( *arg == "-t" || *arg == "--time" )
+        {
+            args.time = true;
+        }
         else
         {
             // Save the positional arguments in the order they are encountered.
@@ -101,7 +105,7 @@ ArgumentParser::Args_t ArgumentParser::ParseArgs()
 void ArgumentParser::Usage()
 {
     std::cout << "Usage: " << this->argv[0] << " ";
-    std::cout << "[--help] [--output <file>] [--kernel]"
+    std::cout << "[--help] [--output <file>] [--kernel] [--time]"
               << " ";
     std::cout << "<operation> <input1> <input2>";
     std::cout << std::endl
@@ -120,7 +124,6 @@ void ArgumentParser::Usage()
     std::cout << std::endl
               << std::endl;
 
-    //! @todo Add a --time option to time the computations.
     std::cout << "optional arguments:" << std::endl;
     std::cout << std::left << std::setw( 15 ) << " -h, --help"
               << "Show this help message and exit" << std::endl;
@@ -134,6 +137,8 @@ void ArgumentParser::Usage()
               << "    1 - Do not use a CUDA kernel. Perform the operation on the CPU." << std::endl;
     std::cout << std::left << std::setw( 15 ) << " "
               << "    2 - Use the CUDA kernel for the given operation." << std::endl;
+    std::cout << std::left << std::setw( 15 ) << " -t, --time"
+              << "Whether or not to time the matrix operation." << std::endl;
 }
 
 bool ArgumentParser::FileExists( const std::string& filename )

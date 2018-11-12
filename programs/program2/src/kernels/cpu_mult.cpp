@@ -2,6 +2,7 @@
 #include "matrix.h"
 #include "validator.h"
 #include <iostream>
+#include <sys/time.h>
 
 void CpuMultiplicationKernel::Kernel( const Matrix_t& matrix, const Matrix_t& vector, Matrix_t& result )
 {
@@ -12,8 +13,11 @@ void CpuMultiplicationKernel::Kernel( const Matrix_t& matrix, const Matrix_t& ve
     }
 }
 
-std::shared_ptr<Matrix_t> CpuMultiplicationKernel::Operation( const Matrix_t& matrix, const Matrix_t& vector )
+std::shared_ptr<Matrix_t> CpuMultiplicationKernel::Operation( const Matrix_t& matrix, const Matrix_t& vector, bool time )
 {
+    struct timeval begin, end;
+    double duration;
+
     if( !MultiplicationValidator( matrix, vector ) )
     {
         // std::cerr << "Dimensions (" << matrix.rows << ", " << matrix.cols << ")"
@@ -24,7 +28,23 @@ std::shared_ptr<Matrix_t> CpuMultiplicationKernel::Operation( const Matrix_t& ma
 
     auto result = std::make_shared<Matrix_t>( matrix.rows, vector.cols );
 
+    gettimeofday( &begin, nullptr );
+
     this->Kernel( matrix, vector, *result );
+
+    gettimeofday( &end, nullptr );
+    if( end.tv_usec < begin.tv_usec )
+    {
+        end.tv_usec += 1000000;
+        begin.tv_sec += 1;
+    }
+
+    duration = static_cast<double>( end.tv_sec - begin.tv_sec ) + static_cast<double>( end.tv_usec - begin.tv_usec ) / 1000.0;
+
+    if( time )
+    {
+        std::cerr << __PRETTY_FUNCTION__ << ": " << duration << " ms" << std::endl;
+    }
 
     return result;
 }
