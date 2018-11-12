@@ -37,7 +37,7 @@ CXX := g++
 LINK := g++
 
 LINKFLAGS = -lm -lcuda -lcudart
-NVXXFLAGS = -I$(INC_DIR) -std=c++11 -gencode arch=compute_61,code=sm_61
+NVXXFLAGS = -I$(INC_DIR) -std=c++11 #-gencode arch=compute_61,code=sm_61
 CXXFLAGS = -I$(INC_DIR) -O3 -Wall -Wpedantic -Wextra -Werror -Wconversion -std=c++11 -x c++
 
 .PHONY: clean format docs viewdocs runtests
