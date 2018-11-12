@@ -159,6 +159,9 @@ $ hexdump build/tmp/example.mat
 
 ## Profiling
 
+I'm not sure how to increase the number of processors on a graphics card, so I
+decided to perform my analysis using different block sizes.
+
 The provided makefile defines a *quite* disgusting `profile` target that runs both
 the matrix-matrix addition and matrix-vector multiplication several times with
 varying block sizes. If I would have thought ahead, I would have tried to find a
@@ -238,11 +241,75 @@ the profile results are summarized
 | M*M | 99.89% (30.1797s) | 99.52% (6.66770s) | 97.28% (1.14955s) | 92.88% (421.08ms) | 85.69% (195.00ms) | 84.14% (170.29ms) |
 
 where the table heading is the dimension of the square blocks, and the rows are
-the type of operation being performed.
+the type of operation being performed. The percentages are the amount of time spent
+in the kernel versus other operations like `cudaMalloc` or `cudaMemcpy`. The times
+are the time spent in the kernel call.
 
 As expected, smaller block sizes perform worse, with the exception of matrix-vector
 multiplication. This must be the point at which the benefit of shared memory and
 the cost of wasteful blocks meet.
+
+While I could measure the amount of time spent in the CPU kernel call (my original plan)
+in order to calculate the speedups, this would be comparing apples and oranges
+because the timing method differs, I cannot guarantee that the timing method would
+be comparable to whatever `nvprof` does under the hood. So I treat the @f$1 \times 1@f$
+block times as the sequential run times, even though they *are* parallel.
+
+Then the following python script calculates the speedups, efficiencies, and Karp-Flatt
+metrics
+
+```python
+#!/usr/bin/env python3
+import numpy as np
+
+procs = np.array([1, 2, 4, 8, 16, 32])
+mpm_times = np.array([21.820, 5.3356, 1.3969, 0.80349, 0.69325, 0.797])
+mtv_times = np.array([7.7031, 4.4283, 1.4275, 1.0299, 0.90295, 1.6458])
+mtm_times = np.array([1000*30.1797, 1000*6.6677, 1000*1.14955, 421.08, 195, 170.29])
+
+for times in [mpm_times, mtv_times, mtm_times]:
+    serial = times[0]
+    speedups = serial / times
+    efficiencies = speedups / procs
+    kfs = (1 / speedups - 1 / procs) / (1 - 1 / procs)
+
+    print(speedups)
+    print(efficiencies)
+    print(kfs)
+    print('='*80)
+```
+
+which outputs
+
+|  1  |      2      |      4      |      8      |      16     |      32     |
+|:---:|:-----------:|:-----------:|:-----------:|:-----------:|:-----------:|
+| 1   | 4.08951196  | 15.6203021  | 27.15652964 | 31.47493689 | 27.37766625 |
+| 1   | 2.04475598  | 3.90507552  | 3.3945662   | 1.96718356  | 0.85555207  |
+| NaN | -0.51094409 | -0.24797434 | -0.10077308 | -0.03277727 | 0.00544632  |
+
+for the matrix-matrix addition, and
+
+|  1  |      2     |      4      |      8     |     16     |     32     |
+|:---:|:----------:|:-----------:|:----------:|:----------:|:----------:|
+| 1   | 1.73951629 | 5.39621716  | 7.47946403 | 8.53103716 | 4.68045935 |
+| 1   | 0.86975815 | 1.34905429  | 0.934933   | 0.53318982 | 0.14626435 |
+| NaN | 0.14974491 | -0.08624666 | 0.00994219 | 0.05836698 | 0.18828825 |
+
+for matrix-vector multiplication, and
+
+|  1  |      2      |      4      |      8      |      16      |      32      |
+|:---:|:-----------:|:-----------:|:-----------:|:------------:|:------------:|
+| 1   | 4.52625343  | 26.2534905  | 71.67212881 | 154.76769231 | 177.22532151 |
+| 1   | 2.26312672  | 6.56337262  | 8.9590161   | 9.67298077   | 5.5382913    |
+| NaN | -0.55813345 | -0.28254644 | -0.12691151 | -0.05977462  | -0.02643351  |
+
+for matrix-matrix multiplication.
+
+Note that the efficiencies and Karp-Flatt metric values are not between 0 and 1,
+immediately indicating that something is wrong. This is probably because using
+the block size as a stand-in for the number of processors is not valid. I do not
+know what else to do though. It might also be that I asserted that the runtime
+with a block size of @f$1 \times 1 @f$ was the sequential runtime.
 
 ## Matrix Multiplication
 
