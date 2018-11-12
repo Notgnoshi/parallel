@@ -29,9 +29,9 @@ std::shared_ptr<Matrix_t> CpuMultiplicationKernel::Operation( const Matrix_t& ma
     return result;
 }
 
-double CpuMultiplicationKernel::DotProduct( const double* row, const double* col, size_t n )
+float CpuMultiplicationKernel::DotProduct( const float* row, const float* col, size_t n )
 {
-    double sum = 0;
+    float sum = 0;
     for( size_t i = 0; i < n; ++i )
     {
         sum += row[i] * col[i];

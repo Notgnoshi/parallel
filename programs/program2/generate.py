@@ -33,7 +33,7 @@ def main(args):
         binary.write(pack('N', args.cols))
 
         for row in M:
-            binary.write(pack('%sd' % len(row), *row))
+            binary.write(pack('%sf' % len(row), *row))
 
 
 

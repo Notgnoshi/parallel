@@ -7,11 +7,11 @@ void SerializationTest::SimpleSmall()
     Matrix_t matrix( 3, 3 );
     for( size_t i = 0; i < matrix.elements; ++i )
     {
-        matrix.data[i] = static_cast<double>( i );
+        matrix.data[i] = static_cast<float>( i );
     }
 
     // Verify that the test matrix has been created as expected.
-    double v = 0;
+    float v = 0;
     for( size_t i = 0; i < matrix.rows; ++i )
     {
         for( size_t j = 0; j < matrix.cols; ++j )
@@ -30,7 +30,7 @@ void SerializationTest::SimpleSmall()
     // Verify that the new matrix has the right values in its data array.
     for( size_t i = 0; i < deser.elements; ++i )
     {
-        CPPUNIT_ASSERT( deser.data[i] == static_cast<double>( i ) );
+        CPPUNIT_ASSERT( deser.data[i] == static_cast<float>( i ) );
     }
 
     // Verify that the new matrix has the right values in the right places.
@@ -75,7 +75,7 @@ void SerializationTest::SerializationOrder()
     Matrix_t matrix( 4, 4 );
     for( size_t i = 0; i < matrix.elements; ++i )
     {
-        matrix.data[i] = static_cast<double>( i + 1 );
+        matrix.data[i] = static_cast<float>( i + 1 );
     }
 
     const Matrix_t expected( "build/tmp/4x4_seq.mat" );

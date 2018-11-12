@@ -10,12 +10,12 @@ void CudaMultiplicationKernelTest::SimpleSmall()
 
     for( size_t i = 0; i < lhs.elements; ++i )
     {
-        lhs.data[i] = static_cast<double>( i );
+        lhs.data[i] = static_cast<float>( i );
     }
 
     for( size_t i = 0; i < rhs.elements; ++i )
     {
-        rhs.data[i] = static_cast<double>( i ) + 1.5;
+        rhs.data[i] = static_cast<float>( i ) + static_cast<float>( 1.5 );
     }
 
     auto cpu_kernel = KernelFactory( OPERATION_VECTOR_MULTIPLICATION, KERNEL_CPU ).GetKernel();
@@ -99,12 +99,12 @@ void CudaMultiplicationKernelTest::SimpleLarge()
 
     for( size_t i = 0; i < lhs.elements; ++i )
     {
-        lhs.data[i] = static_cast<double>( i );
+        lhs.data[i] = static_cast<float>( i );
     }
 
     for( size_t i = 0; i < rhs.elements; ++i )
     {
-        rhs.data[i] = static_cast<double>( i ) + 1.5;
+        rhs.data[i] = static_cast<float>( i ) + static_cast<float>( 1.5 );
     }
 
     auto cpu_kernel = KernelFactory( OPERATION_VECTOR_MULTIPLICATION, KERNEL_CPU ).GetKernel();
@@ -123,12 +123,12 @@ void CudaMultiplicationKernelTest::LargeMismatched()
 
     for( size_t i = 0; i < lhs.elements; ++i )
     {
-        lhs.data[i] = static_cast<double>( i );
+        lhs.data[i] = static_cast<float>( i );
     }
 
     for( size_t i = 0; i < rhs.elements; ++i )
     {
-        rhs.data[i] = static_cast<double>( i ) + 1.5;
+        rhs.data[i] = static_cast<float>( i ) + static_cast<float>( 1.5 );
     }
 
     auto cpu_kernel = KernelFactory( OPERATION_VECTOR_MULTIPLICATION, KERNEL_CPU ).GetKernel();

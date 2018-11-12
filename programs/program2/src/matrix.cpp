@@ -44,7 +44,7 @@ Matrix_t::Matrix_t( const std::string& filename )
     this->elements = this->rows * this->cols;
 
     // Make sure there's enough of the file to read in the dimensions and the data.
-    if( size != 2 * sizeof( size_t ) + this->elements * sizeof( double ) )
+    if( size != 2 * sizeof( size_t ) + this->elements * sizeof( float ) )
     {
         this->rows = 0;
         this->cols = 0;
@@ -62,7 +62,7 @@ Matrix_t::Matrix_t( const std::string& filename )
         return;
     }
 
-    file.read( reinterpret_cast<char*>( this->data ), sizeof( double ) * this->elements );
+    file.read( reinterpret_cast<char*>( this->data ), sizeof( float ) * this->elements );
 }
 
 Matrix_t::Matrix_t( const Matrix_t& other ) :
@@ -79,7 +79,7 @@ Matrix_t::Matrix_t( const Matrix_t& other ) :
     }
     else
     {
-        memcpy( this->data, other.data, this->elements * sizeof( double ) );
+        memcpy( this->data, other.data, this->elements * sizeof( float ) );
     }
 }
 
@@ -89,7 +89,7 @@ void Matrix_t::Serialize( const std::string& filename )
 
     file.write( reinterpret_cast<const char*>( &this->rows ), sizeof( size_t ) );
     file.write( reinterpret_cast<const char*>( &this->cols ), sizeof( size_t ) );
-    file.write( reinterpret_cast<const char*>( this->data ), sizeof( double ) * this->elements );
+    file.write( reinterpret_cast<const char*>( this->data ), sizeof( float ) * this->elements );
 
     file.close();
 }
@@ -127,19 +127,19 @@ bool Matrix_t::operator==( const Matrix_t& other ) const
     return true;
 }
 
-double& Matrix_t::operator()( size_t row, size_t col ) const
+float& Matrix_t::operator()( size_t row, size_t col ) const
 {
     return this->data[row * this->cols + col];
 }
 
-double& Matrix_t::operator()( size_t row, size_t col )
+float& Matrix_t::operator()( size_t row, size_t col )
 {
     return this->data[row * this->cols + col];
 }
 
-double* Matrix_t::Allocate2D( size_t rows, size_t cols )
+float* Matrix_t::Allocate2D( size_t rows, size_t cols )
 {
-    auto data = new double[rows * cols];
+    auto data = new float[rows * cols];
 
     if( data != nullptr )
     {

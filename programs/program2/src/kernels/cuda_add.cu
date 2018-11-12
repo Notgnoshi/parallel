@@ -95,7 +95,7 @@ static const dim3 BLOCK_SIZE( 16, 16, 1 );
  * @param rows The number of rows in each of the matrices.
  * @param cols The number of columns in each of the matrices.
  */
-__global__ static void AdditionKernel( const double* lhs, const double* rhs, double* result, size_t rows, size_t cols )
+__global__ static void AdditionKernel( const float* lhs, const float* rhs, float* result, size_t rows, size_t cols )
 {
     size_t col = blockIdx.x * blockDim.x + threadIdx.x;
     size_t row = blockIdx.y * blockDim.y + threadIdx.y;
@@ -120,17 +120,17 @@ std::shared_ptr<Matrix_t> CudaAdditionKernel::Operation( const Matrix_t& lhs, co
     std::shared_ptr<Matrix_t> result = std::make_shared<Matrix_t>( lhs.rows, lhs.cols );
 
     // Allocate data on the device.
-    double* device_result;
-    double* device_lhs;
-    double* device_rhs;
+    float* device_result;
+    float* device_lhs;
+    float* device_rhs;
 
-    cudaMalloc( &device_result, result->elements * sizeof( double ) );
-    cudaMalloc( &device_lhs, lhs.elements * sizeof( double ) );
-    cudaMalloc( &device_rhs, rhs.elements * sizeof( double ) );
+    cudaMalloc( &device_result, result->elements * sizeof( float ) );
+    cudaMalloc( &device_lhs, lhs.elements * sizeof( float ) );
+    cudaMalloc( &device_rhs, rhs.elements * sizeof( float ) );
 
     // Copy the host operands to the device.
-    cudaMemcpy( device_lhs, lhs.data, lhs.elements * sizeof( double ), cudaMemcpyHostToDevice );
-    cudaMemcpy( device_rhs, rhs.data, rhs.elements * sizeof( double ), cudaMemcpyHostToDevice );
+    cudaMemcpy( device_lhs, lhs.data, lhs.elements * sizeof( float ), cudaMemcpyHostToDevice );
+    cudaMemcpy( device_rhs, rhs.data, rhs.elements * sizeof( float ), cudaMemcpyHostToDevice );
 
     // Make sure we have enough blocks for matrices not evenly divisible by the block size.
     dim3 grid_size(
@@ -144,7 +144,7 @@ std::shared_ptr<Matrix_t> CudaAdditionKernel::Operation( const Matrix_t& lhs, co
     cudaDeviceSynchronize();
 
     // Copy the result from the device to the host.
-    cudaMemcpy( result->data, device_result, result->elements * sizeof( double ), cudaMemcpyDeviceToHost );
+    cudaMemcpy( result->data, device_result, result->elements * sizeof( float ), cudaMemcpyDeviceToHost );
 
     // Every good programmer knows every malloc() should have a corresponding free().
     cudaFree( device_result );

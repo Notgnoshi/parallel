@@ -16,7 +16,7 @@ struct Matrix_t
     size_t elements = 0;
 
     //! @brief The matrix data, stored in row-major representation.
-    double* data = nullptr;
+    float* data = nullptr;
 
     /**
      * @brief Construct a zeroed Matrix_t object of the given size.
@@ -49,7 +49,7 @@ struct Matrix_t
      * @details The matrix will be saved to a file as follows.
      * * The first 8 bytes (size_t) indicate the number of rows.
      * * The second 8 bytes (size_t) indicate the number of columns in each row.
-     * * The next rows * cols * 8 (double) bytes of the file is the matrix data saved in
+     * * The next rows * cols * 8 (float) bytes of the file is the matrix data saved in
      *   row major format.
      *
      * @param filename The file to save the serialized matrix to.
@@ -76,7 +76,7 @@ struct Matrix_t
      * @param col
      * @returns The element stored at the [row][col] position.
      */
-    double& operator()( size_t row, size_t col ) const;
+    float& operator()( size_t row, size_t col ) const;
 
     /**
      * @brief Provide a 2D interface to the 1D internal array.
@@ -85,7 +85,7 @@ struct Matrix_t
      * @param col
      * @returns The element stored at the [row][col] position.
      */
-    double& operator()( size_t row, size_t col );
+    float& operator()( size_t row, size_t col );
 
     /**
      * @brief Allocate and zero a contiguous 2D array.
@@ -96,5 +96,5 @@ struct Matrix_t
      * @param cols The number of columns in the array.
      * @returns A single pointer to the allocated and zeroed array, or nullptr on failure.
      */
-    static double* Allocate2D( size_t rows, size_t cols );
+    static float* Allocate2D( size_t rows, size_t cols );
 };

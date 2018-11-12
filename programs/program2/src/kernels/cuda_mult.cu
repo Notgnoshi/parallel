@@ -36,7 +36,7 @@ struct DeviceMatrix_t
     //! @brief The stride in the 1D array that the 2D data is stored in.
     size_t stride;
     //! @brief The matrix data stored in row-major order.
-    double* data;
+    float* data;
 };
 
 /**
@@ -47,7 +47,7 @@ struct DeviceMatrix_t
  * @param col ...
  * @returns the element at the given location.
  */
-__device__ static double GetElement( const DeviceMatrix_t matrix, size_t row, size_t col )
+__device__ static float GetElement( const DeviceMatrix_t matrix, size_t row, size_t col )
 {
     return matrix.data[row * matrix.stride + col];
 }
@@ -60,7 +60,7 @@ __device__ static double GetElement( const DeviceMatrix_t matrix, size_t row, si
  * @param col ...
  * @param value The value to insert at (row, col)
  */
-__device__ static void SetElement( DeviceMatrix_t matrix, size_t row, size_t col, double value )
+__device__ static void SetElement( DeviceMatrix_t matrix, size_t row, size_t col, float value )
 {
     matrix.data[row * matrix.stride + col] = value;
 }
@@ -127,7 +127,7 @@ __global__ static void MultiplicationKernel( const DeviceMatrix_t lhs, const Dev
     DeviceMatrix_t sub = GetSubMatrix( result, blockIdx.y, blockIdx.x );
 
     // Each thread computes one value in the submatrix.
-    double value = 0;
+    float value = 0;
 
     // Loop over the submatrices of lhs and rhs to compute sub.
     for( size_t i = 0; i < ( BLOCK_XDIM + lhs.cols - 1 ) / BLOCK_XDIM; ++i )
@@ -143,8 +143,8 @@ __global__ static void MultiplicationKernel( const DeviceMatrix_t lhs, const Dev
         const DeviceMatrix_t rhs_sub = GetSubMatrix( rhs, i, blockIdx.x );
 
         // Share lhs_sub and rhs_sub across the block.
-        __shared__ double left_block[BLOCK_YDIM][BLOCK_XDIM];
-        __shared__ double right_block[BLOCK_YDIM][BLOCK_XDIM];
+        __shared__ float left_block[BLOCK_YDIM][BLOCK_XDIM];
+        __shared__ float right_block[BLOCK_YDIM][BLOCK_XDIM];
 
         //! @note Each thread loads an element of the result submatrix that their
         //! block is responsible for computing. However, note that since the blocks
@@ -218,13 +218,13 @@ std::shared_ptr<Matrix_t> CudaMultiplicationKernel::Operation( const Matrix_t& l
     _result.stride = result->cols;
     _result.rows = result->rows;
 
-    cudaMalloc( &_result.data, result->elements * sizeof( double ) );
-    cudaMalloc( &_lhs.data, lhs.elements * sizeof( double ) );
-    cudaMalloc( &_rhs.data, rhs.elements * sizeof( double ) );
+    cudaMalloc( &_result.data, result->elements * sizeof( float ) );
+    cudaMalloc( &_lhs.data, lhs.elements * sizeof( float ) );
+    cudaMalloc( &_rhs.data, rhs.elements * sizeof( float ) );
 
     // Copy the operands to the device.
-    cudaMemcpy( _lhs.data, lhs.data, lhs.elements * sizeof( double ), cudaMemcpyHostToDevice );
-    cudaMemcpy( _rhs.data, rhs.data, rhs.elements * sizeof( double ), cudaMemcpyHostToDevice );
+    cudaMemcpy( _lhs.data, lhs.data, lhs.elements * sizeof( float ), cudaMemcpyHostToDevice );
+    cudaMemcpy( _rhs.data, rhs.data, rhs.elements * sizeof( float ), cudaMemcpyHostToDevice );
 
     const dim3 block_size( BLOCK_XDIM, BLOCK_YDIM, BLOCK_ZDIM );
     const dim3 grid_size(
@@ -236,7 +236,7 @@ std::shared_ptr<Matrix_t> CudaMultiplicationKernel::Operation( const Matrix_t& l
     cudaDeviceSynchronize();
 
     // Copy the result from the device to the host.
-    cudaMemcpy( result->data, _result.data, result->elements * sizeof( double ), cudaMemcpyDeviceToHost );
+    cudaMemcpy( result->data, _result.data, result->elements * sizeof( float ), cudaMemcpyDeviceToHost );
 
     // Every good programmer knows every malloc() should have a corresponding free().
     cudaFree( _result.data );

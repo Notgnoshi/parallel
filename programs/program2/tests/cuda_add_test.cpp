@@ -90,8 +90,8 @@ void CudaAdditionKernelTest::LargeMismatched()
     Matrix_t expected( rows, cols );
     for( size_t i = 0; i < lhs.elements; ++i )
     {
-        lhs.data[i] = static_cast<double>( i ) + 0.5;
-        rhs.data[i] = static_cast<double>( i ) + 1.5;
+        lhs.data[i] = static_cast<float>( i ) + static_cast<float>( 0.5 );
+        rhs.data[i] = static_cast<float>( i ) + static_cast<float>( 1.5 );
         expected.data[i] = lhs.data[i] + rhs.data[i];
     }
 

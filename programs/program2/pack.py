@@ -67,7 +67,7 @@ def pack_into(input_filename, output_filename):
     :param output_filename: The output filename.
     """
     rows, cols = get_dimensions(input_filename)
-    print('Input file dimensions: ', rows, 'x', cols)
+    # print('Input file dimensions: ', rows, 'x', cols)
 
     with open(input_filename, 'r') as text, open(output_filename, 'wb') as binary:
         binary.write(pack('N', rows))
@@ -75,7 +75,7 @@ def pack_into(input_filename, output_filename):
 
         for row in text:
             row = [float(x) for x in row.strip().split()]
-            binary.write(pack('%sd' % len(row), *row))
+            binary.write(pack('%sf' % len(row), *row))
 
 
 def main(args):

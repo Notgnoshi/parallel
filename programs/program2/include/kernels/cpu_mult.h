@@ -45,5 +45,5 @@ private:
      * @param n   The length of the two vector.
      * @returns The vector dot product.
      */
-    static double DotProduct( const double* row, const double* col, size_t n );
+    static float DotProduct( const float* row, const float* col, size_t n );
 };
