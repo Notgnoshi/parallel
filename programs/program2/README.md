@@ -311,6 +311,94 @@ the block size as a stand-in for the number of processors is not valid. I do not
 know what else to do though. It might also be that I asserted that the runtime
 with a block size of @f$1 \times 1 @f$ was the sequential runtime.
 
+## Timing
+
+I've left the above profiling section for posterity's sake, but I stopped being
+stupid and did better timings. There is now a `make time` target that runs the
+program with the `--time` commandline argument for both the CPU and CUDA kernels
+for the three (two!) operations.
+
+```shell
+$ make time
+=============================
+Timing Serial Addition
+=============================
+build/prog2 --time --kernel 1 --output build/tmp/time_addition_cpu.mat MMA build/tmp/4000x4000_1.mat build/tmp/4000x4000_2.mat
+virtual std::shared_ptr<Matrix_t> CpuAdditionKernel::Operation(const Matrix_t&, const Matrix_t&, bool): 52.696 ms
+=============================
+Timing Parallel Addition
+=============================
+build/prog2 --time --kernel 2 --output build/tmp/time_addition_cuda.mat MMA build/tmp/4000x4000_1.mat build/tmp/4000x4000_2.mat
+virtual std::shared_ptr<Matrix_t> CudaAdditionKernel::Operation(const Matrix_t&, const Matrix_t&, bool): 0.846 ms
+=============================
+Timing Sequential M-V Multiplication
+=============================
+build/prog2 --time --kernel 1 --output build/tmp/time_multiplication_cpu.mat MVM build/tmp/4000x4000_1.mat build/tmp/4000x1_1.mat
+virtual std::shared_ptr<Matrix_t> CpuMultiplicationKernel::Operation(const Matrix_t&, const Matrix_t&, bool): 14.92 ms
+=============================
+Timing Parallel M-V Multiplication
+=============================
+build/prog2 --time --kernel 2 --output build/tmp/time_multiplication_cuda.mat MVM build/tmp/4000x4000_1.mat build/tmp/4000x1_1.mat
+virtual std::shared_ptr<Matrix_t> CudaMultiplicationKernel::Operation(const Matrix_t&, const Matrix_t&, bool): 1.122 ms
+=============================
+Timing Parallel M-M Multiplication
+=============================
+build/prog2 --time --kernel 2 --output build/tmp/time_ext_mult_cuda.mat MVM build/tmp/4000x4000_1.mat build/tmp/4000x4000_2.mat
+virtual std::shared_ptr<Matrix_t> CudaMultiplicationKernel::Operation(const Matrix_t&, const Matrix_t&, bool): 249.329 ms
+```
+
+This gives the results
+
+|          | M+M      | M*V     | M*M       |
+|---------:|:--------:|:-------:|:---------:|
+| Serial   | 52.696ms | 14.92ms | N/A       |
+| Parallel | 0.846ms  | 1.122ms | 249.329ms |
+
+Note that I did not implement matrix-matrix multiplication on the CPU; I only decided
+to do the full multiplication after I started digging into the multiplication CUDA
+kernel. Also note that these times are slightly longer than the profiler gives,
+but that's because I also time the kernel launch, kernel execution, and device
+synchronization. The `nvprof` profiler times only the execution on the device.
+
+Then
+
+```python
+import numpy as np
+
+procs = np.array([4000**2, 4000, 4000**2])
+times = np.array([0.846, 1.122, 249.329])
+serials = np.array([52.696, 14.92, 0])
+
+speedups = serials / times
+efficiencies = speedups / procs
+# Divide by zero, I know.
+kfs = (1 / speedups - 1 / procs) / (1 - 1 / procs)
+
+print(speedups
+print(efficiencies)
+print(kfs)
+```
+
+which gives
+
+|            | M+M            | M*V            | M*M |
+|-----------:|:--------------:|:--------------:|:---:|
+| Speedup    | 62.28841608    | 13.29768271    | 0   |
+| Efficiency | 3.89302600e-06 | 3.32442068e-03 | 0   |
+| Karp-Flatt | 0.01605429     | 0.07496981     | inf |
+
+These are actually believable numbers. Note that the number of processors is actually
+the number of workers, even though the actual number of cores on my card is 2560.
+If I change the number of processors, I get
+
+|            | M+M            | M*V            | M*M |
+|-----------:|:--------------:|:--------------:|:---:|
+| Speedup    | 62.28841608    | 13.29768271    | 0   |
+| Efficiency | 0.02433141     | 0.00519441     | 0   |
+| Karp-Flatt | 0.01566985     | 0.07483968     | inf |
+
+which are also believable numbers.
+
 ## Matrix Multiplication
 
 See `#MultiplicationKernel` for more complete details, but I ended up implementing

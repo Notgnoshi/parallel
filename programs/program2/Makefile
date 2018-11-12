@@ -109,6 +109,34 @@ _generate:
 	python3 generate.py $(_SIZE) $(_SIZE) --output $(BUILD_DIR)/tmp/$(_SIZE)x$(_SIZE)_2.mat
 	python3 generate.py $(_SIZE) 1        --output $(BUILD_DIR)/tmp/$(_SIZE)x1_1.mat
 
+_time_addition:
+	@echo "============================="
+	@echo "Timing Serial Addition"
+	@echo "============================="
+	$(BUILD_DIR)/$(TARGET) --time --kernel 1 --output $(BUILD_DIR)/tmp/time_addition_cpu.mat MMA $(BUILD_DIR)/tmp/$(_SIZE)x$(_SIZE)_1.mat $(BUILD_DIR)/tmp/$(_SIZE)x$(_SIZE)_2.mat
+
+	@echo "============================="
+	@echo "Timing Parallel Addition"
+	@echo "============================="
+	$(BUILD_DIR)/$(TARGET) --time --kernel 2 --output $(BUILD_DIR)/tmp/time_addition_cuda.mat MMA $(BUILD_DIR)/tmp/$(_SIZE)x$(_SIZE)_1.mat $(BUILD_DIR)/tmp/$(_SIZE)x$(_SIZE)_2.mat
+
+_time_multiplication:
+	@echo "============================="
+	@echo "Timing Sequential M-V Multiplication"
+	@echo "============================="
+	$(BUILD_DIR)/$(TARGET) --time --kernel 1 --output $(BUILD_DIR)/tmp/time_multiplication_cpu.mat MVM $(BUILD_DIR)/tmp/$(_SIZE)x$(_SIZE)_1.mat $(BUILD_DIR)/tmp/$(_SIZE)x1_1.mat
+
+	@echo "============================="
+	@echo "Timing Parallel M-V Multiplication"
+	@echo "============================="
+	$(BUILD_DIR)/$(TARGET) --time --kernel 2 --output $(BUILD_DIR)/tmp/time_multiplication_cuda.mat MVM $(BUILD_DIR)/tmp/$(_SIZE)x$(_SIZE)_1.mat $(BUILD_DIR)/tmp/$(_SIZE)x1_1.mat
+
+_time_extended_multiplication:
+	@echo "============================="
+	@echo "Timing Parallel M-M Multiplication"
+	@echo "============================="
+	$(BUILD_DIR)/$(TARGET) --time --kernel 2 --output $(BUILD_DIR)/tmp/time_ext_mult_cuda.mat MVM $(BUILD_DIR)/tmp/$(_SIZE)x$(_SIZE)_1.mat $(BUILD_DIR)/tmp/$(_SIZE)x$(_SIZE)_2.mat
+
 _addition:
 	@echo "============================="
 	@echo "Profiling M-M Addition:"
@@ -304,3 +332,10 @@ profile: _generate
 profile: _addition
 profile: _multiplication
 profile: _extended_multiplication
+
+time: clean
+time: all
+time: _generate
+time: _time_addition
+time: _time_multiplication
+time: _time_extended_multiplication
