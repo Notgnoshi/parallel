@@ -1,8 +1,6 @@
 .vscode
 # Build directory
 **/build
-# Astyle backups
-*.orig
 # Binary matrix files
 *.mat
 
