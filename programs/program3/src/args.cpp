@@ -2,6 +2,8 @@
 #include <iomanip>
 #include <iostream>
 
+using namespace std;
+
 ArgumentParser::ArgumentParser( int argc, char** argv ) :
     argc( argc )
 {
@@ -14,7 +16,7 @@ ArgumentParser::ArgumentParser( int argc, char** argv ) :
 ArgumentParser::Args_t ArgumentParser::ParseArgs()
 {
     Args_t args;
-    std::vector<std::string> positionals;
+    vector<string> positionals;
 
     for( auto arg = this->argv.begin() + 1; arg != this->argv.end(); ++arg )
     {
@@ -33,17 +35,17 @@ ArgumentParser::Args_t ArgumentParser::ParseArgs()
             ++arg;
             try
             {
-                args.strategy = static_cast<Strategy_e>( std::stoi( *arg ) );
+                args.strategy = static_cast<Strategy_e>( stoi( *arg ) );
             } catch( ... )
             {
-                std::cerr << "Failed to parse strategy." << std::endl;
+                cerr << "Failed to parse strategy." << endl;
                 this->Usage();
                 exit( 1 );
             }
 
             if( args.strategy <= STRATEGY_BEGIN || args.strategy >= STRATEGY_END )
             {
-                std::cerr << "Invalid strategy given." << std::endl;
+                cerr << "Invalid strategy given." << endl;
                 this->Usage();
                 exit( 1 );
             }
@@ -60,17 +62,17 @@ ArgumentParser::Args_t ArgumentParser::ParseArgs()
 
     if( positionals.size() != 1 )
     {
-        std::cerr << "Invalid positional argument(s)." << std::endl;
+        cerr << "Invalid positional argument(s)." << endl;
         this->Usage();
         exit( 1 );
     }
 
     try
     {
-        args.n = std::stoi( positionals[0] );
+        args.n = stoi( positionals[0] );
     } catch( ... )
     {
-        std::cerr << "Failed to parse 'n'" << std::endl;
+        cerr << "Failed to parse 'n'" << endl;
         this->Usage();
         exit( 1 );
     }
@@ -80,37 +82,37 @@ ArgumentParser::Args_t ArgumentParser::ParseArgs()
 
 void ArgumentParser::Usage()
 {
-    std::cout << "Usage: " << this->argv[0] << " ";
-    std::cout << "[--help] [--output OUTPUT] [--strategy STRATEGY] [--time]"
-              << " ";
-    std::cout << "<n>";
-    std::cout << std::endl
-              << std::endl;
-    std::cout << "A distributed memory solution to the n queens problem.";
-    std::cout << std::endl
-              << std::endl;
+    cout << "Usage: " << this->argv[0] << " ";
+    cout << "[--help] [--output OUTPUT] [--strategy STRATEGY] [--time]"
+         << " ";
+    cout << "<n>";
+    cout << endl
+         << endl;
+    cout << "A distributed memory solution to the n queens problem.";
+    cout << endl
+         << endl;
 
-    std::cout << "positional arguments:" << std::endl;
-    std::cout << std::left << std::setw( 18 ) << "  n"
-              << "The length of one side of the chess board." << std::endl;
-    std::cout << std::endl
-              << std::endl;
+    cout << "positional arguments:" << endl;
+    cout << left << setw( 18 ) << "  n"
+         << "The length of one side of the chess board." << endl;
+    cout << endl
+         << endl;
 
-    std::cout << "optional arguments:" << std::endl;
-    std::cout << std::left << std::setw( 18 ) << " -h, --help"
-              << "Show this help message and exit" << std::endl;
-    std::cout << std::left << std::setw( 18 ) << " -o, --output"
-              << "The filename to print solutions to." << std::endl;
-    std::cout << std::left << std::setw( 18 ) << " -s, --strategy"
-              << "The strategy to use for the solution. Must be one of" << std::endl;
-    std::cout << std::left << std::setw( 18 ) << " "
-              << "    1 - Use a slow serial solution strategy." << std::endl;
-    std::cout << std::left << std::setw( 18 ) << " "
-              << "    2 - Use a slow shared memory parallel strategy." << std::endl;
-    std::cout << std::left << std::setw( 18 ) << " "
-              << "    3 - Use a distributed memory strategy." << std::endl;
-    std::cout << std::left << std::setw( 18 ) << " "
-              << "    4 - Use a distributed CUDA strategy." << std::endl;
-    std::cout << std::left << std::setw( 18 ) << " -t, --time"
-              << "Whether or not to time the solution duration." << std::endl;
+    cout << "optional arguments:" << endl;
+    cout << left << setw( 18 ) << " -h, --help"
+         << "Show this help message and exit" << endl;
+    cout << left << setw( 18 ) << " -o, --output"
+         << "The filename to print solutions to." << endl;
+    cout << left << setw( 18 ) << " -s, --strategy"
+         << "The strategy to use for the solution. Must be one of" << endl;
+    cout << left << setw( 18 ) << " "
+         << "    1 - Use a slow serial solution strategy." << endl;
+    cout << left << setw( 18 ) << " "
+         << "    2 - Use a slow shared memory parallel strategy." << endl;
+    cout << left << setw( 18 ) << " "
+         << "    3 - Use a distributed memory strategy." << endl;
+    cout << left << setw( 18 ) << " "
+         << "    4 - Use a distributed CUDA strategy." << endl;
+    cout << left << setw( 18 ) << " -t, --time"
+         << "Whether or not to time the solution duration." << endl;
 }
