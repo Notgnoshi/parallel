@@ -4,7 +4,7 @@
 
 using namespace std;
 
-ArgumentParser::ArgumentParser( int argc, char** argv ) :
+ArgumentParser::ArgumentParser( int argc, const char** argv ) :
     argc( argc )
 {
     for( int i = 0; i < this->argc; ++i )

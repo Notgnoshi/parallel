@@ -1,7 +1,6 @@
 #include "args.h"
-#include <cstdio>
-#include <cstdlib>
-#include <mpi.h>
+#include "strategy_factory.h"
+#include <iostream>
 
 /**
  * @brief Program main entry point.
@@ -13,23 +12,30 @@
  *
  * @returns 0 if program exited successfully, 1 otherwise.
  */
-int main( int argc, char** argv )
+int main( int argc, const char** argv )
 {
     ArgumentParser::Args_t args = ArgumentParser( argc, argv ).ParseArgs();
 
-    ArgumentParser::Summarize( args );
+    // Get the right solution strategy based on the commandline arguments.
+    auto strategy = StrategyFactory( args ).GetStrategy();
 
-    int nprocs, rank, namelen;
-    char processor_name[MPI_MAX_PROCESSOR_NAME];
+    // Initialize MPI communications, etc.
+    strategy->Initialize( &argc, &argv );
 
-    MPI_Init( &argc, &argv );
-    MPI_Comm_size( MPI_COMM_WORLD, &nprocs );
-    MPI_Comm_rank( MPI_COMM_WORLD, &rank );
-    MPI_Get_processor_name( processor_name, &namelen );
+    if( strategy->GetRank() == 0 )
+    {
+        ArgumentParser::Summarize( args );
+    }
 
-    printf( "Process %d out of %d on %s\n", rank, nprocs, processor_name );
+    // Get the number of solutions and print them out.
+    size_t solutions = strategy->Run( args.n, true );
+    if( strategy->GetRank() == 0 )
+    {
+        std::cout << "Found " << solutions << " solutions." << std::endl;
+    }
 
-    MPI_Finalize();
+    // Clean up after MPI communications, etc.
+    strategy->Finalize();
 
     return 0;
 }

@@ -41,7 +41,7 @@ public:
      * @param argc The usual number of commandline arguments.
      * @param argv The usual array of arguments.
      */
-    ArgumentParser( int argc, char** argv );
+    ArgumentParser( int argc, const char** argv );
 
     /**
      * @brief Parse the commandline arguments.
