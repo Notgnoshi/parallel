@@ -14,7 +14,10 @@ std::shared_ptr<Strategy> StrategyFactory::GetStrategy()
     case STRATEGY_SHARED:
     case STRATEGY_DISTRIBUTED:
     case STRATEGY_DISTRIBUTED_CUDA:
-    default:
         return std::make_shared<SerialStrategy>( args.output, args.time );
+
+    // This is just to satisfy the compiler. The program exits if an invalid strategy is given.
+    default:
+        return nullptr;
     }
 }
