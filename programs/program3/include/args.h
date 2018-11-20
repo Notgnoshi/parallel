@@ -59,6 +59,13 @@ public:
      */
     void Usage();
 
+    /**
+     * @brief Prints a summary of the given commandline arguments.
+     *
+     * @param args The parsed commandline arguments.
+     */
+    static void Summarize( Args_t args );
+
 private:
     int argc;
     std::vector<std::string> argv;

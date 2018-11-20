@@ -17,6 +17,8 @@ int main( int argc, char** argv )
 {
     ArgumentParser::Args_t args = ArgumentParser( argc, argv ).ParseArgs();
 
+    ArgumentParser::Summarize( args );
+
     int nprocs, rank, namelen;
     char processor_name[MPI_MAX_PROCESSOR_NAME];
 

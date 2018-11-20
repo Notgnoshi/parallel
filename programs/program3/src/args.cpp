@@ -116,3 +116,39 @@ void ArgumentParser::Usage()
     cout << left << setw( 18 ) << " -t, --time"
          << "Whether or not to time the solution duration." << endl;
 }
+
+void ArgumentParser::Summarize( Args_t args )
+{
+    cout << "Solving the " << args.n << "-Queens problem using ";
+
+    switch( args.strategy )
+    {
+    case STRATEGY_SERIAL:
+        cout << "a serial shared memory";
+        break;
+    case STRATEGY_SHARED:
+        cout << "a parallel shared memory";
+        break;
+    case STRATEGY_DISTRIBUTED:
+        cout << "a distributed memory";
+        break;
+    case STRATEGY_DISTRIBUTED_CUDA:
+        cout << "a distributed CUDA";
+        break;
+    default:
+        cout << "an UNKNOWN";
+        break;
+    }
+
+    cout << " strategy";
+
+    if( args.output != "" )
+    {
+        cout << ", outputting the results to '" << args.output << "'";
+    }
+    if( args.time )
+    {
+        cout << ", and timing the results";
+    }
+    cout << "." << endl;
+}
