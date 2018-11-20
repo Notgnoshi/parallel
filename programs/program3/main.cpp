@@ -1,3 +1,4 @@
+#include "args.h"
 #include <cstdio>
 #include <cstdlib>
 #include <mpi.h>
@@ -14,6 +15,8 @@
  */
 int main( int argc, char** argv )
 {
+    ArgumentParser::Args_t args = ArgumentParser( argc, argv ).ParseArgs();
+
     int nprocs, rank, namelen;
     char processor_name[MPI_MAX_PROCESSOR_NAME];
 
