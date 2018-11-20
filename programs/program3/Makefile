@@ -108,4 +108,4 @@ cleanall:
 	ssh limbo "rm -rf $(BUILD_DIR)/*"
 
 run:
-	$(MPI) -np 24 $(BUILD_DIR)/$(TARGET)
+	$(MPI) -np 24 $(BUILD_DIR)/$(TARGET) 4
