@@ -23,10 +23,8 @@ public:
      *
      * @param n      The chessboard size.
      * @param output Whether to output solutions to the screen. Defaults to true.
-     *
-     * @returns The number of solutions found.
      */
-    size_t Run( size_t n, bool output = true ) override;
+    void Run( ArgumentParser::Args_t args ) override;
 
 private:
     std::string output;

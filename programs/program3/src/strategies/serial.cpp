@@ -6,8 +6,7 @@ SerialStrategy::SerialStrategy( std::string output, bool time ) :
 {
 }
 
-size_t SerialStrategy::Run( size_t n, bool output )
+void SerialStrategy::Run( ArgumentParser::Args_t args )
 {
-    (void)output;
-    return n;
+    ArgumentParser::Summarize( args );
 }
