@@ -1,6 +1,5 @@
 #pragma once
 
-#include "args.h"
 #include <cstddef>
 #include <mpi.h>
 #include <string>
@@ -53,8 +52,10 @@ public:
      *
      * @param n      The chessboard size.
      * @param output Whether to output solutions to the screen. Defaults to true.
+     *
+     * @returns The number of solutions found.
      */
-    virtual void Run( ArgumentParser::Args_t args ) = 0;
+    virtual size_t Run( size_t n, bool output = true ) = 0;
 
 protected:
     int num_procs = 0;

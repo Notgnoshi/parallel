@@ -22,7 +22,17 @@ int main( int argc, const char** argv )
     // Initialize MPI communications, etc.
     strategy->Initialize( &argc, &argv );
 
-    strategy->Run( args );
+    if( strategy->GetRank() == 0 )
+    {
+        ArgumentParser::Summarize( args );
+    }
+
+    // Get the number of solutions and print them out.
+    size_t solutions = strategy->Run( args.n, true );
+    if( strategy->GetRank() == 0 )
+    {
+        std::cout << "Found " << solutions << " solutions." << std::endl;
+    }
 
     // Clean up after MPI communications, etc.
     strategy->Finalize();
