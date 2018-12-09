@@ -16,10 +16,11 @@ size_t SerialStrategy::Run( size_t n, bool screen_output )
     std::vector<std::vector<uint8_t>> chunk;
     std::vector<uint8_t> perm = NthPermutation( n, 0 );
 
+    // Avoid constant reallocations.
     std::vector<bool> downhill( 2 * n - 1, false );
     std::vector<bool> uphill( 2 * n - 1, false );
 
-    for( size_t i = 1; i < FACTORIALS[n]; ++i )
+    while( solutions < SOLUTIONS[n] )
     {
         if( this->IsSolution( perm, downhill, uphill ) )
         {
@@ -41,12 +42,6 @@ size_t SerialStrategy::Run( size_t n, bool screen_output )
                     chunk.clear();
                 }
             }
-        }
-
-        // Force an early exit.
-        if( solutions == SOLUTIONS[n] )
-        {
-            return solutions;
         }
 
         std::next_permutation( perm.begin(), perm.end() );
