@@ -61,23 +61,38 @@ void CommonTest::TestIsSolution()
 
 void CommonTest::TestIsSolution4()
 {
-    const size_t n = 4;
-    size_t sol_index = 0;
-    // Ordering takes advantage of NthPermutation being ordered.
-    std::vector<std::vector<uint8_t>> solutions = {
-        {1, 3, 0, 2},
-        {2, 0, 3, 1},
+    const std::vector<std::vector<uint8_t>> perms = {
+        {0, 1, 2, 3},
+        {0, 1, 3, 2},
+        {0, 2, 1, 3},
+        {0, 2, 3, 1},
+        {0, 3, 1, 2},
+        {0, 3, 2, 1},
+        {1, 0, 2, 3},
+        {1, 0, 3, 2},
+        {1, 2, 0, 3},
+        {1, 2, 3, 0},
+        // {1, 3, 0, 2},
+        {1, 3, 2, 0},
+        {2, 0, 1, 3},
+        // {2, 0, 3, 1},
+        {2, 1, 0, 3},
+        {2, 1, 3, 0},
+        {2, 3, 0, 1},
+        {2, 3, 1, 0},
+        {3, 0, 1, 2},
+        {3, 0, 2, 1},
+        {3, 1, 0, 2},
+        {3, 1, 2, 0},
+        {3, 2, 0, 1},
+        {3, 2, 1, 0},
     };
 
-    for( size_t i = 0; i < FACTORIALS[n]; ++i )
-    {
-        std::vector<uint8_t> perm = NthPermutation( 4, i );
-        if( IsSolution( perm ) )
-        {
-            CPPUNIT_ASSERT( perm == solutions[sol_index] );
-            ++sol_index;
-        }
-    }
+    CPPUNIT_ASSERT( IsSolution( {1, 3, 0, 2} ) );
+    CPPUNIT_ASSERT( IsSolution( {2, 0, 3, 1} ) );
 
-    CPPUNIT_ASSERT( sol_index == 2 );
+    for( auto&& perm : perms )
+    {
+        CPPUNIT_ASSERT( !IsSolution( perm ) );
+    }
 }
