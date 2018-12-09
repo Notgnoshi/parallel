@@ -13,7 +13,6 @@ SerialStrategy::SerialStrategy( std::string file_output, bool screen_output, boo
 size_t SerialStrategy::Run( size_t n )
 {
     size_t solutions = 0;
-    bool file_output = !this->file_output.empty();
     std::vector<std::vector<uint8_t>> chunk;
     std::vector<uint8_t> perm = NthPermutation( n, 0 );
 
@@ -33,7 +32,7 @@ size_t SerialStrategy::Run( size_t n )
             }
 
             //! @todo Determine the right chunk size.
-            if( file_output && chunk.size() < 64 )
+            if( !this->file_output.empty() && chunk.size() < 64 )
             {
                 chunk.push_back( perm );
 
@@ -46,6 +45,12 @@ size_t SerialStrategy::Run( size_t n )
         }
 
         std::next_permutation( perm.begin(), perm.end() );
+    }
+
+    // If there are leftover solutions, print them.
+    if( !this->file_output.empty() && chunk.size() > 0 )
+    {
+        AppendBlock( chunk, this->file_output );
     }
     return solutions;
 }
