@@ -1,5 +1,7 @@
 #pragma once
+#include "permutations.h"
 #include "strategies/strategy.h"
+#include <omp.h>
 #include <vector>
 
 /**
@@ -53,4 +55,51 @@ private:
     std::string file_output;
     bool screen_output;
     bool time;
+
+    /**
+     * @brief Enable per-thread initialization code.
+     */
+    struct ThreadContext
+    {
+        /**
+         * @brief Construct a new Thread Context object.
+         *
+         * @details This constructor is called in the main thread and then copied
+         * to all of the others.
+         *
+         * @see https://stackoverflow.com/a/10737658/3704977
+         *
+         * @param n
+         * @param threads
+         */
+        explicit ThreadContext( size_t n, size_t threads ) :
+            n( n ),
+            threads( threads ),
+            perm( n ),
+            uphill( 2 * n - 1, false ),
+            downhill( 2 * n - 1, false ) {}
+
+        /**
+         * @brief Copy-Construct a new Thread Context object.
+         *
+         * @details This constructor will be called once at the beginning of each
+         * thread. Use this to hold the thread-specific permutation to check.
+         *
+         * @param ctx The Thread Context object to copy.
+         */
+        ThreadContext( ThreadContext& ctx ) :
+            n( ctx.n ),
+            threads( ctx.threads ),
+            uphill( ctx.uphill ),
+            downhill( ctx.downhill )
+        {
+            perm = NthPermutation( n, FACTORIALS[n] * omp_get_thread_num() / omp_get_num_procs() );
+        }
+
+        size_t n;                   //!> The problem size.
+        size_t threads;             //!> The total number of threads being run.
+        std::vector<uint8_t> perm;  //!> The thread-specific permutation.
+        std::vector<bool> uphill;   //!> Record whether there is a queen in one of the uphill diagonals.
+        std::vector<bool> downhill; //!> Record whether there is a queen in one of the downhill diagonals.
+    };
 };

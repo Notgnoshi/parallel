@@ -1,6 +1,5 @@
 #include "strategies/serial.h"
 #include "common.h"
-#include "permutations.h"
 #include <algorithm>
 #include <iomanip>
 
@@ -14,40 +13,45 @@ SerialStrategy::SerialStrategy( std::string file_output, bool screen_output, boo
 size_t SerialStrategy::Run( size_t n )
 {
     size_t solutions = 0;
-    std::vector<std::vector<uint8_t>> chunk;
-    std::vector<uint8_t> perm = NthPermutation( n, 0 );
 
-    // Avoid constant reallocations.
-    std::vector<bool> downhill( 2 * n - 1, false );
-    std::vector<bool> uphill( 2 * n - 1, false );
+    ThreadContext context( n, omp_get_num_procs() );
 
     Timer t;
 
-    while( solutions < SOLUTIONS[n] )
+// clang-format off
+#pragma omp parallel for                                                      \
+    default( none )                                                           \
+    shared( n )                                                               \
+    reduction( +: solutions )                                                 \
+    firstprivate( context )                                                   \
+    num_threads( omp_get_num_procs() )
+    // clang-format on
+    for( size_t i = 0; i < FACTORIALS[n]; ++i )
     {
-        if( this->IsSolution( perm, downhill, uphill ) )
+        if( IsSolution( context.perm, context.downhill, context.uphill ) )
         {
-            ++solutions;
-            //! @todo Determine how many solutions to print.
-            if( this->screen_output && solutions < 10 )
-            {
-                PrintSolution( perm );
-            }
+            solutions += 1;
+            // //! @todo This really isn't thread-safe.
+            // //! @todo Determine how many solutions to print.
+            // if( this->screen_output && solutions < 10 )
+            // {
+            //     PrintSolution( context.perm );
+            // }
+            // //! @todo This really isn't thread-safe.
+            // //! @todo Determine the right chunk size.
+            // if( !this->file_output.empty() && chunk.size() < 64 )
+            // {
+            //     chunk.push_back( context.perm );
 
-            //! @todo Determine the right chunk size.
-            if( !this->file_output.empty() && chunk.size() < 64 )
-            {
-                chunk.push_back( perm );
-
-                if( chunk.size() == 64 )
-                {
-                    AppendBlock( chunk, this->file_output );
-                    chunk.clear();
-                }
-            }
+            //     if( chunk.size() == 64 )
+            //     {
+            //         AppendBlock( chunk, this->file_output );
+            //         chunk.clear();
+            //     }
+            // }
         }
 
-        std::next_permutation( perm.begin(), perm.end() );
+        std::next_permutation( context.perm.begin(), context.perm.end() );
     }
 
     if( this->time )
@@ -56,11 +60,11 @@ size_t SerialStrategy::Run( size_t n )
         std::cout << "Elapsed time: " << t.elapsed() << "s" << std::endl;
     }
 
-    // If there are leftover solutions, print them.
-    if( !this->file_output.empty() && chunk.size() > 0 )
-    {
-        AppendBlock( chunk, this->file_output );
-    }
+    // // If there are leftover solutions, print them.
+    // if( !this->file_output.empty() && chunk.size() > 0 )
+    // {
+    //     AppendBlock( chunk, this->file_output );
+    // }
     return solutions;
 }
 

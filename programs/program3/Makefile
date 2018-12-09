@@ -31,11 +31,11 @@ MPI := mpiexec
 CXX := g++
 LINK := g++
 
-LINKFLAGS = -lm -lcuda -lcudart
+LINKFLAGS = -lm -lcuda -lcudart -fopenmp
 # Get the right linker flags for use with gcc from the mpi compiler
 LINKFLAGS += $(shell $(MPIXX) -showme:link)
 NVXXFLAGS = -I$(INC_DIR) -O3 -std=c++11
-CXXFLAGS = -I$(INC_DIR) -O3 -Wall -Wpedantic -Wextra -Werror -Wconversion -std=c++11 -x c++
+CXXFLAGS = -I$(INC_DIR) -O3 -Wall -Wpedantic -Wextra -Werror -Wconversion -fopenmp -std=c++11 -x c++
 # Get the right compile flags for use with gcc from the mpi compiler
 CXXFLAGS += $(shell $(MPIXX) -showme:compile)
 
