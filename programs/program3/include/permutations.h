@@ -15,3 +15,14 @@
  * @returns The @f$n@f$th permutation.
  */
 std::vector<uint8_t> NthPermutation( const size_t length, size_t n );
+
+/**
+ * @brief Determines if the given chessboard arrangement is a solution.
+ *
+ * @details This function assumes that no Queen will be placed in identical rows
+ * or columns. That is, each input will be a permutation of the integers 0..n-1.
+ *
+ * @param arrangement The chessboard arrangement.
+ * @returns true if the arrangement is a solution. False otherwise.
+ */
+bool IsSolution( const std::vector<uint8_t> arrangement );

@@ -1,6 +1,6 @@
 #include "permutations.h"
 
-std::vector<uint8_t> NthPermutation( const size_t length, size_t n )
+std::vector<uint8_t> NthPermutation( size_t length, size_t n )
 {
     std::vector<uint8_t> perm( length );
     for( size_t i = 0; i < length; ++i )
@@ -21,4 +21,28 @@ std::vector<uint8_t> NthPermutation( const size_t length, size_t n )
     }
 
     return perm;
+}
+
+bool IsSolution( std::vector<uint8_t> arrangement )
+{
+    auto n = static_cast<uint8_t>( arrangement.size() );
+    //! @todo Avoid reallocating these arrays over and over.
+    std::vector<bool> downhill( n - 1, false );
+    std::vector<bool> uphill( n - 1, false );
+
+    // Attempt to place the queen in the diagonal arrays. If we can't, return false.
+    for( uint8_t x = 0; x < n; ++x )
+    {
+        auto up = static_cast<uint8_t>( x + arrangement[x] );
+        auto down = static_cast<uint8_t>( x + n - arrangement[x] - 1 );
+
+        if( downhill[down] || uphill[up] )
+        {
+            return false;
+        }
+        downhill[down] = true;
+        uphill[up] = true;
+    }
+
+    return true;
 }

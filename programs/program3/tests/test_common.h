@@ -7,12 +7,14 @@ class CommonTest : public TestFixture
 {
     CPPUNIT_TEST_SUITE( CommonTest );
     CPPUNIT_TEST( TestNthPermutation );
+    CPPUNIT_TEST( TestIsSolution );
+    CPPUNIT_TEST( TestIsSolution4 );
     CPPUNIT_TEST_SUITE_END();
 
 public:
     void TestNthPermutation();
-
-private:
+    void TestIsSolution();
+    void TestIsSolution4();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( CommonTest );
