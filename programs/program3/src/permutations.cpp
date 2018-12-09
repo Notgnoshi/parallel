@@ -27,8 +27,8 @@ bool IsSolution( std::vector<uint8_t> arrangement )
 {
     auto n = static_cast<uint8_t>( arrangement.size() );
     //! @todo Avoid reallocating these arrays over and over.
-    std::vector<bool> downhill( n - 1, false );
-    std::vector<bool> uphill( n - 1, false );
+    std::vector<bool> downhill( 2 * n - 1, false );
+    std::vector<bool> uphill( 2 * n - 1, false );
 
     // Attempt to place the queen in the diagonal arrays. If we can't, return false.
     for( uint8_t x = 0; x < n; ++x )
