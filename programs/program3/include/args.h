@@ -30,7 +30,7 @@ public:
     struct Args_t
     {
         size_t n = 0;                          //!< The problem size to solve.
-        Strategy_e strategy = STRATEGY_SERIAL; //!< The solution strategy to use.
+        Strategy_e strategy = STRATEGY_SHARED; //!< The solution strategy to use.
         std::string output = "";               //!< If outputting to a file, which file.
         bool time = false;                     //!< Whether to time the execution.
         bool screen_output = true;             //!< Whether to output to the screen.
