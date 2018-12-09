@@ -18,3 +18,12 @@ void AppendBlock( std::vector<std::vector<uint8_t>> block, std::string filename 
 
     fout << formatted_block;
 }
+
+void PrintSolution( std::vector<uint8_t> solution )
+{
+    for( auto&& q : solution )
+    {
+        std::cout << q << " ";
+    }
+    std::cout << std::endl;
+}

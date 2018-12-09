@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstddef>
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -67,3 +68,10 @@ const std::vector<size_t> FACTORIALS = {
  * @param filename The filename to write the solutions to.
  */
 void AppendBlock( std::vector<std::vector<uint8_t>> block, std::string filename );
+
+/**
+ * @brief Print the given solution to the screen.
+ *
+ * @param solution The solution to print.
+ */
+void PrintSolution( std::vector<uint8_t> solution );
