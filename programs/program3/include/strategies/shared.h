@@ -17,7 +17,8 @@ public:
      * and print the result to stderr in the format `__PRETTY_FUNCTION__: <time> ms`.
      *
      * @param file_output If nonempty, the filename to save the outputs to.
-     * @param time Whether or not to time the solution.
+     * @param screen_output Whether to output solutions to the screen. Defaults to false.
+     * @param time Whether or not to time the solution. Defaults to false.
      */
     SharedStrategy( std::string file_output = "", bool screen_output = false, bool time = false );
 
@@ -25,7 +26,6 @@ public:
      * @brief Run the Strategy on a problem of the given size.
      *
      * @param n      The chessboard size.
-     * @param screen_output Whether to output solutions to the screen. Defaults to true.
      *
      * @returns The number of solutions found.
      */
