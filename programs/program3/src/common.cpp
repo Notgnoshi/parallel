@@ -23,7 +23,7 @@ void PrintSolution( std::vector<uint8_t> solution )
 {
     for( auto&& q : solution )
     {
-        std::cout << q << " ";
+        std::cout << static_cast<int>( q ) << " ";
     }
     std::cout << std::endl;
 }
