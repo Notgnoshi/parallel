@@ -41,10 +41,6 @@ CXXFLAGS += $(shell $(MPIXX) -showme:compile)
 
 .PHONY: clean format docs viewdocs runtests
 
-# TODO: This is supposed to notify make that header files are also dependencies,
-#       but it doesn't work, and I don't know why.
-# -include $(DEP)
-
 all: $(BUILD_DIR)/$(TARGET)
 
 debug: clean
@@ -69,6 +65,9 @@ $(BUILD_DIR)/$(TEST_TARGET): $(__OBJ) $(CU_OBJ) $(TEST_OBJ)
 $(BUILD_DIR)/$(TARGET): $(OBJ) $(CU_OBJ)
 	mkdir -p $(@D)
 	$(LINK) $^ -o $@ $(LINKFLAGS)
+
+# Apparently the location of this -include is what broke it before.
+-include $(DEP)
 
 $(BUILD_DIR)/%.o: %.cpp
 	mkdir -p $(@D)
