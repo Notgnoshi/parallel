@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstddef>
+#include <string>
 #include <vector>
 
 const std::vector<size_t> SOLUTIONS = {
@@ -56,3 +57,13 @@ const std::vector<size_t> FACTORIALS = {
     121645100408832000,
     2432902008176640000,
 };
+
+/**
+ * @brief Append the given block of solutions to the end of the given filename.
+ *
+ * @details Avoid the need to output individual solutions to save I/O.
+ *
+ * @param block An arbitrary-length block of solutions to output.
+ * @param filename The filename to write the solutions to.
+ */
+void AppendBlock( std::vector<std::vector<uint8_t>> block, std::string filename );
