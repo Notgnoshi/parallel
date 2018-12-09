@@ -17,7 +17,7 @@ public:
      * @param file_output If nonempty, the filename to save the outputs to.
      * @param time Whether or not to time the solution.
      */
-    SerialStrategy( std::string file_output = "", bool time = false );
+    SerialStrategy( std::string file_output = "", bool screen_output = false, bool time = false );
 
     /**
      * @brief Run the Strategy on a problem of the given size.
@@ -27,7 +27,7 @@ public:
      *
      * @returns The number of solutions found.
      */
-    size_t Run( size_t n, bool screen_output = true ) override;
+    size_t Run( size_t n ) override;
 
     /**
      * @brief Is the given arrangement a solution?
@@ -51,5 +51,6 @@ public:
 
 private:
     std::string file_output;
+    bool screen_output;
     bool time;
 };

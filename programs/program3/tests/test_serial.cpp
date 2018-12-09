@@ -11,7 +11,7 @@ void SerialStrategyTest::TestSmallSizes()
 {
     for( size_t n = 2; n < 8; ++n )
     {
-        CPPUNIT_ASSERT( strategy.Run( n, false ) == SOLUTIONS[n] );
+        CPPUNIT_ASSERT( strategy.Run( n ) == SOLUTIONS[n] );
     }
 }
 

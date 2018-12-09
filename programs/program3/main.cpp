@@ -17,7 +17,7 @@ int main( int argc, const char** argv )
     ArgumentParser::Args_t args = ArgumentParser( argc, argv ).ParseArgs();
 
     // Get the right solution strategy based on the commandline arguments.
-    auto strategy = StrategyFactory( args ).GetStrategy();
+    auto strategy = StrategyFactory( args ).GetStrategy( true );
 
     // Initialize MPI communications, etc.
     strategy->Initialize( &argc, &argv );
@@ -28,7 +28,7 @@ int main( int argc, const char** argv )
     }
 
     // Get the number of solutions and print them out.
-    size_t solutions = strategy->Run( args.n, true );
+    size_t solutions = strategy->Run( args.n );
     if( strategy->GetRank() == 0 )
     {
         std::cout << "Found " << solutions << " solutions." << std::endl;

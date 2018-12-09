@@ -3,13 +3,14 @@
 #include "permutations.h"
 #include <algorithm>
 
-SerialStrategy::SerialStrategy( std::string file_output, bool time ) :
+SerialStrategy::SerialStrategy( std::string file_output, bool screen_output, bool time ) :
     file_output( file_output ),
+    screen_output( screen_output ),
     time( time )
 {
 }
 
-size_t SerialStrategy::Run( size_t n, bool screen_output )
+size_t SerialStrategy::Run( size_t n )
 {
     size_t solutions = 0;
     bool file_output = !this->file_output.empty();
@@ -26,7 +27,7 @@ size_t SerialStrategy::Run( size_t n, bool screen_output )
         {
             ++solutions;
             //! @todo Determine how many solutions to print.
-            if( screen_output && solutions < 10 )
+            if( this->screen_output && solutions < 10 )
             {
                 PrintSolution( perm );
             }

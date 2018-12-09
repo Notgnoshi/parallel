@@ -6,7 +6,7 @@ StrategyFactory::StrategyFactory( ArgumentParser::Args_t args ) :
 {
 }
 
-std::shared_ptr<Strategy> StrategyFactory::GetStrategy()
+std::shared_ptr<Strategy> StrategyFactory::GetStrategy( bool screen_output )
 {
     switch( this->args.strategy )
     {
@@ -14,7 +14,7 @@ std::shared_ptr<Strategy> StrategyFactory::GetStrategy()
     case STRATEGY_SHARED:
     case STRATEGY_DISTRIBUTED:
     case STRATEGY_DISTRIBUTED_CUDA:
-        return std::make_shared<SerialStrategy>( args.output, args.time );
+        return std::make_shared<SerialStrategy>( args.output, screen_output, args.time );
 
     // This is just to satisfy the compiler. The program exits if an invalid strategy is given.
     default:

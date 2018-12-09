@@ -18,9 +18,11 @@ public:
     /**
      * @brief Construct the proper Strategy for the given commandline arguments.
      *
+     * @param screen_output Whether or not to spam the console with solutions.
+     *
      * @returns a shared pointer to the constructed Strategy.
      */
-    std::shared_ptr<Strategy> GetStrategy();
+    std::shared_ptr<Strategy> GetStrategy( bool screen_output = true );
 
 private:
     ArgumentParser::Args_t args;

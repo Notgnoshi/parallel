@@ -20,7 +20,7 @@ public:
 
     void setUp()
     {
-        this->strategy = SerialStrategy( "", false );
+        this->strategy = SerialStrategy( "", false, false );
     }
 
     void tearDown()
