@@ -33,6 +33,7 @@ public:
         Strategy_e strategy = STRATEGY_SERIAL; //!< The solution strategy to use.
         std::string output = "";               //!< If outputting to a file, which file.
         bool time = false;                     //!< Whether to time the execution.
+        bool screen_output = true;             //!< Whether to output to the screen.
     };
 
     /**

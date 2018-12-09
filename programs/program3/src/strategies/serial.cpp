@@ -2,6 +2,7 @@
 #include "common.h"
 #include "permutations.h"
 #include <algorithm>
+#include <iomanip>
 
 SerialStrategy::SerialStrategy( std::string file_output, bool screen_output, bool time ) :
     file_output( file_output ),
@@ -19,6 +20,8 @@ size_t SerialStrategy::Run( size_t n )
     // Avoid constant reallocations.
     std::vector<bool> downhill( 2 * n - 1, false );
     std::vector<bool> uphill( 2 * n - 1, false );
+
+    Timer t;
 
     while( solutions < SOLUTIONS[n] )
     {
@@ -45,6 +48,12 @@ size_t SerialStrategy::Run( size_t n )
         }
 
         std::next_permutation( perm.begin(), perm.end() );
+    }
+
+    if( this->time )
+    {
+        std::cout << std::fixed << std::setprecision( 6 );
+        std::cout << "Elapsed time: " << t.elapsed() << "s" << std::endl;
     }
 
     // If there are leftover solutions, print them.

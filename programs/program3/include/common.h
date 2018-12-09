@@ -1,5 +1,6 @@
 #pragma once
 
+#include <chrono>
 #include <cstddef>
 #include <iostream>
 #include <string>
@@ -75,3 +76,41 @@ void AppendBlock( std::vector<std::vector<uint8_t>> block, std::string filename 
  * @param solution The solution to print.
  */
 void PrintSolution( std::vector<uint8_t> solution );
+
+/**
+ * @brief A handy-dandy timer class to eliminate soul-crushing copy-pasting.
+ *
+ * @details Taken from https://stackoverflow.com/a/19471595/3704977
+ */
+class Timer
+{
+public:
+    /**
+     * @brief Start a timer.
+     */
+    Timer() :
+        beg_( clock_::now() ) {}
+
+    /**
+     * @brief Reset the timer.
+     */
+    void reset()
+    {
+        beg_ = clock_::now();
+    }
+
+    /**
+     * @brief Get the elapsed time since the timer creation or reset.
+     *
+     * @returns The number of elapsed seconds.
+     */
+    double elapsed() const
+    {
+        return std::chrono::duration_cast<second_>( clock_::now() - beg_ ).count();
+    }
+
+private:
+    typedef std::chrono::high_resolution_clock clock_;
+    typedef std::chrono::duration<double, std::ratio<1>> second_;
+    std::chrono::time_point<clock_> beg_;
+};

@@ -53,6 +53,9 @@ ArgumentParser::Args_t ArgumentParser::ParseArgs()
         else if( *arg == "-t" || *arg == "--time" )
         {
             args.time = true;
+            // Do not time output.
+            args.screen_output = false;
+            args.output = "";
         }
         else
         {
@@ -114,7 +117,7 @@ void ArgumentParser::Usage()
     cout << left << setw( 18 ) << " "
          << "    4 - Use a distributed CUDA strategy." << endl;
     cout << left << setw( 18 ) << " -t, --time"
-         << "Whether or not to time the solution duration." << endl;
+         << "Whether or not to time the solution duration. Will disable I/O." << endl;
 }
 
 void ArgumentParser::Summarize( Args_t args )

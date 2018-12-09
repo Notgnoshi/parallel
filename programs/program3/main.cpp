@@ -17,7 +17,7 @@ int main( int argc, const char** argv )
     ArgumentParser::Args_t args = ArgumentParser( argc, argv ).ParseArgs();
 
     // Get the right solution strategy based on the commandline arguments.
-    auto strategy = StrategyFactory( args ).GetStrategy( true );
+    auto strategy = StrategyFactory( args ).GetStrategy();
 
     // Initialize MPI communications, etc.
     strategy->Initialize( &argc, &argv );
