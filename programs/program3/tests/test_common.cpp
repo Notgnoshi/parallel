@@ -40,7 +40,7 @@ void CommonTest::TestNthPermutation()
     for( size_t i = 0; i < expected.size() - 1; ++i )
     {
         std::vector<uint8_t> elem = expected[i];
-        std::next_permutation(elem.begin(), elem.end());
-        CPPUNIT_ASSERT( elem == NthPermutation(4, i + 1));
+        std::next_permutation( elem.begin(), elem.end() );
+        CPPUNIT_ASSERT( elem == NthPermutation( 4, i + 1 ) );
     }
 }

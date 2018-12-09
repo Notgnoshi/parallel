@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 #include <vector>
 
 const std::vector<size_t> SOLUTIONS = {
