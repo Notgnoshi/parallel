@@ -1,4 +1,4 @@
-# Parallel Computing Program 2 -- MPI
+# Parallel Computing Program 3 -- MPI
 
 A distributed memory program to solve the n-queens problem.
 
@@ -43,18 +43,15 @@ xdg-open refman.pdf
 cd ../../
 ```
 
+However, note that the LaTeX documentation will not build on the Opp Lab machines.
+
 ## Unit Tests
 
-The unit tests have a dependency on [CppUnit](https://freedesktop.org/wiki/Software/cppunit/).
-On Ubuntu, CppUnit is easily installable with
+I switched to using [Catch2](https://github.com/catchorg/Catch2) for unit tests,
+so that I can remove any dependencies that you might have to download, because
+Catch2 is a single headerfile that I have included in my repository.
 
-```shell
-sudo apt install libcppunit-dev
-```
-
-Then running `make runtests` will build and run the unit tests. Note that some
-of the tests rely on file paths that are relative to the source tree. So either
-run `./build/testsuite` or `make runtests` to run the unit tests.
+Running `make runtests` will build and run the unit tests.
 
 ## Compilation and Usage
 

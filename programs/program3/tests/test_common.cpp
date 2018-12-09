@@ -1,9 +1,9 @@
-#include "test_common.h"
+#include "catch.hpp"
 #include "common.h"
 #include "permutations.h"
 #include <algorithm>
 
-void CommonTest::TestNthPermutation()
+TEST_CASE( "Common NthPermutation" )
 {
     const std::vector<std::vector<uint8_t>> expected = {
         {0, 1, 2, 3},
@@ -34,7 +34,7 @@ void CommonTest::TestNthPermutation()
 
     for( size_t i = 0; i < expected.size(); ++i )
     {
-        CPPUNIT_ASSERT( expected[i] == NthPermutation( 4, i ) );
+        CHECK( expected[i] == NthPermutation( 4, i ) );
     }
 
     // Make sure next_permutation works like we expect it to.
@@ -42,24 +42,24 @@ void CommonTest::TestNthPermutation()
     {
         std::vector<uint8_t> elem = expected[i];
         std::next_permutation( elem.begin(), elem.end() );
-        CPPUNIT_ASSERT( elem == NthPermutation( 4, i + 1 ) );
+        CHECK( elem == NthPermutation( 4, i + 1 ) );
     }
 }
 
-void CommonTest::TestIsSolution()
+TEST_CASE( "Common IsSolution" )
 {
     const std::vector<uint8_t> solution = {2, 0, 3, 1};
     const std::vector<uint8_t> failure1 = {1, 0, 3, 2};
     const std::vector<uint8_t> failure2 = {2, 3, 0, 1};
     const std::vector<uint8_t> failure3 = {0, 1, 2, 3};
 
-    CPPUNIT_ASSERT( IsSolution( solution ) );
-    CPPUNIT_ASSERT( !IsSolution( failure1 ) );
-    CPPUNIT_ASSERT( !IsSolution( failure2 ) );
-    CPPUNIT_ASSERT( !IsSolution( failure3 ) );
+    CHECK( IsSolution( solution ) );
+    CHECK( !IsSolution( failure1 ) );
+    CHECK( !IsSolution( failure2 ) );
+    CHECK( !IsSolution( failure3 ) );
 }
 
-void CommonTest::TestIsSolution4()
+TEST_CASE( "Common IsSolution for n=4" )
 {
     const std::vector<std::vector<uint8_t>> perms = {
         {0, 1, 2, 3},
@@ -88,11 +88,11 @@ void CommonTest::TestIsSolution4()
         {3, 2, 1, 0},
     };
 
-    CPPUNIT_ASSERT( IsSolution( {1, 3, 0, 2} ) );
-    CPPUNIT_ASSERT( IsSolution( {2, 0, 3, 1} ) );
+    CHECK( IsSolution( {1, 3, 0, 2} ) );
+    CHECK( IsSolution( {2, 0, 3, 1} ) );
 
     for( auto&& perm : perms )
     {
-        CPPUNIT_ASSERT( !IsSolution( perm ) );
+        CHECK( !IsSolution( perm ) );
     }
 }
