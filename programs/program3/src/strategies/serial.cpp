@@ -3,13 +3,6 @@
 #include <algorithm>
 #include <iomanip>
 
-SerialStrategy::SerialStrategy( std::string file_output, bool screen_output, bool time ) :
-    file_output( file_output ),
-    screen_output( screen_output ),
-    time( time )
-{
-}
-
 size_t SerialStrategy::Run( size_t n )
 {
     size_t solutions = 0;

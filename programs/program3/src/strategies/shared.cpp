@@ -3,13 +3,6 @@
 #include <algorithm>
 #include <iomanip>
 
-SharedStrategy::SharedStrategy( std::string file_output, bool screen_output, bool time ) :
-    file_output( file_output ),
-    screen_output( screen_output ),
-    time( time )
-{
-}
-
 size_t SharedStrategy::Run( size_t n )
 {
     size_t solutions = 0;

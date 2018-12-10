@@ -11,6 +11,22 @@ class Strategy
 {
 public:
     /**
+     * @brief Construct a new Strategy object.
+     *
+     * @details If the `time` parameter is `true`, the Strategy will time the operation
+     * and print the result to stderr in the format `__PRETTY_FUNCTION__: <time> ms`.
+     *
+     * @param file_output If nonempty, the filename to save the outputs to.
+     * @param screen_output Whether to output solutions to the screen. Defaults to false.
+     * @param time Whether or not to time the solution. Defaults to false.
+     */
+    explicit Strategy( std::string file_output = "", bool screen_output = false, bool time = false ) :
+        file_output( file_output ),
+        screen_output( screen_output ),
+        time( time )
+    {}
+
+    /**
      * @brief Default-destroy the Strategy object.
      */
     virtual ~Strategy() = default;
@@ -57,6 +73,9 @@ public:
     virtual size_t Run( size_t n ) = 0;
 
 protected:
+    std::string file_output;
+    bool screen_output;
+    bool time;
     int num_procs = 0;
     int rank = 0;
     int proc_name_length = 0;
