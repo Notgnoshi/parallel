@@ -36,7 +36,7 @@ int main( int argc, const char** argv )
     else if( args.verbose )
     {
         std::cout << "Slave " << strategy->GetRank() << " found " << solutions
-                  << "solutions." << std::endl;
+                  << " solutions." << std::endl;
     }
 
     // Clean up after MPI communications, etc.
