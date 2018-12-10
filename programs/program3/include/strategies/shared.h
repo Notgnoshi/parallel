@@ -42,10 +42,6 @@ public:
     static void ClearVector( std::vector<bool>& v );
 
 private:
-    std::string file_output;
-    bool screen_output;
-    bool time;
-
     /**
      * @brief Enable per-thread initialization code.
      */

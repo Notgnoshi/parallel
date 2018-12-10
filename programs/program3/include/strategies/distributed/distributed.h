@@ -17,9 +17,4 @@ public:
      * @returns The number of solutions found.
      */
     size_t Run( size_t n ) override;
-
-private:
-    std::string file_output;
-    bool screen_output;
-    bool time;
 };

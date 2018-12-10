@@ -40,9 +40,4 @@ public:
      * @param v The vector to clear.
      */
     static void ClearVector( std::vector<bool>& v );
-
-private:
-    std::string file_output;
-    bool screen_output;
-    bool time;
 };
