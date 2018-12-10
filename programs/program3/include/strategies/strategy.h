@@ -19,11 +19,13 @@ public:
      * @param file_output If nonempty, the filename to save the outputs to.
      * @param screen_output Whether to output solutions to the screen. Defaults to false.
      * @param time Whether or not to time the solution. Defaults to false.
+     * @param verbose Whether or not to output diagnostic information.
      */
-    explicit Strategy( std::string file_output = "", bool screen_output = false, bool time = false ) :
+    explicit Strategy( std::string file_output = "", bool screen_output = false, bool time = false, bool verbose = false ) :
         file_output( file_output ),
         screen_output( screen_output ),
-        time( time )
+        time( time ),
+        verbose( verbose )
     {}
 
     /**
@@ -68,6 +70,11 @@ public:
         return static_cast<size_t>( this->num_procs );
     }
 
+    bool GetVerbose()
+    {
+        return this->verbose;
+    }
+
     /**
      * @brief Run the Strategy on a problem of the given size.
      *
@@ -78,9 +85,10 @@ public:
     virtual size_t Run( size_t n ) = 0;
 
 protected:
-    std::string file_output;
-    bool screen_output;
-    bool time;
+    std::string file_output = "";
+    bool screen_output = false;
+    bool time = false;
+    bool verbose = false;
     int num_procs = 0;
     int rank = 0;
     int proc_name_length = 0;
