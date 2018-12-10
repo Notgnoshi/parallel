@@ -65,11 +65,21 @@ public:
         return static_cast<size_t>( this->rank );
     }
 
+    /**
+     * @brief Get the total number of processes running this Strategy.
+     *
+     * @returns The number of processes.
+     */
     size_t GetProcs()
     {
         return static_cast<size_t>( this->num_procs );
     }
 
+    /**
+     * @brief Get the the verbosity of the strategy.
+     *
+     * @returns The process verbosity.
+     */
     bool GetVerbose()
     {
         return this->verbose;
