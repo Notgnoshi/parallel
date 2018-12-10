@@ -1,7 +1,6 @@
 BUILD_DIR := build
 SRC_DIR := src
 INC_DIR := include
-DOC_DIR := docs
 TEST_DIR := tests
 
 TEST_TARGET := testsuite
@@ -15,17 +14,12 @@ __OBJ := $(__SRC:%.cpp=$(BUILD_DIR)/%.o)
 SRC := $(__SRC) main.cpp
 OBJ := $(SRC:%.cpp=$(BUILD_DIR)/%.o)
 
-# CUDA source files
-CU_SRC := $(shell find $(SRC_DIR) -name '*.cu')
-CU_OBJ := $(CU_SRC:%.cu=$(BUILD_DIR)/%.o)
-
 # Unit test source files
 TEST_SRC := $(shell find $(TEST_DIR) -name '*.cpp')
 TEST_OBJ := $(TEST_SRC:%.cpp=$(BUILD_DIR)/%.o)
 
-DEP := $(OBJ:%.o=%.d) $(CU_OBJ:%.o=%.d) $(TEST_OBJ:%.o=%.d)
+DEP := $(OBJ:%.o=%.d) $(TEST_OBJ:%.o=%.d)
 
-NVXX := nvcc
 MPIXX := mpiCC
 MPI := mpiexec
 CXX := g++
@@ -34,7 +28,6 @@ LINK := g++
 LINKFLAGS = -lm -lcuda -lcudart -fopenmp
 # Get the right linker flags for use with gcc from the mpi compiler
 LINKFLAGS += $(shell $(MPIXX) -showme:link)
-NVXXFLAGS = -I$(INC_DIR) -O3 -std=c++14
 CXXFLAGS = -I$(INC_DIR) -O3 -Wall -Wpedantic -Wextra -Werror -Wconversion -fopenmp -std=c++14 -x c++
 # Get the right compile flags for use with gcc from the mpi compiler
 CXXFLAGS += $(shell $(MPIXX) -showme:compile)
@@ -48,18 +41,17 @@ debug: CXXFLAGS += -g -O0
 debug: all
 
 testsuite: CXXFLAGS += -g -O0
-testsuite: NVXXFLAGS += -g -G -O0
 testsuite: $(BUILD_DIR)/$(TEST_TARGET)
 
 runtests: testsuite
 	./$(BUILD_DIR)/$(TEST_TARGET)
 
 # Avoid using $(OBJ) because it also contains main.o
-$(BUILD_DIR)/$(TEST_TARGET): $(__OBJ) $(CU_OBJ) $(TEST_OBJ)
+$(BUILD_DIR)/$(TEST_TARGET): $(__OBJ) $(TEST_OBJ)
 	mkdir -p $(@D)
 	$(LINK) $^ -o $@ $(LINKFLAGS)
 
-$(BUILD_DIR)/$(TARGET): $(OBJ) $(CU_OBJ)
+$(BUILD_DIR)/$(TARGET): $(OBJ)
 	mkdir -p $(@D)
 	$(LINK) $^ -o $@ $(LINKFLAGS)
 
@@ -70,18 +62,12 @@ $(BUILD_DIR)/%.o: %.cpp
 	mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS) -MMD -c $< -o $@
 
-# TODO: Figure out how to use --generate-dependencies in a way that doesn't
-#       spam the console with system headers.
-$(BUILD_DIR)/%.o: %.cu
-	mkdir -p $(@D)
-	$(NVXX) $(NVXXFLAGS) --compile $< -o $@
-
 clean:
 	rm -rf $(BUILD_DIR)/*
 
 # Be sure to also include the main.cpp file, while not explicitly including .
 format:
-	find $(INC_DIR) $(SRC_DIR) $(TEST_DIR) ./main.cpp -name "*.cpp" -o -name "*.h" -o -name "*.cu" -o -name "*.cuh" | xargs clang-format -style=file -i
+	find $(INC_DIR) $(SRC_DIR) $(TEST_DIR) ./main.cpp -name "*.cpp" -o -name "*.h" | xargs clang-format -style=file -i
 
 # Avoid linting the unit tests because it throws a fit about cppunit.
 lint:
