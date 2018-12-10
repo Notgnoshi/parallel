@@ -19,9 +19,21 @@ public:
         n( n ),
         verbose( verbose )
     {
-        // The master process does no work.
-        this->begin_index = FACTORIALS[n] * ( rank - 1 ) / num_procs;
-        this->end_index = this->begin_index + FACTORIALS[n] / num_procs;
+        //! @todo What if the problem size is not evenly divisible by the number
+        //! of processes?
+        //! There are two possibilities:
+        //! 1. There are not enough processes.
+        //! 2. There are too many processes.
+        //!
+        //! In the first case, give the extra work to the end process(es?) because
+        //! the majority of the work is at the beginning of the permutations.
+        //! In the second case, some processes need to idle.
+
+        // The master process does no work, so there are really p - 1 processes
+        // to divide the work amongst.
+        this->begin_index = FACTORIALS[n] * ( rank - 1 ) / ( num_procs - 1 );
+        // The end point is exclusive.
+        this->end_index = this->begin_index + FACTORIALS[n] / ( num_procs - 1 );
 
         if( this->verbose )
         {
