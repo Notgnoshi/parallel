@@ -22,7 +22,7 @@ int main( int argc, const char** argv )
     // Initialize MPI communications, etc.
     strategy->Initialize( &argc, &argv );
 
-    if( strategy->GetRank() == 0 )
+    if( strategy->GetRank() == 0 && args.verbose )
     {
         ArgumentParser::Summarize( args );
     }
@@ -32,6 +32,11 @@ int main( int argc, const char** argv )
     if( strategy->GetRank() == 0 )
     {
         std::cout << "Found " << solutions << " solutions." << std::endl;
+    }
+    else if( args.verbose )
+    {
+        std::cout << "Slave " << strategy->GetRank() << " found " << solutions
+                  << "solutions." << std::endl;
     }
 
     // Clean up after MPI communications, etc.

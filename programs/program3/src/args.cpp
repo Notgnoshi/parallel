@@ -57,6 +57,10 @@ ArgumentParser::Args_t ArgumentParser::ParseArgs()
             args.screen_output = false;
             args.output = "";
         }
+        else if( *arg == "-v" || *arg == "--verbose" )
+        {
+            args.verbose = true;
+        }
         else
         {
             positionals.push_back( *arg );
@@ -86,7 +90,7 @@ ArgumentParser::Args_t ArgumentParser::ParseArgs()
 void ArgumentParser::Usage()
 {
     cout << "Usage: " << this->argv[0] << " ";
-    cout << "[--help] [--output OUTPUT] [--strategy STRATEGY] [--time]"
+    cout << "[--help] [--output OUTPUT] [--strategy STRATEGY] [--time] [--verbose]"
          << " ";
     cout << "<n>";
     cout << endl
@@ -106,6 +110,8 @@ void ArgumentParser::Usage()
          << "Show this help message and exit" << endl;
     cout << left << setw( 18 ) << " -o, --output"
          << "The filename to print solutions to." << endl;
+    cout << left << setw( 18 ) << " -v, --verbose"
+         << "Increase output verbosity." << endl;
     cout << left << setw( 18 ) << " -s, --strategy"
          << "The strategy to use for the solution. Must be one of" << endl;
     cout << left << setw( 18 ) << " "

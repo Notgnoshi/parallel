@@ -34,6 +34,7 @@ public:
         std::string output = "";               //!< If outputting to a file, which file.
         bool time = false;                     //!< Whether to time the execution.
         bool screen_output = true;             //!< Whether to output to the screen.
+        bool verbose = false;                  //!< Whether to spam information.
     };
 
     /**
