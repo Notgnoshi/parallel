@@ -60,9 +60,9 @@ public:
      *
      * @returns The rank of the current process.
      */
-    int GetRank()
+    size_t GetRank()
     {
-        return this->rank;
+        return static_cast<size_t>( this->rank );
     }
 
     size_t GetProcs()

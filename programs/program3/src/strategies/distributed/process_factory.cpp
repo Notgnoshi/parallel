@@ -3,7 +3,7 @@
 #include "strategies/distributed/slave.h"
 
 //! @todo Is this function really that necessary?
-std::unique_ptr<Process> GetProcess( int rank, size_t num_procs, size_t n, bool verbose )
+std::unique_ptr<Process> GetProcess( size_t rank, size_t num_procs, size_t n, bool verbose )
 {
     if( rank == 0 )
     {

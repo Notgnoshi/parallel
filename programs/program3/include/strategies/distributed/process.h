@@ -14,26 +14,25 @@ public:
      * @param n The problem size.
      * @param verbose Whether to give diagnostic information. Defaults to false.
      */
-    explicit Process( int rank, size_t num_procs, size_t n, bool verbose = false ) :
+    explicit Process( size_t rank, size_t num_procs, size_t n, bool verbose = false ) :
         rank( rank ),
         n( n ),
         verbose( verbose )
     {
-        //! @todo What if the problem size is not evenly divisible by the number
-        //! of processes?
-        //! There are two possibilities:
-        //! 1. There are not enough processes.
-        //! 2. There are too many processes.
-        //!
-        //! In the first case, give the extra work to the end process(es?) because
-        //! the majority of the work is at the beginning of the permutations.
-        //! In the second case, some processes need to idle.
+        // Handle unevenly divisible problem sizes.
 
-        // The master process does no work, so there are really p - 1 processes
-        // to divide the work amongst.
-        this->begin_index = FACTORIALS[n] * ( rank - 1 ) / ( num_procs - 1 );
+        // Round up the chunk sizes, but the master process does no work, so
+        // there are really p - 1 processes to divide the work amongst.
+        size_t chunk_size = ( FACTORIALS[n] + num_procs - 1 - 1 ) / ( num_procs - 1 );
+        this->begin_index = ( rank - 1 ) * chunk_size;
         // The end point is exclusive.
-        this->end_index = this->begin_index + FACTORIALS[n] / ( num_procs - 1 );
+        this->end_index = this->begin_index + chunk_size;
+
+        // If we're the last worker, pick up the slack.
+        if( rank == num_procs - 1 )
+        {
+            this->end_index = FACTORIALS[n];
+        }
 
         if( this->verbose )
         {
@@ -67,7 +66,7 @@ public:
     virtual size_t Run() = 0;
 
 protected:
-    int rank = 0;
+    size_t rank = 0;
     size_t n = 0;
     bool verbose = false;
     size_t begin_index = 0;
