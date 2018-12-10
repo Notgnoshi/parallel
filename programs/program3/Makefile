@@ -34,8 +34,8 @@ LINK := g++
 LINKFLAGS = -lm -lcuda -lcudart -fopenmp
 # Get the right linker flags for use with gcc from the mpi compiler
 LINKFLAGS += $(shell $(MPIXX) -showme:link)
-NVXXFLAGS = -I$(INC_DIR) -O3 -std=c++11
-CXXFLAGS = -I$(INC_DIR) -O3 -Wall -Wpedantic -Wextra -Werror -Wconversion -fopenmp -std=c++11 -x c++
+NVXXFLAGS = -I$(INC_DIR) -O3 -std=c++14
+CXXFLAGS = -I$(INC_DIR) -O3 -Wall -Wpedantic -Wextra -Werror -Wconversion -fopenmp -std=c++14 -x c++
 # Get the right compile flags for use with gcc from the mpi compiler
 CXXFLAGS += $(shell $(MPIXX) -showme:compile)
 
