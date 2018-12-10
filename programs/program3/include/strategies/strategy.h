@@ -63,6 +63,11 @@ public:
         return this->rank;
     }
 
+    size_t GetProcs()
+    {
+        return static_cast<size_t>( this->num_procs );
+    }
+
     /**
      * @brief Run the Strategy on a problem of the given size.
      *
