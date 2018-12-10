@@ -103,5 +103,6 @@ cleanall: clean
 cleanall:
 	ssh limbo "rm -rf $(BUILD_DIR)/*"
 
-run:
-	$(MPI) -np 24 $(BUILD_DIR)/$(TARGET) 4
+exec:
+	# One master and eight slaves.
+	$(MPI) -np 9 $(BUILD_DIR)/$(TARGET) --verbose --strategy 3 4
