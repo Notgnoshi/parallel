@@ -33,6 +33,11 @@ public:
         {
             this->end_index = FACTORIALS[n];
         }
+        else if( rank == 0 )
+        {
+            this->begin_index = 0;
+            this->end_index = 0;
+        }
 
         if( this->verbose )
         {
@@ -64,6 +69,26 @@ public:
      * the slave process return the number of solutions that they found.
      */
     virtual size_t Run() = 0;
+
+    /**
+     * @brief Get the beginning index of the work this process is responsible for.
+     *
+     * @returns The beginning index.
+     */
+    size_t GetBegin()
+    {
+        return this->begin_index;
+    }
+
+    /**
+     * @brief Get the ending index of the work this process is responsible for.
+     *
+     * @returns The ending index.
+     */
+    size_t GetEnd()
+    {
+        return this->end_index;
+    }
 
 protected:
     size_t rank = 0;
