@@ -96,10 +96,10 @@ private:
             perm = NthPermutation( n, FACTORIALS[n] * omp_get_thread_num() / omp_get_num_procs() );
         }
 
-        size_t n;                   //!> The problem size.
-        size_t threads;             //!> The total number of threads being run.
-        std::vector<uint8_t> perm;  //!> The thread-specific permutation.
-        std::vector<bool> uphill;   //!> Record whether there is a queen in one of the uphill diagonals.
-        std::vector<bool> downhill; //!> Record whether there is a queen in one of the downhill diagonals.
+        size_t n;                   //!< The problem size.
+        size_t threads;             //!< The total number of threads being run.
+        std::vector<uint8_t> perm;  //!< The thread-specific permutation.
+        std::vector<bool> uphill;   //!< Record whether there is a queen in one of the uphill diagonals.
+        std::vector<bool> downhill; //!< Record whether there is a queen in one of the downhill diagonals.
     };
 };
