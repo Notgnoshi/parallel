@@ -19,24 +19,26 @@ public:
         n( n ),
         verbose( verbose )
     {
-        // Handle unevenly divisible problem sizes.
-
-        // Round up the chunk sizes, but the master process does no work, so
-        // there are really p - 1 processes to divide the work amongst.
-        size_t chunk_size = ( FACTORIALS[n] + num_procs - 1 - 1 ) / ( num_procs - 1 );
-        this->begin_index = ( rank - 1 ) * chunk_size;
-        // The end point is exclusive.
-        this->end_index = this->begin_index + chunk_size;
-
-        // If we're the last worker, pick up the slack.
-        if( rank == num_procs - 1 )
+        // Assign work to each of the slave processes.
+        if( rank != 0 )
         {
-            this->end_index = FACTORIALS[n];
-        }
-        else if( rank == 0 )
-        {
-            this->begin_index = 0;
-            this->end_index = 0;
+            // Round up the chunk sizes, but the master process does no work, so
+            // there are really p - 1 processes to divide the work amongst.
+            size_t chunk_size = ( FACTORIALS[n] + num_procs - 1 - 1 ) / ( num_procs - 1 );
+            this->begin_index = ( rank - 1 ) * chunk_size;
+            // The end point is exclusive.
+            this->end_index = this->begin_index + chunk_size;
+
+            // Handle unevenly divisible problem sizes.
+            if( this->begin_index > FACTORIALS[n] )
+            {
+                this->begin_index = FACTORIALS[n];
+                this->end_index = FACTORIALS[n];
+            }
+            else if( this->end_index > FACTORIALS[n] )
+            {
+                this->end_index = FACTORIALS[n];
+            }
         }
 
         if( this->verbose )
