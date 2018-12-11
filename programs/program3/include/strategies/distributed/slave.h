@@ -28,7 +28,7 @@ public:
      * @returns The number of solutions this slave has found. Must meet the quota
      * or the slave will be sent to a reeducation camp.
      */
-    size_t Run( bool screen_output, std::string file_output ) override;
+    size_t Run( bool screen_output = false, std::string file_output = "" ) override;
 
     /**
      * @brief Determines if the given arrangement is a solution.

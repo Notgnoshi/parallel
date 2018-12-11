@@ -14,5 +14,5 @@ public:
      *
      * @returns The total number of solutions found.
      */
-    size_t Run( bool screen_output, std::string file_output ) override;
+    size_t Run( bool screen_output = false, std::string file_output = "" ) override;
 };

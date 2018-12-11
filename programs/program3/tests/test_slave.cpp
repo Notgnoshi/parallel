@@ -69,3 +69,32 @@ TEST_CASE( "SlaveProcess IsSolution" )
         CHECK( slave.IsSolution( sol ) );
     }
 }
+
+TEST_CASE( "SlaveProcess work division" )
+{
+    auto slave1 = SlaveProcess( 1, 5, 5 );
+    auto slave2 = SlaveProcess( 2, 5, 5 );
+    auto slave3 = SlaveProcess( 3, 5, 5 );
+    auto slave4 = SlaveProcess( 4, 5, 5 );
+
+    CHECK( slave1.GetBegin() == 0 );
+    CHECK( slave1.GetEnd() == 30 );
+
+    // There are two solutions inside slave 1's block.
+    CHECK( slave1.Run() == 2 );
+
+    CHECK( slave2.GetBegin() == 30 );
+    CHECK( slave2.GetEnd() == 60 );
+
+    CHECK( slave2.Run() == 3 );
+
+    CHECK( slave3.GetBegin() == 60 );
+    CHECK( slave3.GetEnd() == 90 );
+
+    CHECK( slave3.Run() == 3 );
+
+    CHECK( slave4.GetBegin() == 90 );
+    CHECK( slave4.GetEnd() == 120 );
+
+    CHECK( slave4.Run() == 2 );
+}
