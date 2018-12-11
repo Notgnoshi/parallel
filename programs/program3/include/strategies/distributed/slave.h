@@ -7,20 +7,7 @@
 class SlaveProcess : public Process
 {
 public:
-    /**
-     * @brief Construct a new Process object.
-     *
-     * @param rank This processor's rank. 0 is the master process, while all
-     * others are slaves.
-     * @param num_procs The total number of processors that are being utilized.
-     * @param n The problem size.
-     * @param verbose Whether to give diagnostic information. Defaults to false.
-     */
-    SlaveProcess( size_t rank, size_t num_procs, size_t n, bool verbose = false ) :
-        Process( rank, num_procs, n, verbose ),
-        uphill( 2 * n - 1, false ),
-        downhill( 2 * n - 1, false )
-    {}
+    using Process::Process;
 
     /**
      * @brief Run the slave process.
@@ -54,13 +41,4 @@ public:
      * @returns The modified filename.
      */
     static std::string InsertRank( const size_t rank, const std::string& filename );
-
-private:
-    std::vector<bool> uphill;
-    std::vector<bool> downhill;
-
-    /**
-     * @brief Clear the diagonal arrays between checks.
-     */
-    void ClearDiagonals();
 };

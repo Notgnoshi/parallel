@@ -44,21 +44,16 @@ size_t SlaveProcess::Run( bool screen_output, std::string file_output )
 
 bool SlaveProcess::IsSolution( const std::vector<uint8_t>& arrangement )
 {
-    this->ClearDiagonals();
-
-    for( uint8_t x = 0; x < this->GetN(); ++x )
+    for( int i = 0; i < (int)arrangement.size(); ++i )
     {
-        auto up = static_cast<uint8_t>( x + arrangement[x] );
-        auto down = static_cast<uint8_t>( x + n - arrangement[x] - 1 );
-
-        if( this->downhill[down] || this->uphill[up] )
+        for( int j = i + 1; j < (int)arrangement.size(); ++j )
         {
-            return false;
+            if( abs( i - j ) == abs( arrangement[i] - arrangement[j] ) )
+            {
+                return false;
+            }
         }
-        downhill[down] = true;
-        uphill[up] = true;
     }
-
     return true;
 }
 
@@ -85,13 +80,4 @@ std::string SlaveProcess::InsertRank( const size_t rank, const std::string& file
     }
 
     return base + name + std::to_string( rank ) + ext;
-}
-
-void SlaveProcess::ClearDiagonals()
-{
-    for( size_t i = 0; i < this->uphill.size(); ++i )
-    {
-        this->uphill[i] = false;
-        this->downhill[i] = false;
-    }
 }
