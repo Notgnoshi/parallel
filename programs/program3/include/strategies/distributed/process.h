@@ -1,6 +1,7 @@
 #pragma once
 #include "common.h"
 #include <cstddef>
+#include <mpi.h>
 
 class Process
 {
@@ -75,6 +76,35 @@ public:
      * the slave process return the number of solutions that they found.
      */
     virtual size_t Run( bool screen_output = false, std::string file_output = "" ) = 0;
+
+    /**
+     * @brief Run the process, with MPI communication with the Master process.
+     *
+     * @param screen_output Whether to print solutions to the console.
+     * @param file_output An optional filename to print solutions to. The process
+     * rank will be appended to the filename.
+     *
+     * @returns The master process returns the number of solutions, while all of
+     * the slave process return the number of solutions that they found.
+     */
+    size_t MpiRun( bool screen_output = false, std::string file_output = "" )
+    {
+        MPI_Barrier( MPI_COMM_WORLD );
+        Timer t;
+
+        size_t num_solutions = Run( screen_output, file_output );
+        size_t global_sum = 0;
+
+        MPI_Reduce( &num_solutions, &global_sum, 1, MPI_UNSIGNED_LONG_LONG, MPI_SUM, 0, MPI_COMM_WORLD );
+
+        MPI_Barrier( MPI_COMM_WORLD );
+        if( this->rank == 0 )
+        {
+            std::cout << "Elapsed time: " << t.elapsed() << "s" << std::endl;
+        }
+
+        return global_sum;
+    }
 
     /**
      * @brief Get the beginning index of the work this process is responsible for.

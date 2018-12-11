@@ -23,10 +23,18 @@ public:
     {}
 
     /**
-     * @brief Perform the work that this slave has been assigned.
+     * @brief Run the slave process.
      *
-     * @returns The number of solutions this slave has found. Must meet the quota
-     * or the slave will be sent to a reeducation camp.
+     * @details The slave processes receive a work assignment and diligently,
+     * well.. slave over their work until done. It was their own fault for not
+     * unionizing.
+     *
+     * @param screen_output Whether to print solutions to the console.
+     * @param file_output An optional filename to print solutions to. The process
+     * rank will be appended to the filename.
+     *
+     * @returns All of the slave process return the number of solutions that
+     * they find.
      */
     size_t Run( bool screen_output = false, std::string file_output = "" ) override;
 

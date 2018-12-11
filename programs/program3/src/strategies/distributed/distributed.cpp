@@ -8,5 +8,5 @@ size_t DistributedStrategy::Run( size_t n )
                        this->GetProcs(),
                        n,
                        this->GetVerbose() )
-        ->Run( this->screen_output, this->file_output );
+        ->MpiRun( this->screen_output, this->file_output );
 }
