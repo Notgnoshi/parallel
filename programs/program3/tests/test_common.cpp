@@ -97,32 +97,3 @@ TEST_CASE( "Common IsSolution for n=4" )
         CHECK( !IsSolution( perm ) );
     }
 }
-
-TEST_CASE( "SlaveProcess InsertRank" )
-{
-    const std::string filename1 = "test.txt";
-    const size_t rank1 = 1;
-    const std::string expected1 = "test1.txt";
-
-    CHECK( expected1 == SlaveProcess::InsertRank( rank1, filename1 ) );
-
-    const std::string filename2 = "test";
-    const size_t rank2 = 2;
-    const std::string expected2 = "test2";
-    CHECK( expected2 == SlaveProcess::InsertRank( rank2, filename2 ) );
-
-    const std::string filename3 = "../../test.sol";
-    const size_t rank3 = 999;
-    const std::string expected3 = "../../test999.sol";
-    CHECK( expected3 == SlaveProcess::InsertRank( rank3, filename3 ) );
-
-    const std::string filename4 = "/tmp/file_name.sol";
-    const size_t rank4 = 0;
-    const std::string expected4 = "/tmp/file_name0.sol";
-    CHECK( expected4 == SlaveProcess::InsertRank( rank4, filename4 ) );
-
-    const std::string filename5 = "../../test";
-    const size_t rank5 = 3;
-    const std::string expected5 = "../../test3";
-    CHECK( expected5 == SlaveProcess::InsertRank( rank5, filename5 ) );
-}
