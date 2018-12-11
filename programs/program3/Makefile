@@ -25,7 +25,7 @@ MPI := mpiexec
 CXX := g++
 LINK := g++
 
-LINKFLAGS = -lm -lcuda -lcudart -fopenmp
+LINKFLAGS = -lm -fopenmp
 # Get the right linker flags for use with gcc from the mpi compiler
 LINKFLAGS += $(shell $(MPIXX) -showme:link)
 CXXFLAGS = -I$(INC_DIR) -O3 -Wall -Wpedantic -Wextra -Werror -Wconversion -fopenmp -std=c++17 -x c++
@@ -83,8 +83,11 @@ viewdocs: docs
 deploy:
 	@echo "Deploying to remote nodes"
 	ssh limbo "mkdir -p $(BUILD_DIR); rm -rf $(BUILD_DIR)/*;"
+	ssh perdition "mkdir -p $(BUILD_DIR); rm -rf $(BUILD_DIR)/*;"
 	scp $(BUILD_DIR)/$(TARGET) $(BUILD_DIR)/$(TEST_TARGET) limbo:~/$(BUILD_DIR)
+	scp $(BUILD_DIR)/$(TARGET) $(BUILD_DIR)/$(TEST_TARGET) perdition:~/$(BUILD_DIR)
 
 cleanall: clean
 cleanall:
 	ssh limbo "rm -rf $(BUILD_DIR)/*"
+	ssh perdition "rm -rf $(BUILD_DIR)/*"
