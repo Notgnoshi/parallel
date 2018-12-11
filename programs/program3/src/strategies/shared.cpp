@@ -25,7 +25,7 @@ size_t SharedStrategy::Run( size_t n )
         if( IsSolution( context.perm, context.downhill, context.uphill ) )
         {
             solutions += 1;
-            if( this->screen_output && solutions < 10 )
+            if( this->screen_output && solutions <= 10 )
             {
                 // Timing disables output, so this is fine.
                 std::unique_lock<std::mutex> lock( this->screen_io );

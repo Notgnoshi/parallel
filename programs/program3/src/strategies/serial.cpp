@@ -19,7 +19,7 @@ size_t SerialStrategy::Run( size_t n )
         {
             solutions += 1;
             //! @todo Determine how many solutions to print.
-            if( this->screen_output && solutions < 10 )
+            if( this->screen_output && solutions <= 10 )
             {
                 PrintSolution( perm );
             }
