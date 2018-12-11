@@ -26,7 +26,6 @@ std::vector<uint8_t> NthPermutation( size_t length, size_t n )
 bool IsSolution( std::vector<uint8_t> arrangement )
 {
     auto n = static_cast<uint8_t>( arrangement.size() );
-    //! @todo Avoid reallocating these arrays over and over.
     std::vector<bool> downhill( 2 * n - 1, false );
     std::vector<bool> uphill( 2 * n - 1, false );
 

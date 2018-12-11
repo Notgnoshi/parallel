@@ -5,7 +5,6 @@
 TEST_CASE( "SerialStrategy construction" )
 {
     SerialStrategy strategy;
-    //! @todo What the hell have I gotten myself into. This is going to suck for the parallel strategies.
     CHECK( strategy.GetRank() == 0 );
 }
 

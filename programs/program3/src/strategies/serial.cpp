@@ -18,12 +18,10 @@ size_t SerialStrategy::Run( size_t n )
         if( IsSolution( perm, downhill, uphill ) )
         {
             solutions += 1;
-            //! @todo Determine how many solutions to print.
             if( this->screen_output && solutions <= 10 )
             {
                 PrintSolution( perm );
             }
-            //! @todo Determine the right chunk size.
             if( !this->file_output.empty() && chunk.size() < 64 )
             {
                 chunk.push_back( perm );
