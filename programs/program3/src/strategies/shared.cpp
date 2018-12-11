@@ -6,6 +6,7 @@
 size_t SharedStrategy::Run( size_t n )
 {
     size_t solutions = 0;
+    std::vector<std::vector<uint8_t>> chunk;
 
     ThreadContext context( n, omp_get_num_procs() );
 
@@ -14,7 +15,7 @@ size_t SharedStrategy::Run( size_t n )
 // clang-format off
 #pragma omp parallel for                                                      \
     default( none )                                                           \
-    shared( n )                                                               \
+    shared( n, chunk )                                                        \
     reduction( +: solutions )                                                 \
     firstprivate( context )                                                   \
     num_threads( omp_get_num_procs() )
@@ -24,24 +25,24 @@ size_t SharedStrategy::Run( size_t n )
         if( IsSolution( context.perm, context.downhill, context.uphill ) )
         {
             solutions += 1;
-            // //! @todo This really isn't thread-safe.
-            // //! @todo Determine how many solutions to print.
-            // if( this->screen_output && solutions < 10 )
-            // {
-            //     PrintSolution( context.perm );
-            // }
-            // //! @todo This really isn't thread-safe.
-            // //! @todo Determine the right chunk size.
-            // if( !this->file_output.empty() && chunk.size() < 64 )
-            // {
-            //     chunk.push_back( context.perm );
+            if( this->screen_output && solutions < 10 )
+            {
+                // Timing disables output, so this is fine.
+                std::unique_lock<std::mutex> lock( this->screen_io );
+                PrintSolution( context.perm );
+            }
+            if( !this->file_output.empty() )
+            {
+                // Timing disables output, so this is fine.
+                std::unique_lock<std::mutex> lock( this->file_io );
+                chunk.push_back( context.perm );
 
-            //     if( chunk.size() == 64 )
-            //     {
-            //         AppendBlock( chunk, this->file_output );
-            //         chunk.clear();
-            //     }
-            // }
+                if( chunk.size() >= 64 )
+                {
+                    AppendBlock( chunk, this->file_output );
+                    chunk.clear();
+                }
+            }
         }
 
         std::next_permutation( context.perm.begin(), context.perm.end() );
@@ -53,11 +54,13 @@ size_t SharedStrategy::Run( size_t n )
         std::cout << "Elapsed time: " << t.elapsed() << "s" << std::endl;
     }
 
-    // // If there are leftover solutions, print them.
-    // if( !this->file_output.empty() && chunk.size() > 0 )
-    // {
-    //     AppendBlock( chunk, this->file_output );
-    // }
+    // If there are leftover solutions, output them.
+    if( !this->file_output.empty() && chunk.size() > 0 )
+    {
+        // Not strictly needed because this is sequential again.
+        std::unique_lock<std::mutex> lock( this->file_io );
+        AppendBlock( chunk, this->file_output );
+    }
     return solutions;
 }
 

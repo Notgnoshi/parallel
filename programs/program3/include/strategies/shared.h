@@ -1,6 +1,7 @@
 #pragma once
 #include "permutations.h"
 #include "strategies/strategy.h"
+#include <mutex>
 #include <omp.h>
 #include <vector>
 
@@ -42,6 +43,9 @@ public:
     static void ClearVector( std::vector<bool>& v );
 
 private:
+    std::mutex screen_io;
+    std::mutex file_io;
+
     /**
      * @brief Enable per-thread initialization code.
      */
