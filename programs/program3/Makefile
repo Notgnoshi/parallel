@@ -28,7 +28,7 @@ LINK := g++
 LINKFLAGS = -lm -lcuda -lcudart -fopenmp
 # Get the right linker flags for use with gcc from the mpi compiler
 LINKFLAGS += $(shell $(MPIXX) -showme:link)
-CXXFLAGS = -I$(INC_DIR) -O3 -Wall -Wpedantic -Wextra -Werror -Wconversion -fopenmp -std=c++14 -x c++
+CXXFLAGS = -I$(INC_DIR) -O3 -Wall -Wpedantic -Wextra -Werror -Wconversion -fopenmp -std=c++17 -x c++
 # Get the right compile flags for use with gcc from the mpi compiler
 CXXFLAGS += $(shell $(MPIXX) -showme:compile)
 
@@ -88,7 +88,3 @@ deploy:
 cleanall: clean
 cleanall:
 	ssh limbo "rm -rf $(BUILD_DIR)/*"
-
-exec:
-	# One master and eight slaves.
-	$(MPI) -np 9 $(BUILD_DIR)/$(TARGET) --verbose --strategy 3 4
