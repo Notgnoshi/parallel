@@ -76,7 +76,7 @@ public:
     }
 
     /**
-     * @brief Get the the verbosity of the strategy.
+     * @brief Get the verbosity of the strategy.
      *
      * @returns The process verbosity.
      */
