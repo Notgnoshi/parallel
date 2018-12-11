@@ -67,10 +67,14 @@ public:
      * The slave processes receive a work assignment and diligently, well.. slave
      * over their work until done. It was their own fault for not unionizing.
      *
+     * @param screen_output Whether to print solutions to the console.
+     * @param file_output An optional filename to print solutions to. The process
+     * rank will be appended to the filename.
+     *
      * @returns The master process returns the number of solutions, while all of
      * the slave process return the number of solutions that they found.
      */
-    virtual size_t Run() = 0;
+    virtual size_t Run( bool screen_output = false, std::string file_output = "" ) = 0;
 
     /**
      * @brief Get the beginning index of the work this process is responsible for.
@@ -90,6 +94,16 @@ public:
     size_t GetEnd()
     {
         return this->end_index;
+    }
+
+    /**
+     * @brief Get the problem size for this process.
+     *
+     * @returns The n-Queen's problem size.
+     */
+    size_t GetN()
+    {
+        return this->n;
     }
 
 protected:

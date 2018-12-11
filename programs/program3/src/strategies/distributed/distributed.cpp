@@ -4,5 +4,9 @@
 
 size_t DistributedStrategy::Run( size_t n )
 {
-    return GetProcess( this->GetRank(), this->GetProcs(), n, this->GetVerbose() )->Run();
+    return GetProcess( this->GetRank(),
+                       this->GetProcs(),
+                       n,
+                       this->GetVerbose() )
+        ->Run( this->screen_output, this->file_output );
 }

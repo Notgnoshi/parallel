@@ -15,5 +15,31 @@ public:
      * @returns The number of solutions this slave has found. Must meet the quota
      * or the slave will be sent to a reeducation camp.
      */
-    size_t Run() override;
+    size_t Run( bool screen_output, std::string file_output ) override;
+
+    /**
+     * @brief Determines if the given arrangement is a solution.
+     *
+     * @param arrangement A vector of queen placements.
+     * @returns True if the given arrangement is a solution. False otherwise.
+     */
+    bool IsSolution( const std::vector<uint8_t>& arrangement );
+
+    /**
+     * @brief Insert a process's rank into a filename.
+     *
+     * @param rank The rank to inject into the filename.
+     * @param filename The filename to inject the rank into.
+     * @returns The modified filename.
+     */
+    static std::string InsertRank( const size_t rank, const std::string& filename );
+
+private:
+    std::vector<bool> uphill;
+    std::vector<bool> downhill;
+
+    /**
+     * @brief Clear the diagonal arrays between checks.
+     */
+    void ClearDiagonals();
 };
