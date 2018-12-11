@@ -7,7 +7,20 @@
 class SlaveProcess : public Process
 {
 public:
-    using Process::Process;
+    /**
+     * @brief Construct a new Process object.
+     *
+     * @param rank This processor's rank. 0 is the master process, while all
+     * others are slaves.
+     * @param num_procs The total number of processors that are being utilized.
+     * @param n The problem size.
+     * @param verbose Whether to give diagnostic information. Defaults to false.
+     */
+    SlaveProcess( size_t rank, size_t num_procs, size_t n, bool verbose = false ) :
+        Process( rank, num_procs, n, verbose ),
+        uphill( 2 * n - 1, false ),
+        downhill( 2 * n - 1, false )
+    {}
 
     /**
      * @brief Perform the work that this slave has been assigned.
